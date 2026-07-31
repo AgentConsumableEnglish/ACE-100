@@ -13,8 +13,9 @@
 #   tools/check.sh <path>...   # check the given files
 #   tools/check.sh             # check every governed file (git-tracked + untracked)
 #
-# Optional: a .ace-ignore file at the repository root, one grep pattern per
-# line, excludes paths from the full sweep.
+# Optional: a .ace-ignore file at the repository root excludes paths from the
+# full sweep. One grep pattern per line. Lines that start with '#' and blank
+# lines are comments.
 #
 # Exits non-zero when any check fails. Failures name the file and the ACE rule.
 
@@ -29,7 +30,9 @@ else
   sweep=1
   list=$(git ls-files --cached --others --exclude-standard '*.md' 2>/dev/null || find . -name '*.md')
   if [ -f .ace-ignore ]; then
-    list=$(printf '%s\n' "$list" | grep -v -f .ace-ignore)
+    # Comments and blank lines must not reach grep: a blank pattern matches
+    # every path, and -v then empties the sweep silently.
+    list=$(printf '%s\n' "$list" | grep -v -f <(sed '/^#/d;/^[[:space:]]*$/d' .ace-ignore))
   fi
   while IFS= read -r line; do
     [ -n "$line" ] && files+=("$line")

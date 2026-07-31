@@ -14,6 +14,10 @@ necessary and not sufficient.
 
   tools/lint.py <path>...   # lint the given files
   tools/lint.py             # lint every .md file under the current tree
+
+The full sweep honors .ace-ignore (comments and blank lines permitted), and a
+finding is not reported when its rule identifier is in the document's `exempt`
+property (ACE 13.7).
 """
 import re, sys, pathlib
 
@@ -64,12 +68,28 @@ def clean(body):
     t = re.sub(r'\]\(([^)]*)\)', '] ', t)
     return t
 
+def sweep_files():
+    files = sorted(ROOT.rglob('*.md'))
+    ign = ROOT / '.ace-ignore'
+    if ign.exists():
+        pats = [l.strip() for l in ign.read_text().splitlines()
+                if l.strip() and not l.strip().startswith('#')]
+        rx = [re.compile(p) for p in pats]
+        files = [f for f in files
+                 if not any(r.search(str(f.relative_to(ROOT))) for r in rx)]
+    return files
+
 def main(argv):
     allow = load_allow()
     banned = load_banned()
-    files = [pathlib.Path(a) for a in argv] if argv else sorted(ROOT.rglob('*.md'))
+    files = [pathlib.Path(a) for a in argv] if argv else sweep_files()
     issues = []
-    def note(f, msg): issues.append(f"{f} — {msg}")
+    exempt_map = {}
+    def note(f, msg):
+        m = re.match(r'ACE ([0-9]+\.[0-9]+)', msg)
+        if m and m.group(1) in exempt_map.get(str(f), ''):
+            return
+        issues.append(f"{f} — {msg}")
 
     for f in files:
         rel = f.relative_to(ROOT) if f.is_absolute() else f
@@ -82,6 +102,7 @@ def main(argv):
             note(rel, 'ACE 13.2: no front matter'); continue
         fmd = dict(re.findall(r'^"?(@?\w+)"?:\s*(.*)$', fm, re.M))
         exempt = fmd.get('exempt', '')
+        exempt_map[str(rel)] = exempt
         def skipped(rule): return rule in exempt
         if exempt and not (ROOT / 'docs/standard/deviations.md').exists():
             note(rel, 'ACE 17.7: exempt declared but no deviations ledger exists')
