@@ -42,6 +42,23 @@ def load_allow():
                     allow.add(w)
     return allow
 
+def load_terms():
+    """Declared technical terms, word by word.
+
+    ACE 3.4 keeps a declared term with an "-ing" form permitted, so the linter
+    reads the declarations before it reports one. The table divides into
+    sibling parts once it passes the size limit, so every `technical-terms*.md`
+    part is read, not the base one alone.
+    """
+    terms = set()
+    for p in sorted((ROOT / 'docs/dictionary').glob('technical-terms*.md')):
+        for l in p.read_text().splitlines():
+            if l.startswith('|') and not re.match(r'\|\s*-', l):
+                t = l.strip('|').split('|')[0].strip().lower()
+                if t and t != 'term':
+                    terms.update(t.split())
+    return terms
+
 def load_banned():
     banned = []
     p = ROOT / 'docs/dictionary/replacements.md'
@@ -82,6 +99,7 @@ def sweep_files():
 def main(argv):
     allow = load_allow()
     banned = load_banned()
+    terms = load_terms()
     files = [pathlib.Path(a) for a in argv] if argv else sweep_files()
     issues = []
     exempt_map = {}
@@ -148,9 +166,12 @@ def main(argv):
         if not in_dict:
             for mm in re.finditer(r'\b([A-Za-z-]*[a-z]ing)\b', prose_nt):
                 wl = mm.group(1).lower()
-                if wl in allow or wl.endswith(ING_OK_SUFFIX):
+                head = wl.split('-')[-1]
+                if wl in allow or wl in terms or wl.endswith(ING_OK_SUFFIX):
                     continue
-                if wl in ING_NOT_SUFFIX or wl.split('-')[-1] in ING_NOT_SUFFIX:
+                if head in allow or head in terms:
+                    continue
+                if wl in ING_NOT_SUFFIX or head in ING_NOT_SUFFIX:
                     continue
                 if wl in ('codeblock',):
                     continue
