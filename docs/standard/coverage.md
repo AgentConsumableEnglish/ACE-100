@@ -1,5 +1,6 @@
 ---
 "@type": TechArticle
+genre: rules
 name: Coverage and layers
 description: Section 10 tells which prose the standard governs and which rule layers apply to it.
 isPartOf: docs/standard/README.md
@@ -30,7 +31,9 @@ The standard governs all prose that a person or an agent writes in the repositor
 - That a tool generated the file.
 - The name of the tool or the source.
 
-**ACE 10.5** — Write governed prose in English only in Issue 1.
+**ACE 10.5** — Write governed prose in English only.
+
+**ACE 10.6** — Structured data embedded in prose is verbatim. Examples: tracker fields, status lines, error strings, quoted legacy text. Do not change it, and do not apply the language rules to it. Keep it in the exact form that its tool reads.
 
 ## Note
 

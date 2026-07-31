@@ -1,5 +1,6 @@
 ---
 "@type": TechArticle
+genre: rules
 name: Section 12 — Document types
 description: Section 12 gives the five document types, their schema.org names, and their rule bindings.
 isPartOf: docs/standard/architecture/README.md
@@ -18,6 +19,8 @@ isPartOf: docs/standard/architecture/README.md
 | `DefinedTermSet` | Dictionary part | Section 6 | [defined-term-set.md](../../templates/defined-term-set.md) |
 
 **ACE 12.2 (M)** — A decision record is a `TechArticle` with the property `genre: decision-record`. [The template](../../templates/decision-record.md) gives its form.
+
+**ACE 12.5 (M)** — A rule document is a `TechArticle` with the property `genre: rules`. It states rules and obligations. Its binding: the descriptive limits apply, and the imperative is permitted for an obligation of the reader. The rule documents of this standard use it.
 
 **ACE 12.3** — Do not mix types in one document. If a description and a procedure are necessary for one topic, write two documents.
 

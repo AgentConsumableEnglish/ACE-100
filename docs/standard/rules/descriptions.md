@@ -1,15 +1,16 @@
 ---
 "@type": TechArticle
+genre: rules
 name: Section 6 — Descriptions
-description: Section 6 gives the rules for descriptive text in TechArticle and APIReference documents.
+description: Section 6 gives the rules for descriptive text, in every document type.
 isPartOf: docs/standard/rules/README.md
 ---
 
 # Section 6 — Descriptions
 
-Descriptive text gives information. It does not give instructions. The imperative is not permitted in descriptive text. The `TechArticle` and `APIReference` document types use these rules.
+Descriptive text gives information. It does not give instructions. The imperative is not permitted in descriptive text, with one exception: a `rules` document can give an obligation of the reader (ACE 12.5). The `TechArticle` and `APIReference` document types use these rules.
 
-**ACE 6.1 (M)** — Use a maximum of 20 words in each descriptive sentence.
+**ACE 6.1 (M)** — Use a maximum of 20 words in each descriptive sentence. This limit applies in every document type. A descriptive sentence inside a `HowTo` obeys it.
 
 **ACE 6.2** — Give information in small steps. Give one subject in each sentence.
 

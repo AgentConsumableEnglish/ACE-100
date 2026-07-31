@@ -1,5 +1,6 @@
 ---
 "@type": TechArticle
+genre: rules
 name: Section 2 — Multi-word terms
 description: Section 2 gives the limits for noun clusters and for hyphens in terms.
 isPartOf: docs/standard/rules/README.md

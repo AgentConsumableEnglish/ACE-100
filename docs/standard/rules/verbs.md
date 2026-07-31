@@ -1,5 +1,6 @@
 ---
 "@type": TechArticle
+genre: rules
 name: Section 3 — Verbs
 description: Section 3 gives the rules for verb forms, tenses, voice, and modality.
 isPartOf: docs/standard/rules/README.md
@@ -34,6 +35,7 @@ isPartOf: docs/standard/rules/README.md
 - Use "can" for possibility and permission. Do not use "may", "might", or "could".
 - Use "must" for obligation. Do not use "shall", "should", "have to", or "need to".
 - Use "will" for the simple future only.
+- Use "would" only for a condition that is not real: a rejected alternative, or a path not taken. ("Option B would cause a second index." The option is refused, and the claim is counterfactual.)
 
 **ACE 3.8** — Use verbs, not noun constructions, to give actions. ("Before the removal of the service" is not correct. Write "Before you remove the service".)
 

@@ -1,5 +1,6 @@
 ---
 "@type": TechArticle
+genre: rules
 name: Section 13 — Front matter
 description: Section 13 gives the mandatory YAML front matter and its schema.org properties.
 isPartOf: docs/standard/architecture/README.md
@@ -25,6 +26,10 @@ isPartOf: docs/standard/architecture/README.md
 **ACE 13.5** — Optional properties are permitted when they are accurate. Examples: `genre`, `about`, `sameAs`, `termCode`.
 
 **ACE 13.6 (M)** — The H1 of the body is equal to the `name` property.
+
+**ACE 13.7 (M)** — The `exempt` property declares the rules that a document does not obey. Give the rule identifiers and a short reason. Each exemption must have a row in [the deviations ledger](../deviations.md). A checker does not apply an exempted rule to that document.
+
+**ACE 13.8** — Front matter changes the first line of a file. Tools that read line 1 will break. [Migration](../migration.md) gives the warning and the repair steps.
 
 ## Example
 

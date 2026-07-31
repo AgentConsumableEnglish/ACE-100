@@ -12,7 +12,7 @@ This is the top index of the governed documents. Start here. Go down one level a
 ## Sections
 
 - [The standard](standard/README.md). The ACE-100 rules for words, sentences, documents, and structure.
-- [The dictionary](dictionary/README.md). The closed vocabulary and the process to add words.
+- [The dictionary](dictionary/README.md). The function core, the replacements, and the declared terms.
 - [The templates](templates/README.md). Start files for each document type.
 - [The example](example/README.md). A fictional package that shows the standard in use.
 
