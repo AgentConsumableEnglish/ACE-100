@@ -11,7 +11,7 @@ The section numbers follow the section plan of ASD-STE100. The content is adapte
 
 ## Sections
 
-- [Section 1 — Words](words.md). The closed vocabulary, technical terms, and backticks.
+- [Section 1 — Words](words.md). The two vocabulary layers, technical terms, and backticks.
 - [Section 2 — Multi-word terms](multi-word-terms.md). Limits for noun clusters and hyphens.
 - [Section 3 — Verbs](verbs.md). Approved forms, tenses, voice, and modality.
 - [Section 4 — Sentences](sentences.md). Sentence form, necessary words, and vertical lists.

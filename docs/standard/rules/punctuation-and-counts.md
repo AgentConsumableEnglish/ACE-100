@@ -1,5 +1,6 @@
 ---
 "@type": TechArticle
+genre: rules
 name: Section 8 — Punctuation and counts
 description: Section 8 gives the punctuation limits and the word-count method.
 isPartOf: docs/standard/rules/README.md
@@ -36,4 +37,6 @@ isPartOf: docs/standard/rules/README.md
 
 **ACE 8.6** — In a vertical list, the colon of the lead-in has the function of a period. The lead-in and each item are different sentences. The applicable word limit applies to each of them.
 
-**ACE 8.7** — Text in parentheses counts as one word in its sentence. The same text also counts as a sentence with its own limit.
+**ACE 8.7** — Text in parentheses counts once, as one word, in the sentence that contains it. Issue 1 also counted it as its own sentence. That made the counts different for each reader, and Issue 2 repeals it.
+
+**ACE 8.8** — This is the whole counting rule. Two readers or two tools that apply ACE 8.5 to 8.7 must get the same count.

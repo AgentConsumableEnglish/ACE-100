@@ -20,6 +20,10 @@ The service must store events and position records. Transactions are necessary, 
 
 We will use `postgres` version 16 as the primary database. We will use one database for events and position records.
 
+## Other options
+
+A document database would remove the schema work, but it would move the two-table update into code. A second, separate database for positions would double the operational surface.
+
 ## Results
 
 The team keeps its known tools, and the operational risk stays low. Transactions make the two-table updates safe. The event table will become large. Thus, the `EVENT_TTL_DAYS` cleanup is mandatory from the start.

@@ -1,5 +1,6 @@
 ---
 "@type": TechArticle
+genre: rules
 name: Section 7 — Safety
 description: Section 7 gives the rules for WARNING and CAUTION text in software procedures.
 isPartOf: docs/standard/rules/README.md

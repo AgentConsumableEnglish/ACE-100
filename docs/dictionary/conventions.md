@@ -7,32 +7,25 @@ isPartOf: docs/dictionary/README.md
 
 # Dictionary conventions
 
-Each dictionary part is a `DefinedTermSet` document. Each entry is a `DefinedTerm`.
+Each dictionary part is a `DefinedTermSet` document. Each entry is a `DefinedTerm`, one table row: the word in uppercase, the part of speech, and the meaning. Write approved words with normal casing in documents.
 
-## Entry format
+## The two layers
 
-An entry is one table row with three columns:
+The function core is closed. It holds the words that give structure: determiners, conjunctions, prepositions, pronouns, modality, quantity, and time. Do not use a function word that the core does not give.
 
-| Column | Content |
-|---|---|
-| Word | The approved word, in uppercase letters |
-| Part | The part of speech |
-| Meaning | The approved meaning, with restrictions and a short example when necessary |
+The content layer is open. Domain nouns, verbs, adjectives, and adverbs are permitted without an entry. Style rules govern them:
 
-## Casing
+- One name for each item, in all documents (ACE 1.10).
+- Do not use a word from [replacements.md](replacements.md).
+- Use the simple, frequent word for a concept.
+- Use one meaning for one word in one repository.
 
-Approved words are uppercase in the dictionary only. Write them with normal casing in documents.
+## Forms
 
-## Principles
-
-- One concept has one word. Do not add a synonym of an approved word.
-- One word has one meaning. A second meaning is not permitted.
-- A word with two parts of speech has one entry for each part.
-- Plural forms of approved nouns are approved (ACE 1.4).
-- Comparative forms of approved adjectives are approved: with "-er" and "-est", or with "more" and "most".
-- These verb forms are approved: infinitive, imperative, simple present, simple past, past participle.
-- An entry can have a `sameAs` link to an external definition. This is optional.
+- Plural forms of nouns are permitted.
+- Comparative forms of adjectives are permitted: with "-er" and "-est", or with "more" and "most".
+- Permitted verb forms: infinitive, imperative, simple present, simple past, past participle.
 
 ## Sources
 
-The principles come from ASD-STE100 Issue 9, part 2. The words are the ACE-100 core, not the ASD-STE100 dictionary.
+The principles come from ASD-STE100 Issue 9, part 2. The split into two layers comes from field use (see [changes.md](../standard/changes.md)).

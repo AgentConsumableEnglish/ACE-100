@@ -1,5 +1,6 @@
 ---
 "@type": TechArticle
+genre: rules
 name: Section 11 — Layout
 description: Section 11 tells where documents live in the monorepo and how indexes route readers.
 isPartOf: docs/standard/architecture/README.md

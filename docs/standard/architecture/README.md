@@ -15,4 +15,4 @@ These rules apply to markdown documents only (layer L3). They control where docu
 - [Section 12 — Document types](document-types.md). The five schema.org types and their rule bindings.
 - [Section 13 — Front matter](front-matter.md). The mandatory front-matter block.
 - [Section 14 — Names and links](names-and-links.md). File names, headings, and link rules.
-- [Section 15 — Size limits](size-limits.md). The limits that keep documents small.
+- [Section 15 — Size limits](size-limits.md). The size limit, the division shape, and the priority order.

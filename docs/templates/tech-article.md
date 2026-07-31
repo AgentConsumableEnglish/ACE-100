@@ -15,4 +15,4 @@ isPartOf: <path of the parent index, from the repository root>
 
 ## Rules for this type
 
-Remove this section in your copy. Descriptive text gives information, not instructions (Section 6). The imperative is not permitted. Keep the body at 250 prose words and 80 lines maximum (Section 15). If a procedure is necessary, write a separate `HowTo` document.
+Remove this section in your copy. Descriptive text gives information, not instructions (Section 6). The imperative is not permitted. Keep the body at 120 lines maximum (ACE 15.1). If a procedure is necessary, write a separate `HowTo` document.

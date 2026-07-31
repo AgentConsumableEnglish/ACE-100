@@ -7,7 +7,7 @@ isPartOf: docs/dictionary/README.md
 
 # Technical terms
 
-A technical term is a name for a real thing in this domain (ACE 1.6). Add the terms of your repository to this table. The first rows are the terms of the kit and of the example.
+A technical term is a name for a real thing in this domain (ACE 1.6). Add the terms of your repository to this table. The first rows are the terms of the kit and of the example. When this table is larger than the size limit, divide it into sibling parts by category. Example part names: `technical-terms-stack.md` for products and tools, `technical-terms-domain.md` for the nouns of your product.
 
 | Term | Category | Meaning |
 |---|---|---|

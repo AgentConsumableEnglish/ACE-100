@@ -20,6 +20,10 @@ isPartOf: <path of the decisions index, from the repository root>
 
 <The decision, in one or two sentences. Write "We will..." for the simple future.>
 
+## Other options
+
+<One line for each rejected option, with "would" for its counterfactual cost (ACE 3.7). Example: "Option B would cause a second index.">
+
 ## Results
 
 <What becomes better, and what becomes worse. Give specific results.>

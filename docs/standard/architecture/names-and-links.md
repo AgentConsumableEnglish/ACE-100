@@ -1,5 +1,6 @@
 ---
 "@type": TechArticle
+genre: rules
 name: Section 14 — Names and links
 description: Section 14 gives the rules for file names, headings, and links.
 isPartOf: docs/standard/architecture/README.md
@@ -20,3 +21,5 @@ isPartOf: docs/standard/architecture/README.md
 **ACE 14.6** — When a document moves, update all links to it in the same PR.
 
 **ACE 14.7** — Do not repeat the content of another document. Link to it. One fact lives in one document.
+
+**ACE 14.8** — Do not move or rename a file whose path an external system references. Examples: commit trailers, test assertions, published links. Declare the path exempt (ACE 13.7) and keep it. A rename that orphans history is a larger loss than a broken convention.

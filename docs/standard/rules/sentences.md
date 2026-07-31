@@ -1,5 +1,6 @@
 ---
 "@type": TechArticle
+genre: rules
 name: Section 4 — Sentences
 description: Section 4 gives the rules for sentence form, necessary words, and vertical lists.
 isPartOf: docs/standard/rules/README.md

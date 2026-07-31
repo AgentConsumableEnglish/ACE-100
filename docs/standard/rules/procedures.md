@@ -1,5 +1,6 @@
 ---
 "@type": TechArticle
+genre: rules
 name: Section 5 — Procedures
 description: Section 5 gives the rules for instructions in HowTo documents.
 isPartOf: docs/standard/rules/README.md

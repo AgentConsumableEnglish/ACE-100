@@ -1,5 +1,6 @@
 ---
 "@type": TechArticle
+genre: rules
 name: Section 9 — Practices
 description: Section 9 gives the rewrite practices and the general recommendations.
 isPartOf: docs/standard/rules/README.md

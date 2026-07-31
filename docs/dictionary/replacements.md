@@ -60,3 +60,5 @@ Do not use the words in the left column. Use the approved alternatives. When a w
 | whether | if |
 | while, whilst (time) | at the same time |
 | wish, desire | want |
+| colour, behaviour, centre, licence, catalogue | color, behavior, center, license, catalog |
+| organise, normalise, initialise, analyse, recognise | organize, normalize, initialize, analyze, recognize |
