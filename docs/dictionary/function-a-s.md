@@ -88,6 +88,7 @@ The function layer is closed (ACE 1.1). Use only the words in these parts.
 | NO | determiner | Not one. |
 | NOT | adverb | Makes a negative. |
 | NOTHING | pronoun | Not one thing. |
+| NOW | adverb | At this time. |
 | OF | preposition | Shows possession or connection. |
 | ON | preposition | In contact with the top or surface of. |
 | ONCE | adverb | One time. |

@@ -23,7 +23,7 @@ Do not use the words in the left column. Use the approved alternatives. When a w
 | both | the two |
 | cease, halt, terminate, discontinue | stop |
 | construct, create, implement | make, build |
-| currently, now | at this time |
+| currently | now, at this time |
 | demonstrate, indicate | show |
 | determine | find, decide |
 | employ, utilize, leverage | use |
