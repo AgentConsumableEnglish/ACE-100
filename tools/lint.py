@@ -101,6 +101,10 @@ def main(argv):
     banned = load_banned()
     terms = load_terms()
     files = [pathlib.Path(a) for a in argv] if argv else sweep_files()
+    if not argv and not files:
+        # A sweep that matches nothing is a broken sweep, not a clean one.
+        print('the sweep matched no files — check .ace-ignore')
+        return 2
     issues = []
     exempt_map = {}
     def note(f, msg):

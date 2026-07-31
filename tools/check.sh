@@ -53,9 +53,20 @@ if [ "${#files[@]}" -eq 0 ]; then
 fi
 
 fail=0
-note() { printf '%s\n' "$1"; fail=1; }
+# A finding names its rule ("ACE 13.6: ..."). When the document's `exempt`
+# property carries that identifier (ACE 13.7), the finding is not an error,
+# so the filter sits here, in one place, for every check alike.
+note() {
+  id=$(printf '%s' "$1" | sed -n 's/.*ACE \([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
+  if [ -n "$id" ]; then
+    case "$exempt" in *"$id"*) return 0 ;; esac
+  fi
+  printf '%s\n' "$1"; fail=1
+}
+exempt=''
 
 for f in "${files[@]}"; do
+  exempt=''
   [ -f "$f" ] || { note "$f — missing"; continue; }
 
   # --- front matter (ACE 13.2) -------------------------------------------------
@@ -156,6 +167,8 @@ for f in "${files[@]}"; do
 done
 
 # --- every governed directory has an index (ACE 11.3) --------------------------
+# A directory declares no exemption, so the filter must not read the last file's.
+exempt=''
 if [ "$sweep" -eq 1 ]; then
   for dir in $(printf '%s\n' "${files[@]}" | sed -e '/\//!s:.*:.:' -e 's:/[^/]*$::' | sort -u); do
     [ "$dir" = "." ] && continue
