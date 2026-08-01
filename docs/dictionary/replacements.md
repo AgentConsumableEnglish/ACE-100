@@ -36,6 +36,7 @@ Do not use the words in the left column. Use the approved alternatives. When a w
 | launch, spin up | start |
 | main | primary |
 | may, might, could | can |
+| need (verb) | must, is mandatory |
 | needed | necessary |
 | numerous, several, a few | many, or give the number |
 | obtain, acquire | receive |
@@ -46,7 +47,7 @@ Do not use the words in the left column. Use the approved alternatives. When a w
 | provide | give, supply |
 | reboot | restart |
 | regarding, concerning | about, for |
-| require, need (verb) | must, is mandatory |
+| require | must, is mandatory |
 | roll back | revert |
 | rotate | turn |
 | shall, should, have to | must |
@@ -58,7 +59,8 @@ Do not use the words in the left column. Use the approved alternatives. When a w
 | top up | fill |
 | via | with, through |
 | whether | if |
-| while, whilst (time) | at the same time |
+| while (time) | at the same time |
+| whilst | at the same time |
 | wish, desire | want |
 | colour, behaviour, centre, licence, catalogue | color, behavior, center, license, catalog |
 | organise, normalise, initialise, analyse, recognise | organize, normalize, initialize, analyze, recognize |
