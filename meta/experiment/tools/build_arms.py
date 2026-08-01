@@ -1137,25 +1137,31 @@ JUDGE_INSTRUCTIONS = (
 
 def map_ace_targets(orig_rel: str, ace_files: set) -> list[str]:
     """Map an original corpus path to its rewritten form(s) in the ace arm.
-    ACE migrations may divide topic.md into topic/README.md plus parts, or move
-    a file; this heuristic covers exact match, the canonical division shape,
-    and a unique-stem move. Anything else is reported as unmapped (a flag)."""
-    if orig_rel in ace_files:
-        return [orig_rel]
+
+    ACE migrations divide and relocate content: topic.md -> topic/README.md
+    plus parts, and (commonly) package README.md -> sibling files in the same
+    directory (client.md, server.md, best-practices.md, ...). An exact-path
+    match therefore must NOT stop the search — content preserved in a sibling
+    would be misjudged as dropped. Candidates are the union of: exact path,
+    division-prefix files, every ace file in the original's own directory,
+    and unique-stem moves. Anything unmapped is reported as a flag."""
     p = PurePosixPath(orig_rel)
+    targets = set()
+    if orig_rel in ace_files:
+        targets.add(orig_rel)
     base = p.stem if str(p.parent) == "." else f"{p.parent.as_posix()}/{p.stem}"
-    prefix = base + "/"
-    cands = sorted(f for f in ace_files if f.startswith(prefix))
-    if cands:
-        return cands
+    targets.update(f for f in ace_files if f.startswith(base + "/"))
+    for f in ace_files:
+        if (str(PurePosixPath(f).parent) == str(p.parent)
+                and not f.startswith(KIT_DOC_PREFIXES)):
+            targets.add(f)
     stem = p.stem.lower()
-    if stem in ("readme", "index"):
-        return []  # too generic for a stem match
-    cands = sorted(
-        f for f in ace_files
-        if PurePosixPath(f).stem.lower() == stem and not f.startswith(KIT_DOC_PREFIXES)
-    )
-    return cands
+    if stem not in ("readme", "index"):
+        targets.update(
+            f for f in ace_files
+            if PurePosixPath(f).stem.lower() == stem and not f.startswith(KIT_DOC_PREFIXES)
+        )
+    return sorted(targets)
 
 
 def judge_arm(client, arm: str, originals: dict, mapping: dict, arm_root: Path, poll_seconds: int) -> dict:
