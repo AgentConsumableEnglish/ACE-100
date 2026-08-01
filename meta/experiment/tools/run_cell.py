@@ -283,16 +283,16 @@ def remove_workspace(ws: Path) -> None:
 # ---------------------------------------------------------------------------
 
 def compose_prompt(task: dict) -> str:
-    """Fill the fixed template: issue title/body if a linked issue exists,
-    otherwise the PR title/body. Never mentions documentation."""
+    """Fill the fixed template: issue title/body when present, falling back
+    per-field to the PR title/body (a linked issue can be a cross-repo stub
+    with no fetchable content — see the manifest's fetch_failed marker).
+    Never mentions documentation."""
     prompt_src = task.get("prompt") or {}
-    issue = prompt_src.get("issue")
-    if issue:
-        title = issue.get("title") or ""
-        body = issue.get("body") or ""
-    else:
-        title = prompt_src.get("pr_title") or ""
-        body = prompt_src.get("pr_body") or ""
+    issue = prompt_src.get("issue") or {}
+    title = (issue.get("title") or "").strip() or (prompt_src.get("pr_title") or "").strip()
+    body = (issue.get("body") or "").strip() or (prompt_src.get("pr_body") or "").strip()
+    if not title and not body:
+        sys.exit(f"{task.get('task_id')}: task prompt is empty; refusing to run the cell")
     return PROMPT_TEMPLATE.format(title=title, body=body)
 
 
