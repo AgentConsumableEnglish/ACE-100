@@ -57,10 +57,35 @@ def ambient_tokens(arms_dir: Path) -> dict:
     return out
 
 
-def corpus_matcher(corpus_paths: list) -> re.Pattern:
-    """One regex matching any corpus-relative path (longest first)."""
-    alts = sorted((re.escape(p) for p in corpus_paths), key=len, reverse=True)
-    return re.compile("|".join(alts))
+PATHISH = re.compile(r"[\w./-]+\.mdx?\b")
+
+
+class CorpusMatcher:
+    """Exact-membership matching of path-like tokens against the corpus.
+
+    Substring regexes over-attribute: a read of internal/testdata/README.md
+    (excluded from the corpus, so present even in the nodocs arm) would match
+    the corpus entry "README.md". Tokens are extracted, normalized to
+    workspace-relative form, and tested for exact membership.
+    """
+
+    def __init__(self, corpus_paths: list):
+        self.corpus = set(corpus_paths)
+
+    def _normalize(self, token: str) -> str:
+        token = token.lstrip("\"'")
+        if "/ws/" in token:
+            token = token.split("/ws/", 1)[1]
+        while token.startswith("./"):
+            token = token[2:]
+        return token
+
+    def search(self, text: str) -> bool:
+        return any(self._normalize(t) in self.corpus for t in PATHISH.findall(text))
+
+
+def corpus_matcher(corpus_paths: list) -> CorpusMatcher:
+    return CorpusMatcher(corpus_paths)
 
 
 def result_text(block) -> str:
@@ -105,12 +130,23 @@ def recount_run(transcript: Path, corpus_re: re.Pattern) -> dict:
         elif name == "Bash" and not side:
             cmd = str(inp.get("command", ""))
             if BASH_READERS.search(cmd) and corpus_re.search(cmd):
+                # Attribute output chars only when every file-like token in
+                # the command is a corpus path; a command mixing corpus and
+                # non-corpus targets (cat metadata.yaml; cat README.md) would
+                # otherwise attribute non-doc content to docs. Mixed commands
+                # are counted as events without char attribution —
+                # conservative, identically in every arm.
+                tokens = [corpus_re._normalize(x) for x in
+                          re.findall(r"[\w./-]+\.\w{1,5}\b", cmd)]
+                file_tokens = [x for x in tokens if not x.endswith((".sh", ".go"))]
+                noncorpus = [x for x in file_tokens if x not in corpus_re.corpus
+                             and re.search(r"\.\w{1,5}$", x)]
                 rec["bash_calls"] += 1
-                rec["bash_chars"] += chars
-                # A reader naming corpus AND non-corpus targets attributes all
-                # output chars to docs — count it so the bias is quantifiable.
-                if len(re.findall(r"[\w./-]+\.\w{1,5}\b", cmd)) > 2:
+                if noncorpus:
+                    rec["bash_mixed_calls"] += 1
                     flagged_multifile += 1
+                else:
+                    rec["bash_chars"] += chars
         elif name == "Grep" and not side:
             blob = " ".join(str(inp.get(k, "")) for k in ("path", "glob", "pattern"))
             if corpus_re.search(blob):
