@@ -28,6 +28,7 @@ import random
 import re
 import subprocess
 import sys
+import time
 
 # Filters registered in PREREGISTRATION.md §4. Do not change without an
 # amendment to the pre-registration.
@@ -44,12 +45,23 @@ BUGFIX_RE = re.compile(r"\b(fix|bug|regression|crash|incorrect|broken)\b", re.IG
 CONFIG_RE = re.compile(r"\b(config|configuration|integration|plugin|option|setting|env)\b", re.IGNORECASE)
 
 
-def gh_json(args: list[str]) -> object:
-    """Run a gh command and parse its JSON output."""
-    proc = subprocess.run(["gh", *args], capture_output=True, text=True)
-    if proc.returncode != 0:
-        sys.exit(f"gh {' '.join(args[:3])}... failed: {proc.stderr.strip()}")
-    return json.loads(proc.stdout)
+def gh_json(args: list[str], attempts: int = 4) -> object:
+    """Run a gh command and parse its JSON output.
+
+    Transient failures (network timeouts, 5xx, secondary rate limits) are
+    retried with exponential backoff; only a persistent failure aborts."""
+    delay = 5.0
+    for attempt in range(1, attempts + 1):
+        proc = subprocess.run(["gh", *args], capture_output=True, text=True)
+        if proc.returncode == 0:
+            return json.loads(proc.stdout)
+        err = proc.stderr.strip()
+        if attempt == attempts:
+            sys.exit(f"gh {' '.join(args[:3])}... failed after {attempts} attempts: {err}")
+        print(f"  retry {attempt}/{attempts - 1} after error: {err[:120]}", file=sys.stderr)
+        time.sleep(delay)
+        delay *= 2
+    raise AssertionError("unreachable")
 
 
 def list_merged_prs(repo: str, since: dt.date, limit: int) -> list[dict]:
