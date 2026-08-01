@@ -1,7 +1,7 @@
 ---
 "@type": CollectionPage
 name: The ACE-100 standard
-description: This index routes readers to the rule documents of the ACE-100 Issue 3 draft.
+description: This index routes readers to the rule documents of ACE-100 Issue 3.
 isPartOf: docs/README.md
 ---
 

@@ -7,9 +7,7 @@ isPartOf: docs/standard/README.md
 
 # Issue history
 
-## Issue 3 — draft
-
-This issue is a draft. More changes can join it before the release.
+## Issue 3 — 2026-08-01
 
 A second field report from the same monorepo drove this issue. The corpus passed the Issue 2 checkers on day one. The report still found 99 gone parents, 159 dropped genres, and 101 stale backticked paths. Every rotted rule was `(M)` with no checker, and every checked rule was at zero findings. The architecture rules got the enforcement that the language rules got in Issue 2.
 
@@ -21,14 +19,14 @@ A second field report from the same monorepo drove this issue. The corpus passed
 - Section 6: a note warns that a sentence division can push a paragraph past the ACE 6.6 limit.
 - The checkers: `lint.py` settles ACE 6.6, counts logical sentences, treats a blockquote as quoted text, and reports the progressive form (ACE 3.3). Without git, `check.sh` reads the current directory as the root.
 
-A review of [caveman](https://github.com/JuliusBrussee/caveman), a compression project for agent replies, also joined this draft. Documentation output becomes input for future sessions. Thus a dense document saves context in every later read. The review took the practices that keep full grammar, and it refused the fragment style. The changes below have this source, not a field report.
+A review of [caveman](https://github.com/JuliusBrussee/caveman), a compression project for agent replies, also joined this issue. Documentation output becomes input for future sessions. Thus a dense document saves context in every later read. The review took the practices that keep full grammar, and it refused the fragment style. The changes below have this source, not a field report.
 
 - ACE 9.4: state each fact one time in a document. ACE 14.7 gives the rule between documents. A repeated fact needs a reader.
 - ACE 15.4: when many examples show one pattern, keep one example.
 - ACE 16.2: the diff shows what a change does, and the commit body tells why.
 - ACE 17.2: rows for ACE 1.3 and ACE 9.4 joined the coverage table.
 - Dictionary: a deletions table joined [replacements.md](../dictionary/replacements.md), with eight words that add no meaning. The ACE 1.3 check settles the deletions.
-- Tools: `tools/measure.py` reports the bytes of each document, the corpus total, and the front-matter share. Bytes are exact, and a token count is an estimate. The snapshot of this draft is `tools/measurements/issue-3.txt`.
+- Tools: `tools/measure.py` reports the bytes of each document, the corpus total, and the front-matter share. Bytes are exact, and a token count is an estimate. The snapshot of this issue is `tools/measurements/issue-3.txt`.
 - About: a new self-compliance rule. The standard makes no quantitative claim without a committed measurement.
 - Front matter: the audit kept every property. The block lets an agent decide from four lines, without the body. The known duplication is the `name` and H1 pair (ACE 13.6). A trim waits for field evidence from the monorepo.
 

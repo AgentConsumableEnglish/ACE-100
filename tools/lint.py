@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ACE-100 extended linter (Issue 3 draft).
+"""ACE-100 extended linter (Issue 3).
 
 Settles the pattern rules beyond tools/check.sh: sentence word limits with the
 canonical count over logical sentences (ACE 5.1, 6.1, 8.5-8.8), paragraph

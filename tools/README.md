@@ -17,4 +17,4 @@ Two checkers settle the mechanical rules (ACE 17.2). Run the two before each rev
 ## The measurement
 
 - [measure.py](measure.py). The corpus measurement. The bytes of each document, the corpus total, and the front-matter share. Bytes are exact, and a token count is an estimate. A run never fails: the tool is a diagnostic, not a checker.
-- [issue-3.txt](measurements/issue-3.txt). The committed snapshot of this draft. The quantitative claims of the standard stand on it.
+- [issue-3.txt](measurements/issue-3.txt). The committed snapshot of this issue. The quantitative claims of the standard stand on it.

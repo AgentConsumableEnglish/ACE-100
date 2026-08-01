@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ACE-100 canonical checker (Issue 3 draft). Settles the mechanical rules a shell can:
+# ACE-100 canonical checker (Issue 3). Settles the mechanical rules a shell can:
 # front matter and its mandatory properties (ACE 13.2), the parent index that
 # `isPartOf` names (ACE 13.2, 11.3), the H1 (ACE 13.6), the 120-line size limit
 # (ACE 15.1), American spelling in prose (ACE 1.12), link resolution (ACE 14.5),

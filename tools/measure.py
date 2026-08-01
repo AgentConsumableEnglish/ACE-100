@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ACE-100 corpus measurement (Issue 3 draft).
+"""ACE-100 corpus measurement (Issue 3).
 
 Reports the size of the governed corpus: the bytes of each document, the
 corpus total, and the front-matter share. Bytes are the exact unit, and

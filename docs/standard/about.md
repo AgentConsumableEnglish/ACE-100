@@ -21,7 +21,7 @@ Issue 3 has a third source: a review of [caveman](https://github.com/JuliusBruss
 
 ## Issue control
 
-This is the draft of Issue 3. Issue 2 is the last released issue. A change to a rule makes a new issue, and a change to the dictionary does not. Each rule has a stable identifier, for example ACE 5.1. [Enforcement](enforcement.md) gives the identifier format, and [changes.md](changes.md) records the changes between issues.
+This is Issue 3, the last released issue. A change to a rule makes a new issue, and a change to the dictionary does not. Each rule has a stable identifier, for example ACE 5.1. [Enforcement](enforcement.md) gives the identifier format, and [changes.md](changes.md) records the changes between issues.
 
 ## Self-compliance
 
