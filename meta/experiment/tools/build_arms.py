@@ -322,21 +322,13 @@ class TokenCounter:
         return n
 
     def _count_api(self, text: str) -> int:
-        for attempt in range(6):
-            try:
-                resp = self.client.messages.count_tokens(
-                    model=TOKEN_COUNT_MODEL,
-                    messages=[{"role": "user", "content": text}],
-                )
-                return resp.input_tokens
-            except anthropic.RateLimitError:
-                time.sleep(min(60, 2 * (2 ** attempt)))
-            except anthropic.APIStatusError as e:
-                if e.status_code >= 500:
-                    time.sleep(min(60, 2 * (2 ** attempt)))
-                else:
-                    raise
-        raise RuntimeError("count_tokens: retries exhausted")
+        return api_retry(
+            lambda: self.client.messages.count_tokens(
+                model=TOKEN_COUNT_MODEL,
+                messages=[{"role": "user", "content": text}],
+            ).input_tokens,
+            "count_tokens",
+        )
 
     def tree_total(self, root: Path) -> tuple[int, int, dict]:
         """(file_count, token_total, per_file) over every file in a tree."""
@@ -363,20 +355,43 @@ def make_batch_request(custom_id: str, params: dict):
     return {"custom_id": custom_id, "params": params}
 
 
+def api_retry(fn, label: str, attempts: int = 6):
+    """Retry transient API failures (connection errors, rate limits, 5xx)
+    with exponential backoff; non-retryable errors raise immediately."""
+    delay = 5.0
+    for attempt in range(1, attempts + 1):
+        try:
+            return fn()
+        except (anthropic.APIConnectionError, anthropic.RateLimitError) as e:
+            err = repr(e)
+        except anthropic.APIStatusError as e:
+            if e.status_code < 500:
+                raise
+            err = repr(e)
+        if attempt == attempts:
+            raise RuntimeError(f"{label}: retries exhausted ({err})")
+        log(f"{label}: transient error, retry {attempt}/{attempts - 1} in {delay:.0f}s ({err[:100]})")
+        time.sleep(delay)
+        delay = min(120, delay * 2)
+
+
 def run_message_batch(client, requests: list, label: str, poll_seconds: int):
     """Submit one Message Batch, poll to completion, return (batch_id, {custom_id: result})."""
     log(f"{label}: submitting batch of {len(requests)} request(s)")
-    batch = client.messages.batches.create(requests=requests)
+    batch = api_retry(lambda: client.messages.batches.create(requests=requests),
+                      f"{label} create")
     log(f"{label}: batch {batch.id} created; polling every {poll_seconds}s")
     while True:
-        b = client.messages.batches.retrieve(batch.id)
+        b = api_retry(lambda: client.messages.batches.retrieve(batch.id),
+                      f"{label} poll")
         if b.processing_status == "ended":
             break
         rc = b.request_counts
         log(f"{label}: {batch.id} processing={rc.processing} succeeded={rc.succeeded} errored={rc.errored}")
         time.sleep(poll_seconds)
     results = {}
-    for r in client.messages.batches.results(batch.id):
+    for r in api_retry(lambda: list(client.messages.batches.results(batch.id)),
+                       f"{label} results"):
         results[r.custom_id] = r  # results arrive in any order; key by custom_id
     log(f"{label}: batch {batch.id} ended with {len(results)} result(s)")
     return batch.id, results
@@ -384,10 +399,12 @@ def run_message_batch(client, requests: list, label: str, poll_seconds: int):
 
 def single_message(client, params: dict):
     """One non-batch call; streams when max_tokens is large (SDK timeout guard)."""
-    if params.get("max_tokens", 0) > 16000:
-        with client.messages.stream(**params) as s:
-            return s.get_final_message()
-    return client.messages.create(**params)
+    def call():
+        if params.get("max_tokens", 0) > 16000:
+            with client.messages.stream(**params) as s:
+                return s.get_final_message()
+        return client.messages.create(**params)
+    return api_retry(call, "single_message")
 
 
 def message_text(msg) -> str:
