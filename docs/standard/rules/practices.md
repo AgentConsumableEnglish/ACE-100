@@ -17,6 +17,8 @@ isPartOf: docs/standard/rules/README.md
 
 **ACE 9.3** — Be consistent. Use the same term for the same item in all documents. Use the same words for the same type of instruction.
 
+**ACE 9.4** — State each fact one time in a document. Merge list items that give the same fact. When a sentence repeats a fact of the same document, delete the sentence. ACE 14.7 gives the same rule between documents.
+
 ## Recommendations
 
 These prevent frequent errors. They are recommendations, not rules.

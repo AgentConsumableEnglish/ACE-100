@@ -20,6 +20,7 @@ isPartOf: docs/standard/README.md
 | Rule | Checker | Coverage |
 |---|---|---|
 | ACE 1.1 | none | The function layer needs a part-of-speech read |
+| ACE 1.3 | `lint.py` (part) | The replacements rows and the deletions. A row with a context note needs a reader |
 | ACE 1.5 | none | What is an identifier needs a reader |
 | ACE 1.12 | `check.sh` | The frequent British spellings, in prose |
 | ACE 3.3 | `lint.py` (part) | The progressive form ("is running"). The perfect tenses need a reader |
@@ -31,6 +32,7 @@ isPartOf: docs/standard/README.md
 | ACE 7.1 | none | The level-word format is not checked |
 | ACE 8.1 | `lint.py` | Semicolons in prose |
 | ACE 8.4 | `lint.py` | Latin abbreviations |
+| ACE 9.4 | none | A repeated fact needs a reader |
 | ACE 10.4 | none | The generated-file label is not checked |
 | ACE 11.3 | `check.sh` | One `README.md` index in each governed directory |
 | ACE 12.1 | `lint.py` | The `@type` value is one of the five |

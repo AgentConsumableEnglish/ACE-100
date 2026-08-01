@@ -14,7 +14,7 @@ Read this once, then write. Open the full sections only when a rule needs its de
 ## Words (Section 1)
 
 - Function words are closed: use only the [function core](../dictionary/function-a-s.md). Content words are open.
-- Do not use a word from [replacements.md](../dictionary/replacements.md). Use the simple, frequent word.
+- Do not use a word from [replacements.md](../dictionary/replacements.md). Use the simple, frequent word. Delete the words in its deletions table.
 - One name for each item, in all documents. One meaning for one word.
 - Backtick every identifier: commands, paths, values, names from code. Backticked text is exempt from all word rules.
 - Declare real names in [technical-terms.md](../dictionary/technical-terms.md), in the same PR. Terms have three words maximum.
@@ -35,6 +35,7 @@ Read this once, then write. Open the full sections only when a rule needs its de
 - One instruction for each sentence. Condition first, then command: "When the check is green, merge."
 - Keep articles and subjects. No contractions. No semicolons. No Latin abbreviations.
 - Paragraphs: one topic, five sentences maximum, topic sentence first.
+- State each fact one time in a document. Merge items that repeat it (ACE 9.4).
 - Write "that" after report verbs: "Make sure that the test passes."
 
 ## Safety (Section 7)
@@ -52,6 +53,7 @@ Read this once, then write. Open the full sections only when a rule needs its de
 - Filenames are `kebab-case.md`. Headings stop at H3. Body links are relative to the file. Link to files, never directories.
 - A backticked span with `/` is a path, and it must resolve too (ACE 14.9).
 - Size: 120 body lines maximum, everything counts. Divide by topic: `topic.md` becomes `topic/README.md` plus parts.
+- Keep code examples small. When many examples show one pattern, keep one (ACE 15.4).
 - A part keeps the `@type`, the `genre`, and the `exempt` of its source. Its `isPartOf` is the new index.
 - Priority when rules conflict: one-question-one-document (15.5), then the size limit, then no-repetition (14.7).
 - Never move a path that history, tests, or external systems reference. Declare it `exempt` and add a ledger row.
@@ -61,6 +63,7 @@ Read this once, then write. Open the full sections only when a rule needs its de
 
 - Commit subject: imperative, 15 words, no final period. Structured prefixes and trailers are identifiers — keep them verbatim.
 - Commit bodies and PR descriptions are descriptive text. Link every document the change adds or updates.
+- The diff shows what a change does. The body tells why (ACE 16.2).
 
 ## When you cannot obey
 

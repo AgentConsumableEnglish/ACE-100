@@ -15,7 +15,7 @@ ACE-100 is Agent-Consumable English. It is a controlled language and a document 
 - [The dictionary](docs/dictionary/README.md). The function core, the replacements, and the declared terms.
 - [The templates](docs/templates/README.md). One start file for each document type.
 - [The example](docs/example/README.md). One small package with complete documents.
-- [The tools](tools/README.md). The two conformance checkers.
+- [The tools](tools/README.md). The conformance checkers and the measurement tool.
 
 ## Adopt the kit
 

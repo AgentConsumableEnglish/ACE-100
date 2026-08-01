@@ -1,0 +1,58 @@
+ACE-100 corpus measurement
+bytes are exact; a token count is an estimate (bytes / 4)
+
+documents:    50
+corpus:       81,795 bytes (20,448 tokens, estimate)
+front matter: 9,708 bytes, 11.9% of the corpus
+
+   bytes  front matter  document
+   5,092           313  docs/standard/agent-brief.md
+   5,083           167  docs/dictionary/function-a-s.md
+   4,799           161  docs/standard/changes.md
+   4,033           229  docs/standard/enforcement.md
+   2,775           329  docs/standard/architecture/size-limits.md
+   2,411           190  docs/dictionary/replacements.md
+   2,401           203  docs/standard/rules/words.md
+   2,365           192  docs/standard/rules/verbs.md
+   2,329           167  docs/dictionary/function-t-z.md
+   2,221           176  docs/standard/about.md
+   2,147           164  docs/standard/checklist.md
+   2,044           196  docs/standard/rules/practices.md
+   1,855           204  docs/standard/rules/punctuation-and-counts.md
+   1,831           203  docs/standard/architecture/names-and-links.md
+   1,818           180  docs/dictionary/technical-terms.md
+   1,781           216  docs/standard/architecture/front-matter.md
+   1,735           201  docs/standard/migration.md
+   1,722           229  docs/standard/architecture/document-types.md
+   1,668           162  README.md
+   1,615           200  docs/standard/rules/descriptions.md
+   1,516           200  docs/standard/coverage.md
+   1,438           189  docs/standard/rules/procedures.md
+   1,435           207  docs/standard/rules/sentences.md
+   1,405           175  docs/standard/README.md
+   1,404           194  docs/dictionary/conventions.md
+   1,265           201  docs/standard/rules/safety.md
+   1,199           168  tools/README.md
+   1,177           177  docs/example/parcel-tracker/deploy-to-production.md
+   1,171           215  docs/standard/architecture/layout.md
+   1,168           180  docs/standard/git-prose.md
+   1,148           179  docs/dictionary/add-a-word.md
+   1,093           175  docs/standard/rules/README.md
+   1,058           186  docs/example/parcel-tracker/design.md
+   1,057           231  docs/templates/decision-record.md
+   1,051           199  docs/example/parcel-tracker/configuration-reference.md
+   1,049           214  docs/example/parcel-tracker/decisions/use-postgres.md
+   1,035           203  docs/standard/rules/multi-word-terms.md
+     922           180  docs/README.md
+     918           198  docs/standard/deviations.md
+     912           184  docs/dictionary/README.md
+     854           177  docs/templates/how-to.md
+     830           185  docs/standard/architecture/README.md
+     821           154  docs/templates/README.md
+     794           218  docs/templates/api-reference.md
+     701           195  docs/templates/collection-page.md
+     692           176  docs/templates/tech-article.md
+     634           139  docs/templates/defined-term-set.md
+     618           173  docs/example/parcel-tracker/README.md
+     405           164  docs/example/README.md
+     300           190  docs/example/parcel-tracker/decisions/README.md

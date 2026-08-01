@@ -1,7 +1,7 @@
 ---
 "@type": DefinedTermSet
 name: Replacements
-description: This part gives words that are not permitted, with their approved alternatives.
+description: This part gives words that are not permitted, with an approved alternative or a deletion.
 isPartOf: docs/dictionary/README.md
 ---
 
@@ -64,3 +64,12 @@ Do not use the words in the left column. Use the approved alternatives. When a w
 | wish, desire | want |
 | colour, behaviour, centre, licence, catalogue | color, behavior, center, license, catalog |
 | organise, normalise, initialise, analyse, recognise | organize, normalize, initialize, analyze, recognize |
+
+## Deletions
+
+These words add no meaning in governed prose. Delete the word. The sentence keeps its meaning without it.
+
+| Not permitted |
+|---|
+| actually, basically, essentially, really |
+| generally, just, simply, very |

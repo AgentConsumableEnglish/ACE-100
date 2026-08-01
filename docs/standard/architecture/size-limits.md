@@ -25,7 +25,7 @@ A division without step 5 leaves each part with a gone parent (ACE 13.2), and dr
 
 **ACE 15.3** — Divide by topic, never by size alone. When a document is larger than the limit, find its topics first.
 
-**ACE 15.4** — Keep each code example small. Show only the lines that are necessary for the topic. Link to the full file in the repository for the rest.
+**ACE 15.4** — Keep each code example small. Show only the lines that are necessary for the topic. Link to the full file in the repository for the rest. When many examples show one pattern, keep one example, and delete the rest.
 
 **ACE 15.5** — An agent must find the answer to one question in one document. This rule has priority: it outranks ACE 15.1, which outranks ACE 14.7. When a topic will not divide without this failure, keep the document whole and declare it exempt (ACE 13.7).
 
