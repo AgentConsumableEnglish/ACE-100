@@ -942,25 +942,36 @@ def step_naive(args) -> None:
     usage_all = dict(usage1)
     targets2, out_tokens2, naive_total_final = None, None, naive_total1
 
-    # If the total misses the +/-10% band, iterate once more (registered):
-    # rescale every per-file target by the observed miss and rewrite from the
-    # ORIGINALS again (rewriting a rewrite would compound content loss).
-    if abs(naive_total1 - ace_total) > NAIVE_BAND * ace_total:
-        correction = ace_total / max(1, naive_total1)
-        log(f"outside band; pass 2 with correction factor {correction:.4f}")
-        targets2 = {rel: max(0, round(targets1[rel] * correction)) for rel in originals}
+    # If the total misses the +/-10% band, iterate (the registered gate says
+    # the naive arm "is rebuilt until matched"): rescale every per-file target
+    # by the observed overshoot, aiming slightly below the ace total so the
+    # model's systematic overshoot lands inside the band. Every pass rewrites
+    # from the ORIGINALS (rewriting a rewrite would compound content loss).
+    # Capped at MAX_NAIVE_PASSES total passes as a runaway stop.
+    MAX_NAIVE_PASSES = 4
+    AIM = 0.97  # aim point as a fraction of ace_total, countering overshoot
+    prev_targets, prev_total = targets1, naive_total1
+    pass_no = 1
+    while (abs(naive_total_final - ace_total) > NAIVE_BAND * ace_total
+           and pass_no < MAX_NAIVE_PASSES):
+        pass_no += 1
+        correction = (ace_total * AIM) / max(1, prev_total)
+        log(f"outside band; pass {pass_no} with correction factor {correction:.4f}")
+        targets2 = {rel: max(0, round(prev_targets[rel] * correction)) for rel in originals}
         texts, usage2, batches2 = naive_rewrite_pass(
-            client, targets2, originals, "naive pass 2", args.poll_seconds
+            client, targets2, originals, f"naive pass {pass_no}", args.poll_seconds
         )
         write_naive_tree(texts)
         _, naive_total_final, out_tokens2 = counter.tree_total(ARMS_DIR / "naive-docs")
         add_usage(usage_all, usage2)
         passes.append({
-            "pass": 2, "targets_total": sum(targets2.values()), "output_total": naive_total_final,
+            "pass": pass_no, "targets_total": sum(targets2.values()),
+            "output_total": naive_total_final,
             "batch_ids": batches2, "usage": usage2,
             "cost_usd_standard": cost_usd_standard(usage2, OPUS_MODEL),
         })
-        log(f"pass 2 naive total = {naive_total_final} (ace {ace_total})")
+        log(f"pass {pass_no} naive total = {naive_total_final} (ace {ace_total})")
+        prev_targets, prev_total = targets2, naive_total_final
 
     record = {
         "generated_at": now_iso(),
@@ -995,7 +1006,7 @@ def step_naive(args) -> None:
     if not record["within_band"]:
         die(
             f"naive total {naive_total_final} still outside +/-{int(NAIVE_BAND*100)}% of "
-            f"ace total {ace_total} after the registered single iteration; the gates "
+            f"ace total {ace_total} after {MAX_NAIVE_PASSES} passes; the gates "
             "step will also fail. Investigate before proceeding.",
             code=1,
         )
