@@ -49,7 +49,7 @@
       },
       "changed_files": 6,
       "changed_lines": 181,
-      "test_command": null
+      "test_command": "(cd scraper/scraperhelper && go test -timeout 300s ./...) && (cd scraper/scraperhelper/xscraperhelper && go test -timeout 300s ./...)"
     },
     {
       "task_id": "pr-14690",
@@ -69,7 +69,7 @@
       },
       "changed_files": 3,
       "changed_lines": 133,
-      "test_command": null
+      "test_command": "(cd otelcol && go test -timeout 300s ./...)"
     },
     {
       "task_id": "pr-15108",
@@ -89,7 +89,7 @@
       },
       "changed_files": 4,
       "changed_lines": 71,
-      "test_command": null
+      "test_command": "(cd pdata && go test -timeout 300s ./...)"
     },
     {
       "task_id": "pr-15495",
@@ -109,7 +109,7 @@
       },
       "changed_files": 3,
       "changed_lines": 167,
-      "test_command": null
+      "test_command": "(cd service && go test -timeout 300s ./...)"
     },
     {
       "task_id": "pr-14985",
@@ -129,7 +129,7 @@
       },
       "changed_files": 37,
       "changed_lines": 279,
-      "test_command": null
+      "test_command": "(cd cmd/mdatagen && go test -timeout 300s ./...) && (cd cmd/otelcorecol && go test -timeout 300s ./...) && (cd config/configgrpc && go test -timeout 300s ./...) && (cd config/confighttp && go test -timeout 300s ./...) && (cd config/confighttp/xconfighttp && go test -timeout 300s ./...) && (cd config/confignet && go test -timeout 300s ./...) && (cd exporter/otlpexporter && go test -timeout 300s ./...) && (cd exporter/otlphttpexporter && go test -timeout 300s ./...) && (cd extension/zpagesextension && go test -timeout 300s ./...) && (cd otelcol && go test -timeout 300s ./...) && (cd otelcol/otelcoltest && go test -timeout 300s ./...) && (cd receiver/otlpreceiver && go test -timeout 300s ./...) && (cd service && go test -timeout 300s ./...)"
     },
     {
       "task_id": "pr-15307",
@@ -149,7 +149,7 @@
       },
       "changed_files": 5,
       "changed_lines": 58,
-      "test_command": null
+      "test_command": "(cd cmd/mdatagen && go test -timeout 300s ./...)"
     }
   ],
   "audit_log": [
@@ -4362,5 +4362,6 @@
       "pr": 13644,
       "excluded_by": "no-issue-thin-body"
     }
-  ]
+  ],
+  "test_command_rule": "suite = go test -timeout 300s ./... in every module containing a non-doc file of the reference diff, excluding the repository root module and internal/e2e (requires built binaries); modules chained with &&"
 }
