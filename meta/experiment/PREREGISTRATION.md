@@ -213,3 +213,28 @@ containing the two bot tasks) is preserved verbatim at
 `audit/manifest-discarded-2026-08-01.json`. It was discarded for the reasons above,
 not for its outcome; no run was ever executed against it. The authoritative manifest
 is the post-amendment redraw with the same seed (20260801).
+
+### Amendment 3 — preservation-gate closure rule; corpus-size observation (2026-08-01)
+
+Made during arm construction, before any subject run.
+
+**Closure rule.** §2's preservation gate ("flags are repaired") assumed a stable flag
+set. Empirically the judge does not converge: after full repair of round 3's 36 flags,
+round 4 flagged 71 mostly different items (sequence 574 → 132 → 36 → 71; round 1's
+count was dominated by a since-fixed file-mapping defect). Each judge pass samples
+afresh from the effectively unbounded space of condensation losses, and unbounded
+repair ratchets the ace arm toward the original text, eroding the treatment. The gate
+therefore closes by fixed point: **one final repair pass over the round-4 worklist,
+then one final judge pass whose remaining flags are published in the appendix as
+known condensation losses** — with all round-by-round reports. The gate's purpose
+(an ace-arm quality failure must not be attributable to *silent* content loss) is met
+by three repair rounds plus full disclosure.
+
+**Corpus-size observation.** Contrary to the design assumption that migration
+compresses, the ace corpus is *larger* than the original (253,161 → 289,575 tokens,
++14%): migrated content lands near token parity and the kit's own governed documents
+plus new indexes add overhead. Consequently the naive arm (token-matched to ace) is
+an *expansion* of the original, not a compression; the naive-vs-original comparison
+tests "rewritten docs at matched-to-ace size", not "shorter docs". H1 is unaffected —
+it measures per-run agent cost, for which ACE-100's mechanism is architecture
+(routing agents to read less), not corpus totals. The paper reports this reframe.
