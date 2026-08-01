@@ -21,7 +21,10 @@
 # Exits non-zero when any check fails. Failures name the file and the ACE rule.
 
 set -uo pipefail
-cd "$(git rev-parse --show-toplevel 2>/dev/null || dirname "$0")" || exit 2
+# The repository root: the git toplevel, or the current directory without
+# git. adopt.sh resolves the root the same way; lint.py reads the current
+# directory.
+cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 2
 
 files=()
 sweep=0
@@ -29,7 +32,9 @@ if [ "$#" -gt 0 ]; then
   files=("$@")
 else
   sweep=1
-  list=$(git ls-files --cached --others --exclude-standard '*.md' 2>/dev/null || find . -name '*.md')
+  # The find fallback strips its "./" prefix so that .ace-ignore patterns
+  # anchored with "^" match the same paths in the two modes.
+  list=$(git ls-files --cached --others --exclude-standard '*.md' 2>/dev/null || find . -name '*.md' | sed 's|^\./||')
   if [ -f .ace-ignore ]; then
     # Strip blank lines and `#` comments first. An empty pattern matches every
     # line, so a single blank line here excludes the whole corpus and the sweep
