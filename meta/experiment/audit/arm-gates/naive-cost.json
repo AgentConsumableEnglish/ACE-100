@@ -1,0 +1,11 @@
+{
+  "model": "claude-opus-5",
+  "usage": {
+    "input_tokens": 513037,
+    "output_tokens": 818237,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "cost_usd_standard": 23.02111,
+  "note": "Message Batches bill at 50% of standard; cost_usd_standard prices at standard rates per the registration."
+}

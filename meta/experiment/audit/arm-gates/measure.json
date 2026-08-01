@@ -1,0 +1,23 @@
+{
+  "generated_at": "2026-08-01T09:06:24.366646+00:00",
+  "counted_with": "claude-sonnet-5",
+  "band": 0.1,
+  "arms": {
+    "original": {
+      "files": 103,
+      "tokens": 253161
+    },
+    "ace": {
+      "files": 205,
+      "tokens": 289596
+    },
+    "naive": {
+      "files": 103,
+      "tokens": 312116
+    }
+  },
+  "naive_vs_ace_ratio": 1.0778,
+  "within_band": true,
+  "check_sh_pass": true,
+  "lint_py_pass": true
+}

@@ -1,0 +1,11 @@
+{
+  "repaired_at": "2026-08-01T08:25:41+00:00",
+  "arm": "naive",
+  "repairs": [
+    {
+      "file": "CLAUDE.md",
+      "action": "restored original verbatim",
+      "reason": "preservation flag: the compression rewrote the one-line @AGENTS.md import directive into prose, destroying its function; the file's original size is at or below its compression target, so the treatment cannot apply to it"
+    }
+  ]
+}

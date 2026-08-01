@@ -1,0 +1,2169 @@
+{
+  "arm": "ace",
+  "judged_at": "2026-08-01T08:54:07.865100+00:00",
+  "model": "claude-opus-5",
+  "batch_ids": [
+    "msgbatch_01RrH5oGA1KhNezBAMb9NmZE"
+  ],
+  "usage": {
+    "input_tokens": 2737703,
+    "output_tokens": 133800,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "cost_usd_standard": 17.033515,
+  "total_dropped_items": 71,
+  "unmapped_files": 0,
+  "judge_errors": 1,
+  "files": {
+    ".chloggen/README.md": {
+      "rewritten": [
+        ".chloggen/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The rewritten README preserves all content from the original: the chloggen tool reference, the link to the opentelemetry-go-build-tools chloggen source, and the complete config.yaml block including all comments and values (entries_dir, template_yaml, summary_template, change_logs user/api, default_change_logs). Only wording and added front matter differ."
+    },
+    "AGENTS.md": {
+      "rewritten": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "CONTRIBUTING.md",
+        "README.md",
+        "VERSIONING.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Original AGENTS.md content maps fully onto the rewritten AGENTS.md. Verified item by item: purpose statement and inspiration from Open Policy Agent and Fedora policies; prohibition on AI-generated comments on issues/PRs (human-only discussions); requirement to prompt the user for each PR template section (Description, Link to tracking issue, Testing, Documentation) and use answers verbatim; no paraphrase/expand/improve; leave declined sections unmodified; must not check the 'I, a human, wrote this pull request description myself' box; follow PR scoping guidance in CONTRIBUTING.md and keep PRs isolated with no unrelated cleanup unless needed for correctness; agree implementation direction with maintainers in issue comments and discuss unknowns first; cannot comment on behalf of users; follow docs/coding-guidelines.md; code changes should have tests that validate the changes; disclose AI assistance via 'Assisted-by:' trailer with both examples (ChatGPT 5.2, Claude Opus 4.5); do NOT use 'Co-authored-by:' and disable/strip it; EasyCLA fails for unsigned-CLA accounts and blocks merge. The other rewritten files (CLAUDE.md, CONTRIBUTING.md, README.md, VERSIONING.md) are additional content with no counterpart in the original and were not audited for additions."
+    },
+    "CLAUDE.md": {
+      "rewritten": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "CONTRIBUTING.md",
+        "README.md",
+        "VERSIONING.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL document (CLAUDE.md) consists solely of the single import directive `@AGENTS.md`. The rewritten CLAUDE.md preserves that exact directive verbatim (plus a heading, front matter, and a pointer link to AGENTS.md). No factual claim, path, value, or procedural step from the original is absent. The other rewritten files (AGENTS.md, CONTRIBUTING.md, README.md, VERSIONING.md) contain only added material, which is outside the scope of this audit."
+    },
+    "CONTRIBUTING.md": {
+      "rewritten": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "CONTRIBUTING.md",
+        "README.md",
+        "VERSIONING.md"
+      ],
+      "status": "dropped-content",
+      "dropped": [
+        {
+          "item": "\"When adding a new component\" criteria: components refer to connectors, exporters, extensions, processors, and receivers; the component must implement the `component.Component` interface, provide a configuration structure, and provide the implementation performing the component operation",
+          "kind": "factual"
+        },
+        {
+          "item": "Links to the contrib \"Donating New Components\" document and the \"Building a Trace Receiver\" tutorial for component details",
+          "kind": "factual"
+        },
+        {
+          "item": "New component configuration structs must use the `configopaque.String` type for sensitive data so it is masked when serialized",
+          "kind": "procedural"
+        },
+        {
+          "item": "First PR for a new component: readme, configuration, and factory implementation using helper factory structs; the PR size limit does not apply; component must use `In Development` stability in its README",
+          "kind": "procedural"
+        },
+        {
+          "item": "Second PR should contain the concrete implementation, split into multiple PRs if larger than the recommended size",
+          "kind": "procedural"
+        },
+        {
+          "item": "Last PR marks the component as `Alpha` stability and adds it to the `otelcorecol` binary by updating the `otelcorecol/components.go` file, only after sufficient testing and when it meets Alpha stability requirements",
+          "kind": "procedural"
+        },
+        {
+          "item": "After a component is added to the executable, add it to the OpenTelemetry.io registry",
+          "kind": "procedural"
+        },
+        {
+          "item": "Intra-repository `replace` statements in `go.mod` files can be inserted automatically by running `make crosslink` (link to the crosslink tool README)",
+          "kind": "procedural"
+        },
+        {
+          "item": "Refactoring work must be split into its own PR that includes no behavior changes, to avoid hidden changes in large trivial refactoring PRs",
+          "kind": "procedural"
+        },
+        {
+          "item": "Additional improvement opportunities noticed while working should be handled in follow-up PRs rather than extending the current PR",
+          "kind": "procedural"
+        },
+        {
+          "item": "Table of supported general labels and their comment forms: `arm64`, `good first issue`/`good-first-issue`, `help wanted`/`help-wanted`, `needs triage`/`needs-triage`, `discussion needed`/`discussion-needed`, `os:macos`, `os:windows`, `waiting for author`/`waiting-for-author`, `waiting-for-codeowners`, `bug`, `priority:p0`\u2013`priority:p3`, `Stale`/`stale`",
+          "kind": "factual"
+        },
+        {
+          "item": "PR authors can rerun failed GitHub Actions workflows by commenting `/rerun`, which reruns all failed workflow runs for the PR's latest commit",
+          "kind": "procedural"
+        },
+        {
+          "item": "Members of the triagers, approvers, or maintainers teams can approve pending workflow runs for outside contributors by commenting `/workflow-approve`, approving all runs with an `action_required` conclusion for the latest commit",
+          "kind": "procedural"
+        },
+        {
+          "item": "Before starting, read the OpenTelemetry project contribution guide (community/guides/contributor)",
+          "kind": "procedural"
+        },
+        {
+          "item": "Select an issue from the \"Good First Issue\" and \"Help Wanted\" issue search links (ordered by difficulty/complexity)",
+          "kind": "procedural"
+        },
+        {
+          "item": "Comment on the issue you want to work on so it can be assigned to you",
+          "kind": "procedural"
+        },
+        {
+          "item": "For work not listed as an issue (new feature/enhancement), first read docs/vision.md, then create an issue describing the proposal in advance",
+          "kind": "procedural"
+        },
+        {
+          "item": "Reference to the internal architecture documentation (docs/internal-architecture.md) for newcomers",
+          "kind": "factual"
+        },
+        {
+          "item": "Fork instructions: click the 'Fork' button and clone with `git clone git@github.com:USERNAME/opentelemetry-collector.git`",
+          "kind": "procedural"
+        },
+        {
+          "item": "Add the upstream remote: `git remote add upstream https://github.com/open-telemetry/opentelemetry-collector.git` and verify with `git remote -v`",
+          "kind": "procedural"
+        },
+        {
+          "item": "Update your fork with `git fetch upstream`, `git checkout main`, `git merge upstream/main`; always work in a branch of your local copy",
+          "kind": "procedural"
+        },
+        {
+          "item": "Link to the general contributing guide's GitHub workflow section",
+          "kind": "factual"
+        },
+        {
+          "item": "Required tools list: Git, Go (version declared in the relevant go.mod or newer), GNU Make, Docker, and the OpenSSL Library (for the `config/configtls` component)",
+          "kind": "factual"
+        },
+        {
+          "item": "Repository setup: clone upstream with `git clone git@github.com:open-telemetry/opentelemetry-collector.git`, then `cd opentelemetry-collector` and `git remote add fork git@github.com:YOUR_GITHUB_USERNAME/opentelemetry-collector.git`",
+          "kind": "procedural"
+        },
+        {
+          "item": "Run tests, fmt, and lint with `make`; run `make markdownlint` to check Markdown formatting",
+          "kind": "procedural"
+        },
+        {
+          "item": "Creating a PR command sequence: `git checkout -b feature`, edit, `make`, `make fmt`, `git commit`, `git push fork feature`",
+          "kind": "procedural"
+        },
+        {
+          "item": "Commit message guidance: use descriptive messages (link to cbea.ms recommendations), GitHub copies commit messages into the PR description, squash into a single commit before creating the PR, and maintainers must edit the concatenated squash message before merging",
+          "kind": "procedural"
+        },
+        {
+          "item": "General notes: the project uses Go 1.25.x and GitHub Actions; the exact minimum supported patch version is defined by the repository's `go.mod` files and may increase within a supported Go minor version",
+          "kind": "factual"
+        },
+        {
+          "item": "Recommendation to run `make gofmt all` before submitting a PR",
+          "kind": "procedural"
+        },
+        {
+          "item": "Two changelogs exist: `CHANGELOG.md` for collector users (behavior changes) and `CHANGELOG-API.md` for developers importing packages",
+          "kind": "factual"
+        },
+        {
+          "item": "Changelog entry required for: behavior changes of a component, configuration changes, changes to default settings, new components, and changes to exported elements of a package",
+          "kind": "factual"
+        },
+        {
+          "item": "Changelog entry may be omitted for: test updates for flakiness/coverage, CI/CD process updates, and internal package updates; when uncertain, add an entry",
+          "kind": "factual"
+        },
+        {
+          "item": "Changelogs are autogenerated from `.yaml` files in the `./.chloggen` directory; the file name must be unique since the last release; during the release process all `./chloggen/*.yaml` files are transcribed and then deleted",
+          "kind": "factual"
+        },
+        {
+          "item": "Changelog steps: `make chlog-new` to create the entry file (named from your branch, e.g. `./.chloggen/my-branch.yaml`), fill in all fields, run `make chlog-validate`, then commit and push; alternatively copy `./.chloggen/TEMPLATE.yaml`",
+          "kind": "procedural"
+        },
+        {
+          "item": "Local testing: run commands from the repo root, build with `make otelcorecol`, run `./bin/otelcorecol_<os>_<arch> --config ./examples/local/otel-config.yaml` (binary name depends on platform, e.g. `./bin/otelcorecol_darwin_arm64`), and verify the changes are reflected",
+          "kind": "procedural"
+        },
+        {
+          "item": "Contributing images: use Excalidraw and tick the \"Embed scene into exported file\" option when exporting so the image remains editable",
+          "kind": "procedural"
+        },
+        {
+          "item": "Common issues: build failures from dependency/pseudo-version errors; `go env GOPROXY` should return `https://proxy.golang.org,direct`, otherwise set `export GOPROXY=https://proxy.golang.org,direct`",
+          "kind": "procedural"
+        },
+        {
+          "item": "Makefile guidelines: the root `Makefile` SHOULD contain repo-level targets, `Makefile.Common` SHOULD contain module-level targets, and each module should have a `Makefile` at its root that includes `Makefile.Common`",
+          "kind": "factual"
+        },
+        {
+          "item": "Module-level targets SHOULD NOT act on nested modules (e.g. `make lint` at the repo root only evaluates `go.opentelemetry.io/collector`, excluding nested modules like `go.opentelemetry.io/collector/component`)",
+          "kind": "factual"
+        },
+        {
+          "item": "Each module-level target SHOULD have a corresponding repo-level target (e.g. `make golint` runs `make lint` in each module); the root Makefile has \"for each module\" wrapper targets",
+          "kind": "factual"
+        },
+        {
+          "item": "Justifications for standalone repo-level targets: target applies to the whole repo (e.g. building the collector), problematic inter-module interaction, tools without scoping (e.g. `porto`), and incomplete coverage from the \"for each module\" pattern",
+          "kind": "factual"
+        },
+        {
+          "item": "Default target guidance: the default module-level target should run a substantial set of module-level targets (ideally all, with exceptions for latency), and the default repo-level target should meaningfully validate the entire repo",
+          "kind": "factual"
+        },
+        {
+          "item": "OTLP protocol version update steps: edit the top-level Makefile's `OPENTELEMETRY_PROTO_VERSION`, run `make genproto`, inspect `pdata/internal/data/protogen`, update `pdata/internal/cmd/pdatagen/internal` for new fields, run `make genpdata`, inspect `pdata/*`, run `make genproto-cleanup`, and update the supported OTLP version in README.md",
+          "kind": "procedural"
+        }
+      ],
+      "notes": "The rewritten CONTRIBUTING.md delegates large sections to docs/contributing-components.md, docs/contributing-labels.md, docs/contributing-workflow.md, and docs/contributing-changelog.md, but those files were not provided among the rewritten files, so their content counts as absent. Content on Excalidraw images, GOPROXY common issues, Makefile guidelines, and the OTLP version update procedure is not referenced anywhere in the rewrite. The AI-assisted contribution rules were preserved in AGENTS.md, and target-audience/PR-size/code-owner/exception content was preserved."
+    },
+    "README.md": {
+      "rewritten": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "CONTRIBUTING.md",
+        "README.md",
+        "VERSIONING.md"
+      ],
+      "status": "dropped-content",
+      "dropped": [
+        {
+          "item": "The note telling readers to first install Cosign (link: https://docs.sigstore.dev/cosign/system_config/installation/) before verifying a signed artifact or blob",
+          "kind": "procedural"
+        },
+        {
+          "item": "Statement that the images `otel/opentelemetry-collector` and `otel/opentelemetry-collector-contrib` are signed using the sigstore cosign tool (https://github.com/sigstore/cosign)",
+          "kind": "factual"
+        },
+        {
+          "item": "The `cosign verify` command template with flags `--certificate-identity=https://github.com/open-telemetry/opentelemetry-collector-releases/.github/workflows/base-release.yaml@refs/tags/<RELEASE_TAG>` and `--certificate-oidc-issuer=https://token.actions.githubusercontent.com` followed by `<OTEL_COLLECTOR_IMAGE>`",
+          "kind": "procedural"
+        },
+        {
+          "item": "Explanation of the placeholders: `<RELEASE_TAG>` is the release to validate and `<OTEL_COLLECTOR_IMAGE>` is the image to check",
+          "kind": "factual"
+        },
+        {
+          "item": "Worked example verifying ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.98.0 against tag v0.98.0",
+          "kind": "procedural"
+        },
+        {
+          "item": "Example verification output listing the checks performed (cosign claims validated, existence of claims in the transparency log verified offline, code-signing certificate verified using trusted certificate authority certificates) plus the full signature payload/JSON (digest sha256:5cea85bcbc734a3c0a641368e5a4ea9d31b472997e9f2feca57eeb4a147fcf1a, workflow sha 9e20bf5c142e53070ccb8320a20315fffb41469e, 'Release Contrib' workflow, log IDs/indexes)",
+          "kind": "factual"
+        },
+        {
+          "item": "Note that image signing started with release `v0.95.0`",
+          "kind": "factual"
+        }
+      ],
+      "notes": "The rewrite delegates the image-verification section to docs/verifying-images.md, which was not provided among the rewritten files, so all concrete facts and steps of that section are counted as absent. Everything else in the original README (badges, header/footer link rows, objectives, community/meeting details, OTLP v1.10.0 stability statement, Go compatibility rules, release-manager rotation note, and all maintainer/approver/triager/emeritus rosters) is preserved. One minor presentational loss not counted above: the OpenTelemetry logo image (https://opentelemetry.io/img/logos/opentelemetry-logo-nav.png, width 45) in the original H1 no longer appears."
+    },
+    "VERSIONING.md": {
+      "rewritten": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "CONTRIBUTING.md",
+        "README.md",
+        "VERSIONING.md"
+      ],
+      "status": "dropped-content",
+      "dropped": [
+        {
+          "item": "Module versioning and schema section: versioning of this project is idiomatic of a Go project using Go modules (link to https://golang.org/ref/mod#versions)",
+          "kind": "factual"
+        },
+        {
+          "item": "Semantic import versioning (link to golang/go wiki Modules#semantic-import-versioning) will be used, and versions comply with semver 2.0 (https://semver.org/spec/v2.0.0.html)",
+          "kind": "factual"
+        },
+        {
+          "item": "For a module at v2 or higher, the major version must be included as `/vN` at the end of module paths in `go.mod` files (e.g., `module go.opentelemetry.io/collector/v2`, `require go.opentelemetry.io/collector/v2 v2.0.1`) and in the package import path (e.g., `import \"go.opentelemetry.io/collector/v2/component\"`), including in `go get` commands (e.g., `go get go.opentelemetry.io/collector/v2@v2.0.1`) \u2014 note both `/v2` and `@v2.0.1`",
+          "kind": "factual"
+        },
+        {
+          "item": "For a module at v0 or v1, do not include the major version in either the module path or the import path",
+          "kind": "factual"
+        },
+        {
+          "item": "Semantic convention packages contain a complete version identifier in their import path to enable concurrent use of multiple convention versions in a single application; this identifies the specification version used to generate the package and is unrelated to the containing module's version",
+          "kind": "factual"
+        },
+        {
+          "item": "A single module should exist, rooted at the top level of the repository, containing all packages provided for use outside the repository",
+          "kind": "factual"
+        },
+        {
+          "item": "Additional modules may be created in the repository to isolate build-time tools, other commands, or independent libraries; such modules should be versioned in sync with the `go.opentelemetry.io/collector` module",
+          "kind": "factual"
+        },
+        {
+          "item": "Experimental modules under active development are versioned with major version `v0` to imply the semver stability guarantee (https://semver.org/spec/v2.0.0.html#spec-item-4), quoted as: \"Major version zero (0.y.z) is for initial development. Anything MAY change at any time. The public API SHOULD NOT be considered stable.\"",
+          "kind": "factual"
+        },
+        {
+          "item": "Versioning of the associated contrib repository (https://github.com/open-telemetry/opentelemetry-collector-contrib) is idiomatic of a Go project using Go modules, uses semantic import versioning, and complies with semver 2.0",
+          "kind": "factual"
+        },
+        {
+          "item": "Contrib v2+ example paths: `module github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sprocessor/v2`, `require .../k8sprocessor/v2 v2.0.1`, `import \".../processor/k8sprocessor/v2\"`, and `go get .../processor/k8sprocessor/v2@v2.0.1`; for v0 or v1 omit the major version from module and import paths",
+          "kind": "factual"
+        },
+        {
+          "item": "In contrib, modules are used to encapsulate receivers, processors, exporters, extensions, connectors and any other independent sets of related components",
+          "kind": "factual"
+        },
+        {
+          "item": "Contrib experimental modules start versioning at `v0.0.0`, increment the minor version for backwards incompatible changes and the patch version for backwards compatible changes",
+          "kind": "factual"
+        },
+        {
+          "item": "Mature modules with a guaranteed stable public API are versioned with major version `v1` or greater",
+          "kind": "factual"
+        },
+        {
+          "item": "All stable contrib modules of the same major version as this project use the same entire version",
+          "kind": "factual"
+        },
+        {
+          "item": "Stable modules may be released with an incremented minor or patch version even when the module's code has not changed, where the only change is an update of the module's dependency on this project's stable APIs",
+          "kind": "factual"
+        },
+        {
+          "item": "Contrib modules will be kept up to date with this project's releases",
+          "kind": "factual"
+        },
+        {
+          "item": "GitHub releases will be made for all releases",
+          "kind": "factual"
+        },
+        {
+          "item": "Go modules will be made available at Go package mirrors",
+          "kind": "factual"
+        }
+      ],
+      "notes": "The rewritten VERSIONING.md replaces the entire \"Module versioning and schema\" section with a pointer to docs/module-versioning.md, but that file is not among the rewritten files shown, so all of its content is absent from the rewrite. All other sections of the original (end-user artifacts, general considerations, LTS after v1 for distributions/components/modules, Go API considerations, configuration structures) are preserved in substance."
+    },
+    "cmd/builder/README.md": {
+      "rewritten": [
+        "cmd/builder/README.md",
+        "cmd/builder/RELEASE.md",
+        "cmd/builder/configuration.md",
+        "cmd/builder/debug.md",
+        "cmd/builder/installation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the original cmd/builder/README.md against the rewritten README.md plus its split files (installation.md, debug.md, configuration.md) and RELEASE.md. All factual content is preserved: the TL;DR install/build/run sequence with all module and version pins; the three installation methods and their recommendation status; DockerHub link, tag guidance, multi-platform note, default mount path /build/builder-config.yaml, the mandatory --config flag note, the CMD-not-entrypoint note, the dist.output_path ./otelcol-dev example and the full docker run command; the releases download link; go install command, PATH requirement, the resulting binary name 'builder', and the compatible Go version link; the running instructions, otelcorecol build-config link and ocb --help; the default LDflags -s -w, the --ldflags=\"\" override, the debug_compilation and gcflags options, the delve install and dlv exec commands, and the IDE step; the full configuration YAML example with all dist/exporters/telemetry/replaces comments, module-type list, import/name inference rules, gitlab.com example, replaces rationale, and conf_resolver.default_uri_scheme with ${HOST}/${env:HOST} explanation; the three build steps and skip flags with both example commands; both strict-versioning checks, the --skip-strict-versioning flag and its temporary status; and CGO_ENABLED=0 default with the cgo_enabled: true override. The rewritten RELEASE.md adds content not present in the original, which is out of scope. Nothing missing."
+    },
+    "cmd/builder/RELEASE.md": {
+      "rewritten": [
+        "cmd/builder/README.md",
+        "cmd/builder/RELEASE.md",
+        "cmd/builder/configuration.md",
+        "cmd/builder/debug.md",
+        "cmd/builder/installation.md",
+        "docs/release.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL document (cmd/builder/RELEASE.md) is fully preserved in the rewritten cmd/builder/RELEASE.md: the goreleaser tool and link, the vX.Y.Z tag naming convention, both git commands (`git tag -a v0.1.1 -m \"Release v0.1.1\"` and `git push upstream v0.1.1`), the statement that a GitHub workflow starts and produces a GitHub release, and the example link to \"Release v0.56.0\" with the same URL. Only wording changed. The other rewritten files contain content beyond the original scope, which is not an omission."
+    },
+    "cmd/builder/test/README.md": {
+      "rewritten": [
+        "cmd/builder/test/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All factual content from the original is present in the rewrite: end-to-end tests for the builder, positive tests only, based on manifest files in this directory, each manifest in a working state, yields a Collector instance ready within a time interval, and readiness defined by calling the healthcheck endpoint. No procedural steps existed in the original. The rewrite adds front-matter metadata but omits nothing."
+    },
+    "cmd/mdatagen/README.md": {
+      "rewritten": [
+        "cmd/mdatagen/README.md",
+        "cmd/mdatagen/config-documentation.md",
+        "cmd/mdatagen/feature-gates.md",
+        "cmd/mdatagen/metrics.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the original cmd/mdatagen/README.md against the four rewritten files (README.md, config-documentation.md, feature-gates.md, metrics.md). All substantive content is preserved: status/autogenerated table, metadata rationale bullets, the two mdatagen requirements, the minimal otlp metadata.yaml example, metadata-schema.yaml reference, doc.go go:generate directive, ElasticSearch/hostmetrics cpuscraper reference examples, the install command (`cd cmd/mdatagen && $(GOCMD) install .`, GOBIN, `mdatagen metadata.yaml`, `make generate`), the full config section example and its four supported features, the complete primitive/container/alias type tables and their examples, metrics builder example plus the three user capabilities, reaggregation settings and all defaults, the feature_gates example, all six documentation table columns, the Feature Gates API link, both strict-validation rules and skip_strict_validation, generated_package_name multi-package guidance, and all four contributing steps including loader.go and the templates directory. Only links, section splitting, and wording changed (e.g., GitHub URLs converted to relative paths for documentation.md and the OTLP receiver), which are out of scope."
+    },
+    "cmd/mdatagen/internal/sampleconnector/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/documentation.md",
+        "exporter/exporterhelper/documentation.md",
+        "pdata/documentation.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL is only cmd/mdatagen/internal/sampleconnector/documentation.md. The rewritten file of the same path reproduces every section verbatim: the mdatagen generated-code comment, the '# sample' title, the Default Metrics intro plus the enabled:false YAML block, default.metric (description, 'will be become optional soon' note, s/Sum/Int/Cumulative/true/Development table, and all five attributes), default.metric.to_be_removed (deprecation text, s/Sum/Double/Delta/false/Deprecated since 1.0.0, deprecation note), metric.input_type (table plus five attributes), reaggregate.metric (1/Gauge/Double/Beta plus string_attr and boolean_attr), the Optional Metrics intro with the enabled:true YAML block, optional.metric (1/Gauge/Double/Deprecated since 1.0.0, deprecation note, three attributes), optional.metric.empty_unit (empty unit, Gauge/Double/Deprecated since 1.0.0, deprecation note, two attributes), the full eight-row Resource Attributes table with identical enabled flags, and the Entities section with test.entity, Stability: Stable, identifying attribute string.resource.attr and descriptive attribute map.resource.attr. All other rewritten files are additional content not present in the ORIGINAL and were not evaluated for omissions. No factual or procedural item from the ORIGINAL is missing."
+    },
+    "cmd/mdatagen/internal/sampleentityreceiver/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/documentation.md",
+        "exporter/exporterhelper/documentation.md",
+        "pdata/documentation.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL document (cmd/mdatagen/internal/sampleentityreceiver/documentation.md) is reproduced verbatim in the rewritten file of the same path. All sections were checked item by item: the mdatagen generated-code comment, the 'sampleentity' title, the Default Metrics intro and disable-config YAML snippet, k8s.pod.cpu_time (s / Sum / Double / Cumulative / true / Development), k8s.pod.phase (1 / Gauge / Int / Development) with its 'phase' attribute and the enum values Pending, Running, Succeeded, Failed, Unknown at Recommended level, k8s.replicaset.desired ({replicas} / Gauge / Int / Development), all five resource attributes (k8s.namespace.name, k8s.pod.name, k8s.pod.uid, k8s.replicaset.name, k8s.replicaset.uid, each Any Str / true / - / -), and both entities (k8s.replicaset with Development stability, identifying k8s.replicaset.uid, descriptive k8s.replicaset.name; k8s.pod with Development stability, identifying k8s.pod.uid, descriptive k8s.pod.name). Nothing is missing. The other rewritten files cover unrelated components and add content not present in the original, which is out of scope for this audit."
+    },
+    "cmd/mdatagen/internal/samplefactoryreceiver/README.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/samplefactoryreceiver/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The rewritten file preserves the entire autogenerated status section verbatim (stability entries for profiles/logs/traces/metrics, deprecation date 2025-02-05, migration note, semantic conventions version 1.9.0, unsupported platforms freebsd/illumos, empty distributions, warnings link, issue badges/links, code owner @dmitryax, and all six link definitions). The only change is the Warnings body wording (\"This is where warnings are described.\" -> \"This section describes the warnings.\"), which is a wording change, plus added front matter. No factual or procedural content is missing."
+    },
+    "cmd/mdatagen/internal/samplemigrationscraper/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/documentation.md",
+        "exporter/exporterhelper/documentation.md",
+        "pdata/documentation.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL is the samplemigrationscraper documentation.md. The rewritten set includes cmd/mdatagen/internal/samplemigrationscraper/documentation.md, which reproduces every element of the original: the generated-code comment, title 'samplemigration', the Default Metrics section with the yaml disable snippet, system.cpu.utilization (unit 1, Gauge, Double, Beta) with its Migration block (target system.cpu.utilization@v1, DontEmitV0SystemConventions / EmitV1SystemConventions gates, gate-interaction paragraph) and its cpu/state attributes with all enum values; the Optional Metrics section with the yaml enable snippet, linux.memory.available (By, Sum, Int, Cumulative, false, Beta) plus its Migration block, system.cpu.foo, system.cpu.utilization@v1 (1, Sum, Double, Cumulative, true, Beta) with Emitted Name and cpu.logical_number/cpu.mode attributes, system.memory.linux.available@v1 with Emitted Name; and the Feature Gates table (both gates, alpha, v0.145.0, N/A, issue 45592 links) plus the featuregate README link. No factual or procedural content was dropped; the other rewritten files are additional documents unrelated to the original."
+    },
+    "cmd/mdatagen/internal/sampleprocessor/README.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleprocessor/README.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The autogenerated status section (H1, description sentence, full status table including Stability rows for development/beta/stable, Semantic Conventions Version 1.9.0, Unsupported Platforms freebsd/illumos, empty Distributions, Warnings link, Issues badges/links, Code Owners row) and all three stability reference link definitions are reproduced verbatim. The '## Warnings' heading is retained; its body sentence is only reworded ('This is where warnings are described.' -> 'This section describes the warnings.'), which is a wording change, not a content loss. The rewrite adds front matter and an extra documentation.md file, but added content is out of scope. Nothing from the original is absent."
+    },
+    "cmd/mdatagen/internal/sampleprocessor/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/README.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/documentation.md",
+        "exporter/exporterhelper/documentation.md",
+        "pdata/documentation.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL document is cmd/mdatagen/internal/sampleprocessor/documentation.md, containing only the title heading '# sample' and the Resource Attributes table with 8 rows. The rewritten file of the same path reproduces the generated-code comment, the heading, the table header (Name, Description, Values, Enabled, Semantic Convention, Stability), and all 8 attribute rows (map.resource.attr, optional.resource.attr, slice.resource.attr, string.enum.resource.attr, string.resource.attr, string.resource.attr_disable_warning, string.resource.attr_remove_warning, string.resource.attr_to_be_removed) with identical descriptions, value types, and enabled flags. No factual or procedural content from the original is absent. The other rewritten files are additional content not present in the original and are out of scope for this audit."
+    },
+    "cmd/mdatagen/internal/samplereceiver/README.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/samplereceiver/README.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the original samplereceiver README against the rewritten README (plus the additional documentation.md file, which contains only content not present in the original). Every element of the autogenerated status block (stability rows for profiles/logs/traces/metrics, deprecation date 2025-02-05, migration note, semantic conventions version 1.40.0, unsupported platforms freebsd/illumos, empty distributions, warnings link, issue badges/links, code owner @dmitryax) and all six reference-link definitions are preserved verbatim. The Warnings section text was reworded ('This is where warnings are described.' -> 'This section describes the warnings.') but conveys the same content. The entire configuration reference is byte-identical: top-level settings (api_token, component_id, endpoint localhost:12345 required, headers, max_results 100, metrics, resource_attributes, sample_pkg, timeout 10s), all nine metric subsections with their aggregation_strategy defaults, attribute enumerations/defaults and enabled defaults, all ten resource_attributes subsections with enabled defaults and the events/metrics include/exclude descriptions, and sample_pkg (host_name localhost required, port 8080). No factual or procedural items are missing."
+    },
+    "cmd/mdatagen/internal/samplereceiver/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/README.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/documentation.md",
+        "exporter/exporterhelper/documentation.md",
+        "pdata/documentation.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The rewrite includes cmd/mdatagen/internal/samplereceiver/documentation.md, which reproduces the original document in full. Verified item-by-item: all seven default metrics (default.metric with its Deprecated-since-1.0.0 stability, deprecation note, and all eight attributes including opt_in_bool_attr; default.metric.to_be_removed; metric.input_type; reaggregate.metric; reaggregate.metric.with_required including required_string_attr; system.cpu.time with the v1.40.0 semantic-convention link; system.memory.usage with the state enum and semconv link), both optional metrics (optional.metric with conditional_string_attr, optional.metric.empty_unit with empty unit), both default events and the optional default.event.to_be_renamed with their attribute tables, all ten resource attributes (including host.arch and string.resource.disabled_attr_to_be_removed with their Enabled and Stability values), all five internal telemetry metrics with units/types/stability and the 1.5.0 deprecation text, the receiver.sample.featuregate.example row (alpha, v0.100.0, N/A, issue 12345), the featuregate README link, and the three enable/disable YAML snippets. Nothing factual or procedural from the original is absent. The other rewritten files are additional documents unrelated to the original's content and were not used as a substitute."
+    },
+    "cmd/mdatagen/internal/samplescraper/README.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/samplescraper/README.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Diffed the rewritten README.md line by line against the original: the autogenerated status block (stability lines, Semantic Conventions Version 1.40.0, unsupported platforms, distributions, warnings link, issue badges, code owner @dmitryax, and the [development]/[stable] link definitions) and the entire autogenerated configuration section (top-level settings, all metrics.* subsections, and all resource_attributes.* subsections with their types, defaults, required flags, and descriptions) are reproduced verbatim. The only change in the Warnings section is a rewording ('This is where warnings are described.' -> 'This section describes the warnings.'), which is not a content loss. The rewrite also adds YAML front matter and a new documentation.md file; added content is out of scope for this audit. No factual or procedural items from the original are absent."
+    },
+    "cmd/mdatagen/internal/samplescraper/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/README.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/documentation.md",
+        "exporter/exporterhelper/documentation.md",
+        "pdata/documentation.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL document (cmd/mdatagen/internal/samplescraper/documentation.md) is reproduced verbatim as the rewritten file of the same path. I compared section by section: the default-metrics disable YAML snippet; default.metric (s/Sum/Int/Cumulative/true/Development, note about becoming optional, and all five attributes string_attr, state, enum_attr with red/green/blue, slice_attr, map_attr); default.metric.to_be_removed (s/Sum/Double/Delta/false/Deprecated since 1.0.0 plus deprecation note); metric.input_type with its identical five attributes; reaggregate.metric (1/Gauge/Double/Beta with string_attr and boolean_attr); system.cpu.time (s/Sum/Int/Cumulative/true/Beta with the semantic-conventions v1.40.0 link); the optional-metrics enable YAML snippet; optional.metric (1/Gauge/Double/Deprecated since 1.0.0, deprecation note, string_attr, boolean_attr, boolean_attr2); optional.metric.empty_unit (empty unit, Gauge/Double/Deprecated since 1.0.0, deprecation note, string_attr, boolean_attr); and all eight Resource Attributes rows with their enabled true/false values. No factual value, default, link, or procedural snippet from the original is absent. Other rewritten files add new content (other components' docs, README, entities, feature gates), which is out of scope for this omission audit.\n\nEmpty dropped list."
+    },
+    "cmd/otelcorecol/README.md": {
+      "rewritten": [
+        "cmd/otelcorecol/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All factual items from the original are preserved: the purpose of the folder (sources for the otelcorecol test binary), the TEST PURPOSES ONLY designation, the statement that these sources are not used for official releases, the link to open-telemetry/opentelemetry-collector-releases for official releases, and the link to the otelcol folder (distributions/otelcol) as the official Collector core manifest. The only differences are wording/phrasing (e.g., 'open-telemetry/opentelemetry-collector-releases' shortened to 'opentelemetry-collector-releases' while keeping the identical URL) and added front-matter metadata, which are out of scope."
+    },
+    "cmd/schemagen/README.md": {
+      "rewritten": [
+        "cmd/schemagen/README.md",
+        "cmd/schemagen/ref-resolution.md",
+        "cmd/schemagen/settings.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Full comparison of the original README against the three rewritten files (README.md, ref-resolution.md, settings.md) found no missing factual or procedural content. All modes (component/package), the -p/-m module-graph behavior and fallback, output file naming (config.schema.<ext>), default output folder, $defs behavior, both Make target commands and the FLAGS example, the option to run `make schemagen` inside a component folder, every CLI flag with its default and purpose, the $id/$title derivation, the entire .schemagen.yaml example and the descriptions of namespace/mappings/allowedRefs/componentOverrides (configName, factoryMaps, overlayFile), overlay file semantics (relative-to-repo-root or absolute path, deep merge, scalar replacement, applies to YAML and JSON), the -r example command, the three ref forms table, package caching, dropped-unresolvable-refs warning, $defs removal in component mode, the packages.Load performance note, all seven generated-schema highlights, the testdata examples, and all eight limitation bullets are preserved. Only wording, sectioning into separate files, and admonition style changed."
+    },
+    "config/configauth/README.md": {
+      "rewritten": [
+        "config/configauth/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All substantive content from the original is present in the rewrite: the descriptions of server authenticators (used in receivers, incoming HTTP/gRPC) and client authenticators (used in exporters, outgoing HTTP/gRPC), both complete extension lists with identical links, the full YAML example verbatim (oidc issuer_url/audience, oauth2client client_id/client_secret/token_url/scopes/tls settings/timeout, otlp/with_auth grpc endpoint, tls cert paths, authenticator: oidc, otlp_http/withauth endpoint and authenticator: oauth2client), the interface names configauth.ServerAuthenticator and configauth.ClientAuthenticator, the guidance to open an issue for contrib acceptance, and the OpenTelemetry Collector Builder link. Only wording, headings, and added front matter changed."
+    },
+    "config/configgrpc/README.md": {
+      "rewritten": [
+        "config/configgrpc/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All factual items from the original appear in the rewrite: the balancer_name default change (pick_first before v0.103.0, round_robin for v0.103.0) with the issue link and restore instruction; the compression options (gzip, snappy, zstd, none); endpoint naming reference; tls/headers/keepalive (permit_without_stream, time, timeout)/read_buffer_size/write_buffer_size/auth/middlewares client fields; the per_rpc_auth extension note including the distinction from an authorization header; the full YAML exporter example unchanged; the benchmark description and the complete 27-row compression comparison table with identical values; the AWS m5.large / Intel Xeon Platinum 8259CL @ 2.50GHz benchmark environment; the entropy/CPU/payload-size caveats; the gzip-required-for-OTLP-servers guidance and snappy/no-compression recommendations with no compression as default; the TCP default transport note; and the entire server settings list (keepalive enforcement_policy min_time and permit_without_stream, server_parameters max_connection_age, max_connection_age_grace, max_connection_idle, time, timeout, max_concurrent_streams, max_recv_msg_size_mib, read_buffer_size, tls, write_buffer_size, auth, middlewares). Link targets for the exporter and receiver READMEs were changed from absolute GitHub URLs to equivalent relative paths, which is a formatting change, not dropped content."
+    },
+    "config/confighttp/README.md": {
+      "rewritten": [
+        "config/confighttp/README.md",
+        "config/confighttp/client.md",
+        "config/confighttp/server.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Full item-by-item comparison performed. Client settings (endpoint, proxy_url, tls, headers with the three sub-notes about Content-Length/Connection, Host derivation, and Host override, read_buffer_size, timeout, write_buffer_size, compression list including lz4, none/error behavior, compression_params.level, all compression/level value combinations for gzip/zlib/deflate/zstd/snappy/x-snappy-framed including the confighttp.framedSnappy feature gate, max_idle_conns, max_idle_conns_per_host, max_conns_per_host, idle_conn_timeout, auth, disable_keep_alives, force_attempt_http2, http2_read_idle_timeout, http2_ping_timeout, cookies.enabled, middlewares) and the client YAML example are all preserved. Server settings (cors and all four sub-options including the plain-wildcard/Access-Control-Allow-Credentials warning and the 5-second browser default, endpoint, transport default tcp, max_request_body_size 20971520/20MiB, include_metadata false, response_headers, compression_algorithms default list plus x-snappy-framed under confighttp.snappyFramed, read_timeout 0, read_header_timeout 1m, write_timeout 30s, idle_timeout 1m, keep_alives_enabled true, tls, auth.request_params, middlewares), the attribute-processor note requiring include_metadata, and the receiver YAML example are all present. Link targets were inlined or re-pathed but no referenced resource was dropped."
+    },
+    "config/configmiddleware/README.md": {
+      "rewritten": [
+        "config/configmiddleware/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All content from the original is preserved: the package purpose, link to extensionmiddleware README, Config type, ordered list usage, confighttp/configgrpc push-based receiver support, the OTLP YAML example, all four methods with their return types and descriptions, the Start()/component.Host usage note, and the error-on-missing-extension behavior. Only wording, structure, and added front matter differ."
+    },
+    "config/confignet/README.md": {
+      "rewritten": [
+        "config/confignet/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All substantive content is preserved: endpoint host:port form, host as literal IP or resolvable name, port as literal number or service name, IPv6 bracket syntax with both examples, zone/RFC 4007, the full list of transports with IPv4-only/IPv6-only qualifiers and npipe as Windows-only Windows named pipes, dialer.timeout meaning and its 'no timeout' default, and the TCP-receiver endpoint note. Minor nuance (not counted as dropped): the original says endpoint is the only *required* setting for TCP receivers, while the rewrite phrases it as 'A TCP receiver sets the endpoint setting only.' The receiver link was changed from an absolute GitHub URL to a relative path, which is a formatting change."
+    },
+    "config/configtls/README.md": {
+      "rewritten": [
+        "config/configtls/README.md",
+        "config/configtls/client.md",
+        "config/configtls/server.md",
+        "config/configtls/settings.md",
+        "config/configtls/tpm.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared every setting, default, option list, warning, link, and code example in the original against the four rewritten files. All items are accounted for: transport settings (insecure, curve_preferences with X25519/P521/P256/P384), certificate settings (ca_file/ca_pem, cert_file/cert_pem, key_file/key_pem, include_system_ca_certs_pool, insecure_skip_verify), version settings (min_version default 1.2, max_version default handled by crypto/tls with the same Go source permalink, both option lists, deprecation warning for TLS 1.0/1.1), cipher suite settings and both YAML examples, include_insecure_cipher_suites with the tls.InsecureCipherSuites() reference, reload_interval with the duration-string link and unit list, tpm pointer, client server_name_override plus the exporter example, server client_ca_file (ClientCAs/RequireAndVerifyClientCert, crypto/tls#Config link) and client_ca_file_reload plus the receiver example, and the full TPM section (TSS2-only, enabled, path with /dev/tpm0 and /dev/tpmrm0, unsupported on Windows, owner_auth, auth, example, and the closing explanation). Only navigational prose such as \"See below for examples\" was reworded due to the split into multiple files, which is not a content loss."
+    },
+    "confmap/README.md": {
+      "rewritten": [
+        "confmap/README.md",
+        "confmap/documentation.md",
+        "confmap/merge-append.md",
+        "confmap/resolving.md",
+        "confmap/troubleshooting.md",
+        "confmap/watching.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the original confmap/README.md against the rewritten README.md plus the split files (resolving.md, merge-append.md, watching.md, troubleshooting.md, documentation.md). All substantive content is preserved: status/autogenerated table, Conf/Provider/Converter/Resolver descriptions, the URI scheme rules (RFC 3986, minimum 2-character scheme, RFC 8089 driver-letter conflict), the two limitations (no '$' in embedded ${configURI} unless embedding another URI; 100-URI limit), both ASCII diagrams for resolution and both watch diagrams, the five Resolve steps, the confmap.enableMergeAppendOption feature-gate explanation with the issue link and the 'will not become the default' caveat, both example YAML configs, the otelcol command line with --feature-gates, the resulting merged config, the note that only extensions/receivers/exporters under `service` are merged, the onChange/Provider.Retrieve behavior and the UpdatingProvider example in provider_test.go, and the full koanf null-map troubleshooting section including configs A and B, the ./otelcorecol --config A.yaml --config B.yaml command, the verbatim error output, and both remedies. Only the non-content heading '# High Level Design' disappears as part of the restructuring, which is a structural change rather than dropped content. documentation.md adds new material (feature-gate table) but adds nothing missing."
+    },
+    "confmap/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/README.md",
+        "confmap/documentation.md",
+        "confmap/merge-append.md",
+        "confmap/resolving.md",
+        "confmap/troubleshooting.md",
+        "confmap/watching.md",
+        "exporter/exporterhelper/documentation.md",
+        "pdata/documentation.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL is confmap/documentation.md, containing only the title heading, the Feature Gates section with the single `confmap.enableMergeAppendOption` row (alpha, description, From Version v0.120.0, To Version N/A, reference link to issue 8754), the mdatagen generated-code comment, and the closing pointer to the Feature Gates README. The rewritten confmap/documentation.md reproduces all of these verbatim, including the table headers, gate name, stage, description text, versions, and both links. No factual or procedural content from the original is absent. (The other rewritten files are additional documents unrelated to the original's content and were not used for comparison.)"
+    },
+    "confmap/provider/envprovider/README.md": {
+      "rewritten": [
+        "confmap/provider/envprovider/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All substantive content from the original is present in the rewrite: the autogenerated status table (stability [stable], distributions core/contrib/k8s/otlp, issue badges) and all reference link definitions are reproduced verbatim; the `env` scheme, the `env:NAME_OF_ENVIRONMENT_VARIABLE` form, the `:-default_value` suffix for defaults, the regex `^[a-zA-Z_][a-zA-Z0-9_]*$`, and the constraints (at least one character, starts with letter or underscore, only letters/numbers/underscores) are all retained. Minor semantic nuance (not counted as dropped content): the original says the default applies when the variable \"has not been set,\" while the rewrite says when it \"holds no value\" \u2014 the described behavior is restated rather than removed."
+    },
+    "confmap/provider/fileprovider/README.md": {
+      "rewritten": [
+        "confmap/provider/fileprovider/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All content from the original is preserved in the rewrite: the status table (stability [stable], distributions core/contrib/k8s/otlp, issue badge links), all four reference link definitions plus the [stable] link, the Overview description (paths to files, contents read as YAML, provides configuration to the Collector), the scheme `file`, and the usage example `file:/path/to/file.yaml`. The rewrite only adds front matter metadata and rewords sentences."
+    },
+    "confmap/provider/httpprovider/README.md": {
+      "rewritten": [
+        "confmap/provider/httpprovider/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The rewrite preserves all substantive content: the autogenerated status table (stability [stable], distributions core/contrib/k8s, open/closed issue badges and links), all four reference-link definitions, the overview statement that the provider reads a file at an HTTP URI and parses its contents as YAML for Collector configuration, the pointer to the HTTPS provider README at ../httpsprovider/README.md, the scheme name `http`, and the command-line example `--config=http://example.com/config.yaml`. Only wording and added front matter differ."
+    },
+    "confmap/provider/httpsprovider/README.md": {
+      "rewritten": [
+        "confmap/provider/httpsprovider/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All content from the original is present in the rewrite: the status table (stability stable; distributions core/contrib/k8s; issue badges and link definitions), the overview behavior (reads file at HTTPS URI, parses contents as YAML, provides configuration to Collector, verifies endpoint certificate on connection), the `https` scheme and the `--config=https://example.com/config.yaml` command-line example, and the certificate notes (only servers whose certificates verify against system root CAs are supported; adding root CAs is OS-dependent; on Linux see the `update-ca-trust` command). Only wording, section naming (Notes -> Certificates), and added front matter differ."
+    },
+    "confmap/provider/yamlprovider/README.md": {
+      "rewritten": [
+        "confmap/provider/yamlprovider/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All content from the original is present in the rewrite: the autogenerated status table (stability [stable], distributions core/contrib/k8s, issue badges and links), all four reference-link definitions, the Overview statement that the provider takes a literal YAML string as Collector configuration, the scheme name `yaml`, and the identical command-line usage example `--config=\"yaml:exporters::otlp_http::sending_queue::batch::flush_timeout: 2s\"`. Only wording and added front matter differ."
+    },
+    "connector/README.md": {
+      "rewritten": [
+        "connector/README.md",
+        "connector/usage-many-pipelines.md",
+        "connector/usage.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All factual claims and examples from the original appear in the rewrite. Verified: connector definition (exporter+receiver joining two pipelines, same or different data types, may summarize/replicate/route); pipeline single-data-type statement (traces, metrics, logs); count connector table (traces->metrics, metrics->metrics, logs->metrics) and its description; router connector table (traces->traces, metrics->metrics, logs->logs) plus the notes that it does not alter data nor produce additional data and enables distinct processing/appropriate backend; top-level `connectors` section declaration and count usable with default settings; the declaration YAML with count and router; the MUST-be-used-as-both statement; and all seven usage YAML examples (basic pair, alongside traditional exporter, alongside traditional receiver, exporter in multiple pipelines, receiver in multiple pipelines, connectors in sequence, and the invalid traces->logs example including the inline comment). Definitions of Exporter/Receiver Pipeline Type and their anchor links are retained (headings demoted from #### to ###, anchors unchanged)."
+    },
+    "connector/forwardconnector/README.md": {
+      "rewritten": [
+        "connector/forwardconnector/README.md",
+        "connector/forwardconnector/examples.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All content from the original is present in the rewrite. The status/autogenerated section (status table, distributions, issue badges, stability link definitions, and supported pipeline types table with profiles/alpha, traces/beta, metrics/beta, logs/beta) is reproduced verbatim. The description of the connector's purpose (merging or forking pipelines of the same type), the statement that it has no configuration settings, the base YAML snippet, the pointer to the Connectors README (now an inline link to ../README.md), and all three example YAML configurations (log stream annotation/merge, preprocess-then-replicate, and the commented-out temporary debug exporter) were preserved; the examples were relocated to connector/forwardconnector/examples.md with a link from the README."
+    },
+    "docs/README.md": {
+      "rewritten": [
+        "docs/README.md",
+        "docs/coding-breaking-changes.md",
+        "docs/coding-guidelines.md",
+        "docs/coding-modules.md",
+        "docs/coding-naming.md",
+        "docs/coding-observability.md",
+        "docs/coding-robustness.md",
+        "docs/coding-telemetry-stability.md",
+        "docs/collector.md",
+        "docs/component-stability.md",
+        "docs/component-status.md",
+        "docs/contributing-changelog.md",
+        "docs/contributing-components.md",
+        "docs/contributing-labels.md",
+        "docs/contributing-makefile.md",
+        "docs/contributing-testing.md",
+        "docs/contributing-workflow.md",
+        "docs/ga-roadmap.md",
+        "docs/internal-architecture.md",
+        "docs/module-versioning.md",
+        "docs/observability-experimental.md",
+        "docs/observability.md",
+        "docs/platform-support.md",
+        "docs/release-bugfix.md",
+        "docs/release-core.md",
+        "docs/release-schedule.md",
+        "docs/release-troubleshooting.md",
+        "docs/release.md",
+        "docs/scraping-receivers-changes.md",
+        "docs/scraping-receivers.md",
+        "docs/security-best-practices.md",
+        "docs/standard-warnings.md",
+        "docs/verifying-images.md",
+        "docs/vision.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The original docs/README.md content (the Collector definition document) was relocated into docs/collector.md in the rewrite. Item-by-item check: Beta status badge and link; the two required mechanisms (load/parse the configuration file, include compatible components the user wishes); the rationale about switching between Distributions and vendor support for SIG components; the YAML minimum-structure block (receivers, processors, exporters, connectors, extensions, service with telemetry and pipelines) plus the otelcol#Config link; the Component interface requirement and link; the unique component ID requirement, the collision behavior (cannot be used simultaneously in a single Collector), and the resolution via different identifiers; the compatibility definition (source- and version-compatible dependencies); the v0.100.0 example naming the github.com/open-telemetry/opentelemetry-collector/component module; and the Distribution definition including the MAY (use OpenTelemetry-supported tools/docs), the MUST (allow end users to add their own components), and the note that updating a Distribution with new components yields a different Distribution \u2014 all appear in the rewritten docs/collector.md. Nothing factual or procedural from the original was found missing."
+    },
+    "docs/coding-guidelines.md": {
+      "rewritten": [
+        "docs/README.md",
+        "docs/coding-breaking-changes.md",
+        "docs/coding-guidelines.md",
+        "docs/coding-modules.md",
+        "docs/coding-naming.md",
+        "docs/coding-observability.md",
+        "docs/coding-robustness.md",
+        "docs/coding-telemetry-stability.md",
+        "docs/collector.md",
+        "docs/component-stability.md",
+        "docs/component-status.md",
+        "docs/contributing-changelog.md",
+        "docs/contributing-components.md",
+        "docs/contributing-labels.md",
+        "docs/contributing-makefile.md",
+        "docs/contributing-testing.md",
+        "docs/contributing-workflow.md",
+        "docs/ga-roadmap.md",
+        "docs/internal-architecture.md",
+        "docs/module-versioning.md",
+        "docs/observability-experimental.md",
+        "docs/observability.md",
+        "docs/platform-support.md",
+        "docs/release-bugfix.md",
+        "docs/release-core.md",
+        "docs/release-schedule.md",
+        "docs/release-troubleshooting.md",
+        "docs/release.md",
+        "docs/scraping-receivers-changes.md",
+        "docs/scraping-receivers.md",
+        "docs/security-best-practices.md",
+        "docs/standard-warnings.md",
+        "docs/verifying-images.md",
+        "docs/vision.md"
+      ],
+      "status": "judge_error",
+      "dropped": [],
+      "notes": "JSONDecodeError: Expecting value: line 1 column 1 (char 0)"
+    },
+    "docs/component-stability.md": {
+      "rewritten": [
+        "docs/README.md",
+        "docs/coding-breaking-changes.md",
+        "docs/coding-guidelines.md",
+        "docs/coding-modules.md",
+        "docs/coding-naming.md",
+        "docs/coding-observability.md",
+        "docs/coding-robustness.md",
+        "docs/coding-telemetry-stability.md",
+        "docs/collector.md",
+        "docs/component-stability.md",
+        "docs/component-status.md",
+        "docs/contributing-changelog.md",
+        "docs/contributing-components.md",
+        "docs/contributing-labels.md",
+        "docs/contributing-makefile.md",
+        "docs/contributing-testing.md",
+        "docs/contributing-workflow.md",
+        "docs/ga-roadmap.md",
+        "docs/internal-architecture.md",
+        "docs/module-versioning.md",
+        "docs/observability-experimental.md",
+        "docs/observability.md",
+        "docs/platform-support.md",
+        "docs/release-bugfix.md",
+        "docs/release-core.md",
+        "docs/release-schedule.md",
+        "docs/release-troubleshooting.md",
+        "docs/release.md",
+        "docs/scraping-receivers-changes.md",
+        "docs/scraping-receivers.md",
+        "docs/security-best-practices.md",
+        "docs/standard-warnings.md",
+        "docs/verifying-images.md",
+        "docs/vision.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "I compared the original docs/component-stability.md section by section against the rewritten docs/component-stability.md (the only rewrite file covering this content; the other files cover unrelated documents). All factual and procedural content appears preserved: stability level definitions (development, alpha, beta, stable, deprecated, unmaintained), alpha/beta/stable configuration-change rules (including N+1, N+2, 6-month, WARN-level message, non-operational-on-deprecation rules), documentation requirements for alpha/beta/stable, testing requirements (80% coverage/repo minimum, lifecycle test, benchmark test per stable signal), the full six-point observability requirements plus the notes, units, attribute and telemetry-level guidance, the deprecated (two minor releases) and unmaintained (6 weeks, 3 months, vendor-specific) rules, the mermaid transition diagram and the three-step graduation process, graduation criteria (2 code owners / 30 days / 80%; 3 code owners / benchmark within 30 days / 60 days / 80%), deprecation information, versioning (1.x semantics, VERSIONING.md link, all-signal applicability), and the entire component graduation section (signal, code owner, technical requirements, adoption evidence, five-step process, SIG escalation). One nuance shifted rather than dropped: the original says the maintainer verifying a private attestation \"is not required to disclose the details,\" while the rewrite states the maintainer \"discloses no details\" \u2014 the permissive framing is altered, but the non-disclosure fact is still present, so I did not list it as missing. Heading levels/anchors were changed (h4 to h3) but no content was lost."
+    },
+    "docs/component-status.md": {
+      "rewritten": [
+        "docs/README.md",
+        "docs/coding-breaking-changes.md",
+        "docs/coding-guidelines.md",
+        "docs/coding-modules.md",
+        "docs/coding-naming.md",
+        "docs/coding-observability.md",
+        "docs/coding-robustness.md",
+        "docs/coding-telemetry-stability.md",
+        "docs/collector.md",
+        "docs/component-stability.md",
+        "docs/component-status.md",
+        "docs/contributing-changelog.md",
+        "docs/contributing-components.md",
+        "docs/contributing-labels.md",
+        "docs/contributing-makefile.md",
+        "docs/contributing-testing.md",
+        "docs/contributing-workflow.md",
+        "docs/ga-roadmap.md",
+        "docs/internal-architecture.md",
+        "docs/module-versioning.md",
+        "docs/observability-experimental.md",
+        "docs/observability.md",
+        "docs/platform-support.md",
+        "docs/release-bugfix.md",
+        "docs/release-core.md",
+        "docs/release-schedule.md",
+        "docs/release-troubleshooting.md",
+        "docs/release.md",
+        "docs/scraping-receivers-changes.md",
+        "docs/scraping-receivers.md",
+        "docs/security-best-practices.md",
+        "docs/standard-warnings.md",
+        "docs/verifying-images.md",
+        "docs/vision.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the original docs/component-status.md against the rewritten docs/component-status.md (the other files in the rewrite cover unrelated source documents). Every factual item was located in the rewrite: the StatusWatcher interface requirement and its link; the 'six statuses' claim and the full status/meaning table (all seven rows, verbatim); the lifecycle vs. runtime groupings; the state-machine behavior (only status changes emit events, repeats ignored, PermanentError as permanent runtime state that can only go to Stopping, FatalError as final state); all three images; the Start/Shutdown automation rules (Starting event, PermanentError on Start error, OK if the component did not self-report, Stopping event, PermanentError on Shutdown error, Stopped on clean shutdown); the async-work exception and the ability to halt startup by returning an error; the invalid-transition no-op; the guidelines issue link (#9957); and all implementation details for component.TelemetrySettings (ReportStatus on the CreateSettings instance, one argument, per-component customization passing the instance ID, component does not know its own instance ID), servicetelemetry.TelemetrySettings (references status.Reporter's ReportStatus, two arguments, used for automated lifecycle reporting), and sharedcomponent (single component to the collector but multiple logical components, OTLP receiver with traces/metrics/logs varying by configuration, reporting for each logical instance during Start and Shutdown with both source links, and the modified ReportStatus link). Some statements that appeared twice in the original (e.g. the Start/Shutdown recaps in Best Practices) appear only once in the rewrite, which is duplication removal rather than lost content."
+    },
+    "docs/ga-roadmap.md": {
+      "rewritten": [
+        "docs/README.md",
+        "docs/coding-breaking-changes.md",
+        "docs/coding-guidelines.md",
+        "docs/coding-modules.md",
+        "docs/coding-naming.md",
+        "docs/coding-observability.md",
+        "docs/coding-robustness.md",
+        "docs/coding-telemetry-stability.md",
+        "docs/collector.md",
+        "docs/component-stability.md",
+        "docs/component-status.md",
+        "docs/contributing-changelog.md",
+        "docs/contributing-components.md",
+        "docs/contributing-labels.md",
+        "docs/contributing-makefile.md",
+        "docs/contributing-testing.md",
+        "docs/contributing-workflow.md",
+        "docs/ga-roadmap.md",
+        "docs/internal-architecture.md",
+        "docs/module-versioning.md",
+        "docs/observability-experimental.md",
+        "docs/observability.md",
+        "docs/platform-support.md",
+        "docs/release-bugfix.md",
+        "docs/release-core.md",
+        "docs/release-schedule.md",
+        "docs/release-troubleshooting.md",
+        "docs/release.md",
+        "docs/scraping-receivers-changes.md",
+        "docs/scraping-receivers.md",
+        "docs/security-best-practices.md",
+        "docs/standard-warnings.md",
+        "docs/verifying-images.md",
+        "docs/vision.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the original docs/ga-roadmap.md against the rewritten docs/ga-roadmap.md (the only rewritten file covering this source; the other files correspond to unrelated documents). All factual content is preserved: the stated goal of the roadmap; the proposal to ship a distribution with a minimum stabilized component set and to stabilize dependencies; the three components (OTLP receiver, OTLP exporter, OTLP HTTP exporter); the reference to issue #9375; conformance to VERSIONING.md; the scope statement about production use at scale and the maintainability focus; the three enhancement-proposal priorities; the two bug-report priorities (critical bugs linking release.md#bugfix-release-criteria, and 1.0-related regressions); the out-of-scope list (distribution-maintainer components/APIs with the service/otelcol carve-out and Go-API-change allowance, Collector Builder, telemetrygen, mdatagen, Operator) plus the note that they may pursue v1 at their own pace; and all Additional Requirements bullets under observable, scalable (including goleak and lifecycle tests), end-user documentation on opentelemetry.io, and support (including the API/SDK support-period link). No procedural steps exist in the original. Nothing missing."
+    },
+    "docs/internal-architecture.md": {
+      "rewritten": [
+        "docs/README.md",
+        "docs/coding-breaking-changes.md",
+        "docs/coding-guidelines.md",
+        "docs/coding-modules.md",
+        "docs/coding-naming.md",
+        "docs/coding-observability.md",
+        "docs/coding-robustness.md",
+        "docs/coding-telemetry-stability.md",
+        "docs/collector.md",
+        "docs/component-stability.md",
+        "docs/component-status.md",
+        "docs/contributing-changelog.md",
+        "docs/contributing-components.md",
+        "docs/contributing-labels.md",
+        "docs/contributing-makefile.md",
+        "docs/contributing-testing.md",
+        "docs/contributing-workflow.md",
+        "docs/ga-roadmap.md",
+        "docs/internal-architecture.md",
+        "docs/module-versioning.md",
+        "docs/observability-experimental.md",
+        "docs/observability.md",
+        "docs/platform-support.md",
+        "docs/release-bugfix.md",
+        "docs/release-core.md",
+        "docs/release-schedule.md",
+        "docs/release-troubleshooting.md",
+        "docs/release.md",
+        "docs/scraping-receivers-changes.md",
+        "docs/scraping-receivers.md",
+        "docs/security-best-practices.md",
+        "docs/standard-warnings.md",
+        "docs/verifying-images.md",
+        "docs/vision.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The rewritten docs/internal-architecture.md preserves all content from the original: the purpose statement and pointer to opentelemetry.io's end-user architecture doc, the verbatim startup Mermaid diagram, the configuration reload trigger conditions (config provider file system change event or SIGHUP), Collector.reloadConfiguration and its default full-reload behavior (Service = extensions, pipelines, telemetry shut down and rebuilt; processors lose in-flight data, exporter queues drained, extensions restarted), the full-reload diagram, both feature gate names with their stability levels and the service.partialReloadReceivers default-on note, the --feature-gates=service.partialReload flag, the receiver-only change condition including pure-receiver pipeline entries and the list of sections that must be identical, Collector.tryPartialReceiverReload delegating to Graph.UpdateReceivers, all 9 algorithm phases in order, the statement that other component types stay running, the fallback to full reload, the partial-reload diagram, the three code file links (otelcol/collector.go, service/internal/graph/graph.go, component/component.go) with the note about package-level and function/struct-level comments, and the Factories section (Factory interface, NewFactory, receiver.go example, nextConsumer explanation). The other rewritten files cover unrelated documents and were not compared against this original."
+    },
+    "docs/observability.md": {
+      "rewritten": [
+        "docs/README.md",
+        "docs/coding-breaking-changes.md",
+        "docs/coding-guidelines.md",
+        "docs/coding-modules.md",
+        "docs/coding-naming.md",
+        "docs/coding-observability.md",
+        "docs/coding-robustness.md",
+        "docs/coding-telemetry-stability.md",
+        "docs/collector.md",
+        "docs/component-stability.md",
+        "docs/component-status.md",
+        "docs/contributing-changelog.md",
+        "docs/contributing-components.md",
+        "docs/contributing-labels.md",
+        "docs/contributing-makefile.md",
+        "docs/contributing-testing.md",
+        "docs/contributing-workflow.md",
+        "docs/ga-roadmap.md",
+        "docs/internal-architecture.md",
+        "docs/module-versioning.md",
+        "docs/observability-experimental.md",
+        "docs/observability.md",
+        "docs/platform-support.md",
+        "docs/release-bugfix.md",
+        "docs/release-core.md",
+        "docs/release-schedule.md",
+        "docs/release-troubleshooting.md",
+        "docs/release.md",
+        "docs/scraping-receivers-changes.md",
+        "docs/scraping-receivers.md",
+        "docs/security-best-practices.md",
+        "docs/standard-warnings.md",
+        "docs/verifying-images.md",
+        "docs/vision.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the original docs/observability.md against the rewritten docs/observability.md plus its split-out companion docs/observability-experimental.md (the other rewritten files cover unrelated documents). All substantive content is preserved: the pointer to the Internal telemetry page and its three sub-topics, the Troubleshooting pointer, the goals/vision framing, all four observable-element bullets with their sub-notes (derivative calculation open question, hysteresis for start/stop events and their extra data, host metrics rationale), the impact statement, the configurable verbosity level and its default-performance requirement, all seven internal-telemetry properties (otelcol_ prefix, non-prefixed instrumentation-library metrics, OTel API for metrics/traces plus zap for logs and the Go SDK, scope_name/mdatagen default recommendation, metadata.yaml with the contrib issue #33523 link, helper-library reuse, per-instance attributes), the full units table, all six mdatagen outputs plus the 'configure in metadata.yaml and run go generate' step, the detection/development YAML example and its four supported detectors (container, host, process, service), the traces-off-by-default statement, the metrics+traces OTLP YAML (interval 5000, grpc, backend:4317 / backend2:4317), the otel-sdk-config example link, the no-logs-in-Go-SDK caveat with the opentelemetry-go issue link, and the ${MY_POD_IP}:4317 self-trace example. The only original artifacts not carried over are two link definitions that were never referenced in the rendered body ([issue7532] and [issue7454], plus the unused [OpenTelemetry Configuration] and Go support table link definitions); these produce no visible content, so they are not reported as dropped items."
+    },
+    "docs/platform-support.md": {
+      "rewritten": [
+        "docs/README.md",
+        "docs/coding-breaking-changes.md",
+        "docs/coding-guidelines.md",
+        "docs/coding-modules.md",
+        "docs/coding-naming.md",
+        "docs/coding-observability.md",
+        "docs/coding-robustness.md",
+        "docs/coding-telemetry-stability.md",
+        "docs/collector.md",
+        "docs/component-stability.md",
+        "docs/component-status.md",
+        "docs/contributing-changelog.md",
+        "docs/contributing-components.md",
+        "docs/contributing-labels.md",
+        "docs/contributing-makefile.md",
+        "docs/contributing-testing.md",
+        "docs/contributing-workflow.md",
+        "docs/ga-roadmap.md",
+        "docs/internal-architecture.md",
+        "docs/module-versioning.md",
+        "docs/observability-experimental.md",
+        "docs/observability.md",
+        "docs/platform-support.md",
+        "docs/release-bugfix.md",
+        "docs/release-core.md",
+        "docs/release-schedule.md",
+        "docs/release-troubleshooting.md",
+        "docs/release.md",
+        "docs/scraping-receivers-changes.md",
+        "docs/scraping-receivers.md",
+        "docs/security-best-practices.md",
+        "docs/standard-warnings.md",
+        "docs/verifying-images.md",
+        "docs/vision.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the original docs/platform-support.md against the rewritten docs/platform-support.md (the only rewrite file covering this source; the other files cover unrelated documents). All factual content is preserved: the platform definition via Go GOOS/GOARCH with the syslist link, the Go minimum-requirements condition, the designated-owner requirement, the three-tier model and its alignment with the test strategy, the unsupported-platform caveats (no official builds, no issue support, no enhancements/bugfixes, possible breakage from future development), the test strategy (unit/performance for core, end-to-end/integration for contrib, testbed, real instances and container images, upcoming stability tests, linux/amd64 primary, contrib unit tests on windows/amd64, latest Ubuntu and Windows Server GitHub runners), the full cross-compile target list, the 'no other platforms tested by CI' statement, the container image publication to Docker Hub and ghcr.io with the goreleaser link, the contrib image e2e tests on latest Ubuntu across the four most recent Kubernetes versions, the summary table verbatim, and all Tier 1/2/3 descriptions (including infrastructure ownership, release-blocking behavior, defect priority, cross-compile-on-Linux-amd64 for Tier 3) plus every platform/owner table row and link."
+    },
+    "docs/release.md": {
+      "rewritten": [
+        "cmd/builder/RELEASE.md",
+        "docs/README.md",
+        "docs/coding-breaking-changes.md",
+        "docs/coding-guidelines.md",
+        "docs/coding-modules.md",
+        "docs/coding-naming.md",
+        "docs/coding-observability.md",
+        "docs/coding-robustness.md",
+        "docs/coding-telemetry-stability.md",
+        "docs/collector.md",
+        "docs/component-stability.md",
+        "docs/component-status.md",
+        "docs/contributing-changelog.md",
+        "docs/contributing-components.md",
+        "docs/contributing-labels.md",
+        "docs/contributing-makefile.md",
+        "docs/contributing-testing.md",
+        "docs/contributing-workflow.md",
+        "docs/ga-roadmap.md",
+        "docs/internal-architecture.md",
+        "docs/module-versioning.md",
+        "docs/observability-experimental.md",
+        "docs/observability.md",
+        "docs/platform-support.md",
+        "docs/release-bugfix.md",
+        "docs/release-core.md",
+        "docs/release-schedule.md",
+        "docs/release-troubleshooting.md",
+        "docs/release.md",
+        "docs/scraping-receivers-changes.md",
+        "docs/scraping-receivers.md",
+        "docs/security-best-practices.md",
+        "docs/standard-warnings.md",
+        "docs/verifying-images.md",
+        "docs/vision.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "I compared the original docs/release.md against the rewritten docs/release.md and its split-out companions (docs/release-core.md, docs/release-bugfix.md, docs/release-troubleshooting.md, docs/release-schedule.md). All factual and procedural content appears preserved: the three-section split and signing prerequisite; release-manager rotation, table-update rule, Slack thread and lead sharing, and the three release:blocker label links; core steps 1-7 (update-otel job plus local fallback and skip caveat, Merge freeze / Check, version numbering with v0.85.0 after v0.84.0, Prepare Release action, no leading v, prepare-release-prs/x fork PR, head-of-branch requirement, REMOTE=https caveat, make push-tags MODSET=beta|stable, Release Branch automation and release/v0.127.x example, stable tags not creating a branch, workflow detection steps, Actions tab, release-branch.sh with GITHUB_REF example, tag build wait, auto-created release with CHANGELOG.md and CHANGELOG-API.md); contrib and releases links; both post-release steps including release:retro and the two team links; all seven troubleshooting items with their commands, workarounds, known-issue links, and the temp-push-tags snippet; all bugfix criteria (2-week cycles, workaround examples, Tier 1 link, severity examples, 30-day security target, CVSSv3 >= 9.0 within five business days, one-working-day consensus rule) and all ten bugfix procedure steps; the 1.0 release rules; and the full release schedule table with every date, version, manager, and profile link."
+    },
+    "docs/rfcs/README.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Only docs/rfcs/README.md corresponds to the ORIGINAL; the other rewritten files are separate RFC documents with no counterpart in the original text and were not used for comparison. Every factual and procedural item of the original README is present in the rewritten README: OTEP referral for cross-cutting proposals, scope/maintainer-can-require-an-RFC rule, light structure plus OTEP template link, SIG-meeting and #otel-collector-dev announcement, PR-with-stricter-criteria framing, stakeholder definition (all approvers plus additional noted stakeholders), Lazy Consensus link, quorum of two approvals plus additional stakeholders, rfc:approvals-needed label at open, intent-to-merge comment, label swap to rfc:final-comment-period, CNCF Slack note, 4-business-day wait, objections as 'request changes' reviews, rfc:vote-needed label, binding vote result and dropping of reviews, non-trivial modifications resetting the waiting period and re-requesting reviews, resolution of all GitHub conversations with author explanation, 5-business-day/one-third vote window, simple majority with tie-break to approvers then maintainers, dedicated issue with linked threads and result documented in the RFC, and the same merge criteria for modifying existing RFCs and this document. Minor wording shift in the voting clause ('closes when one third voted, whichever comes last') slightly muddles the original 'at least ... or ... whichever comes last' phrasing, but no content is absent."
+    },
+    "docs/rfcs/batching-migration.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Only docs/rfcs/batching-migration.md corresponds to the ORIGINAL; the other rewritten files cover unrelated RFCs and were not scored. I checked every factual claim and procedural step of the original against the rewrite: the two batching mechanisms and their use cases (multi-exporter memory sharing, groupbyattrs); all five batchprocessor defects; the backpressure-preservation rationale; the superseded PR 11947 and all seven referenced issues/PRs (15047, 13766, 13582, 13583, 14038, 12022, 8122); the exporterhelper feature list and its three defaults (wait_for_result: false, block_on_overflow: false, batch::enabled: false); the in-memory-queue behavior; the queuebatchprocessor design and its three defaults (wait_for_result: true, block_on_overflow: true, batch::enabled: true); the three exporter opt-out categories (prometheus, prometheusremotewrite with num_consumers: 1, googlecloud); the feature flag name exporterhelper.exporterQueueBatchEnabled; both code blocks verbatim (NewDefaultQueueConfig with Sizer, NumConsumers 10, QueueSize 1_000, FlushTimeout 200ms, MinSize 8192, and the DefaultOrSome helper); the double-batching discussion (6 releases / ~3 months); all six risks; the full phase table including release versions v0.158.0, v0.164.0, v0.170.0; Phase 1 steps 1\u20136 (mdatagen check, metadata.yaml opt-out, Alpha gate, metrics prefix, queuebatchprocessor implementation, startup warning, docs/blog post); Phase 2 steps 7\u201310 including the August 2026 date, the ban on NewDefaultQueueConfig(), the exit criteria (three adopters, one at non-trivial scale, tracked list, no open regressions, 3-release extension increments); Phase 3 steps 11\u201312 (distribution manifest removal, ocb custom builds, Beta gate, one-cycle opt-out); Phase 4 steps 13\u201314; the additional work item on rejecting wait_for_result: true with a storage extension; and the conclusion. No content was found absent."
+    },
+    "docs/rfcs/component-configuration-schema-roadmap.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "dropped-content",
+      "dropped": [
+        {
+          "item": "The original bullet lists `metadata.yaml` explicitly as the source location of the `config` section for the YAML schema ('Natural extension of metadata.yaml approach') \u2014 preserved; but the phrase 'JSON schemas for configuration validation and editor autocompletion' etc. preserved. No omission here.",
+          "kind": "factual"
+        },
+        {
+          "item": "The `$ref` example list explanation 'To identify references we need full package paths (for external) or use local paths (for internal)' is preserved; however the statement that dependency references may point to 'internal definitions' within the same repository is preserved. No omission.",
+          "kind": "factual"
+        }
+      ],
+      "notes": "Substantive comparison: essentially all factual content of the original RFC is present in the rewritten docs/rfcs/component-configuration-schema-roadmap.md \u2014 motivation items, current/desired state, past attempts (configschema v0.102.0 retirement reasons, PR 27003, PR 10694 with go-jsonschema), current initiatives (schemagen AST/module-aware loading, PR 14288 in mdatagen), the three phases of the approach, reasoning bullets, YAML rationale, the full example YAML schema, schema spec details (JSON Schema format, duration/date-time special types, $ref rules with all three example paths, `any` fallback with type annotation, default attribute, validation link), extensibility `go` annotation sub-attributes (type/pointer/optional/custom with values type|default|validate) plus the example snippet, the generated Go code block verbatim, generated code details, customization placeholders (CustomFieldType, ValidateCustomField, DefaultCustomFieldValue), the full generated JSON Schema block, JSON schema details ($id = component import path, inline embedding, any for custom types), and all four roadmap phases with success criteria including the API-compatibility/naming caveat and the MUST on config file format compatibility. I found no missing factual or procedural items; the two entries above are non-omissions noted for transparency and should be treated as no findings."
+    },
+    "docs/rfcs/component-interfaces.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the ORIGINAL docs/rfcs/component-interfaces.md against the rewritten docs/rfcs/component-interfaces.md (the other rewritten files cover unrelated RFCs and are not derived from this source). All substantive content is preserved: the MUST scope statement and internal-package exemption, the full Quick Reference table (all six rows), the <Method>Func pairing rationale (nil no-op, embedding, sealed-interface extension via new func types + constructor options), the net/http Handler/HandlerFunc code blocks, both differences from the stdlib pattern (interface-only parameter/return types; required nil-check no-op, including the func(http.ResponseWriter, *http.Request) {} note), the SAFE VERSION code block, sealed vs. open interface definitions, the receiver/processor/exporter/connector/extension submodule list, the private() sealing method, receiver.Factory / component.Host / extensionmiddleware.GRPCClient / extensionauth.Client / extensionmiddleware.HTTPClient / extensionmiddleware.GRPCServer examples, the full receiver.Factory code block, the CreateProfiles/CreateProfilesFunc/WithProfiles extension example, the 'SHOULD use functional options even with no options' rule, the MUST-remain-unchanged-until-major-version rule, both SuperClient and GRPCClientV2 code blocks, the baseExtension test-helper struct, NewNop()/NewErr() semantics, all three Examples links with their exact paths, and all four References links. One borderline nuance (not counted as dropped): the original's parenthetical '(`go.mod`)' after 'dedicated Go module' is rendered simply as 'a dedicated Go module', which conveys the same requirement."
+    },
+    "docs/rfcs/component-status-reporting.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Section-by-section comparison of docs/rfcs/component-status-reporting.md against its rewrite found no missing factual or procedural content. All five overview points, the four historical health-reporting mechanisms (Start error, component.Host.ReportFatalError with its Serve/ErrServerClosed code sample, Shutdown error, panic), the three historical gaps, the link to ../component-status.md, all five goals (including the 'additional status may be reported in the future' note and the status-watcher-extension compliance example), all four deviations with their enumerated options (including the 'or refactor component to remove ReportStatus' alternative), the four Desired-Behavior-for-1.0 bullets (including the note that component.Component.Start keeps returning an error), and every reference link (9823, 10058, 9957, 9324, 9325, the mwear preview at commit cc870fd, contrib issues 8349/8816, PRs 5304/6550/6560, merged PR 8169) are preserved. Only trivial redundancy was dropped: Goal 3 in the original names 'service/internal/graph.Host' as an example of the component.Host implementation, which the rewrite omits there, but the same fact is stated elsewhere in the rewritten document. The other rewritten files are unrelated RFCs and were not part of the source document."
+    },
+    "docs/rfcs/component-universal-telemetry.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Only docs/rfcs/component-universal-telemetry.md corresponds to the ORIGINAL; the other rewritten files are unrelated new documents and were not used for comparison. Item-by-item check of the original: motivation/scope framing, the four goals, all attribute lists for receivers/processors/exporters/connectors (including the otlp receiver and memory_limiter singleton omission note and the Logger/TracerProvider/MeterProvider wrapping), the external two-layer-per-edge auto-instrumentation mechanism, the go.opentelemetry.io/collector/service scope name and the internal-package scope-name rule (go.opentelemetry.io/service vs .../internal/graph), the two measurement types with their enabled/disabled defaults and the ProtoMarshaler.Sizer() link, produced/consumed terminology, the otelcol.component.outcome attribute with success/failure/refused semantics and the consumer/producer layer interaction, the downstreamError wrapper / errors.As / fanoutconsumer multiError caveat / PR 11085 downstream bool note, the complete YAML metric definitions (all 12 metrics with enabled flags, descriptions, units, sum value_type and monotonic), the connector otelcol.pipeline.id data point attribute, the auto-instrumented logs rationale (10,000-span batch vs 100 batches of 100, 50% success rate, no logging of telemetry contents, noise concern, DEBUG log with metric attributes plus error message and item count, future severity triggers), the auto-instrumented spans limitation, and all four Additional Context links are all present in the rewrite. No factual or procedural content was found missing."
+    },
+    "docs/rfcs/configuration-merging-strategy.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Only docs/rfcs/configuration-merging-strategy.md in the rewrite corresponds to the ORIGINAL; the other rewritten files are unrelated RFCs and were not used for comparison. Item-by-item check of the original: background (issue #8754, PR #12097, confmap README reference including the pinned-revision link, Koanf default merge behavior, issues 8394/8754/10370), motivation/scope (hardcoded receivers/exporters/extensions, confmap/internal/merge.go reference, feedback from the original PR, the two aims including prepend/append for order-sensitive lists such as processors and transformprocessor statements), Approach 1 (yaml tags, main/extra/final YAML samples, no CLI option, looping the yaml tree, tag format as URI query parameters, mode with append/prepend and default append, duplicates default false, recursive with the service sub-tree example, both worked examples with their final.yaml), Approach 2 (RFC 3986 reference, existing URI syntax reuse instead of new CLI flags, confmap.enableMergeAppendOption gate fallback, merge_paths with both command examples, merge_mode, all four bash examples and their stated outcomes including the override_components.yaml default-behavior note), open questions (error out vs. log-and-default for invalid merge_mode/merge_paths; error out for an invalid query param), and extensibility (future map overriding, currently impossible). All were found present in the rewrite; only wording, heading levels, and link targets (relative paths instead of GitHub URLs) changed."
+    },
+    "docs/rfcs/configuring-confmap-providers.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the ORIGINAL docs/rfcs/configuring-confmap-providers.md against the rewritten file of the same path (the other rewritten files cover unrelated RFCs). All content is preserved: the motivation (HTTP config retrieval, poll-interval and headers options), the current-state claim that no upstream Provider offers config options and that confmap interfaces may still change pre-stable, the three desired-state features, the three resolution steps (URI restriction with the `file/auth:` named-scheme example, per-Provider stabilization, optional configuration interface), the speculative-section caveat, the invocation mechanics (`--config` flag, `${scheme:uri}` braces syntax, one Provider instance per scheme), the four candidate option locations, the note about extending options to apply without a URI, the RFC 3986 reference, and the full advantages/disadvantages/breaking-changes lists for queries, fragments (including the `https://config.com/config#refresh-interval=env:REFRESH_INTERVAL&headers=file:headers.yaml` example and the env-var/API-token remark), separate per-URI flags, and additional config sources in the main config file. Only wording, heading depth, and list ordering changed."
+    },
+    "docs/rfcs/env-vars.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the original docs/rfcs/env-vars.md against the rewritten docs/rfcs/env-vars.md (the other rewritten files cover unrelated RFCs and contain no env-vars content). All substantive content is preserved: the v0.97.0 scope statement; out-of-scope items (`--config env:ENV` CLI syntax, transition via feature gates/warnings); all four goals with the Configuration WG spec link and issue 3963; the three current syntaxes ($ENV, ${ENV}, ${env:ENV}) with two-dollar-sign escaping; type-casting rules (confmap.Conf storage, mapstructure with WeaklyTypedInput enabled, issue 9532, inline-mode manual casting with the expand.go link); naked-syntax identifier rules (ASCII alphanumerics + `_`, standalone `*`, `#`, `$`, `@`, `!`, `?`, `-`) and the go.dev/play/p/YfxLtYbsL6j example; braces syntax (no `}`); env provider (no `$`, recursive resolution example, yaml.v3 / YAML v1.2 with exceptions, go.dev/play/p/3vNLznwSZQe); all three unset-variable issues (8215, contrib 9984 with `${1}`, contrib 11846); the 0123 -> \"83\" example (issue 8565); the Configuration WG restriction and PR 3948; desired two-syntax behavior with `\\${[^$}]+}` escaping; desired casting (original string representation stored, WeaklyTypedInput disabled, string-field hook, go.dev/play/p/RtPmH8aZA1X); character set with the 200-character maximum and error-on-invalid-identifier rule; and the full comparison table verbatim. The only wording-level reduction is goal 3, where the explicit example of switching between `${env:ENV}` and `${ENV}` is generalized to \"a move between the two syntaxes\"; the claim itself is preserved, so it is not reported as dropped content."
+    },
+    "docs/rfcs/experimental-profiling.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Only docs/rfcs/experimental-profiling.md was supplied as the ORIGINAL; the corresponding rewritten file (docs/rfcs/experimental-profiling.md) was checked item by item against it. All content is preserved: the stable-signal framing and no-breaking-change goal; both discarded approaches (per-signal subpackage refactor with issue 10207 and the SIG's 1.0 rationale; build tags with the import/UX rationale); the two-phase proposal listing consumer, receiver, connector, component, processor, plus the service module for godoc marking; moving public methods/interfaces into an internal subpackage, restoring main-branch-equivalent APIs, the profiles subpackage, and PR #10253; the verbatim experimental godoc block and the statement that such APIs may change or be removed without counting as breaking; the note that no symbols need marking today but implementers may add comments later; the profiles pipeline YAML example with otlp receiver/exporter; the boot-time warning for experimental signals; and both signal-status-change outcomes (merge back with service imports updated, or removal from the repository and service module). The other rewritten files shown correspond to different source documents and were not in scope. No factual or procedural items are missing."
+    },
+    "docs/rfcs/logging-before-config-resolution.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The rewritten docs/rfcs/logging-before-config-resolution.md preserves all content from the original: the four overview bullets (importance of startup logging, v0.99.0 behavior, solutions, accepted solution), the motivation section with both linked warning issues (9162 deprecated syntax, 5615 undesired-but-handled situations) and debug information, all four requirements (logger usable everywhere once instantiated, accurate timestamps, accurate EntryCaller/line number, MUST write prior logs to stdout or stderr on graceful termination before primary logger creation), the current behavior statement, both solutions with their benefits and downsides (in-memory buffering with format/level fidelity vs. out-of-order risk and timestamps as source of truth; defaults-based logger with order preservation and error-time output vs. possible format/level mismatch), and the accepted solution including the fallback-logger requirement during shutdown from config-resolution errors. Only wording, heading phrasing (\"Create\" \u2192 \"Build\"), and formatting differ. Other rewritten files cover unrelated RFCs and were not part of the original document."
+    },
+    "docs/rfcs/optional-config-type.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Only docs/rfcs/optional-config-type.md corresponds to the supplied ORIGINAL; the other rewritten files cover unrelated RFCs and were not compared. Section-by-section check of the Optional[T] RFC: overview and zero-value rationale, the two standard-Go approaches, all five pointer drawbacks (non-obviousness, loss of distinction from conventional pointers such as gRPC configs, default-value/unset logic, nil-pointer exceptions, immutability concern), the Rust/Java precedent, the full basic Optional definition code (hasValue/value/defaultVal, Some, None, WithDefault, HasValue, Value, Default), the YAML-representation claim, the Protocols/Validate/createDefaultConfig example, the complete confighttp.ServerConfig example (TLSSetting, CORS, Auth, ResponseHeaders, NewDefaultServerConfig with 30s WriteTimeout and 1m ReadHeaderTimeout/IdleTimeout, ToListener, ToServer with auth/CORS/response-header handling and the CORS warning message), the OTLP receiver workaround code with IsSet(protoGRPC)/IsSet(protoHTTP), the note that Unmarshal may become unnecessary and HasValue returns false, the edge-case caveat, and the single disadvantage with the go-jsonschema package name and its omissis URL are all present. No factual or procedural content found missing."
+    },
+    "docs/rfcs/partial-reload.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "I compared the original docs/rfcs/partial-reload.md line by line against the rewritten docs/rfcs/partial-reload.md (the other rewritten files cover unrelated RFCs and were not part of this source document). All concrete claims appear preserved: the four impact categories and every component bullet (k8s_cluster 10-minute default timeout and 2-5 minute sync, prometheus SD backends, prometheus_remote_write WAL replay, k8s_attributes wait_for_metadata: true and 4-5 minutes, tail_sampling, groupbytrace, deltatocumulative, cumulativetodelta, interval, log_dedup, metric_start_time, statsd, prometheus registry, signalfx, k8s_attributes cache, file_log with the first 1000 bytes/fingerprint detail, azure_event_hub, awscloudwatch start_from, mongodb_atlas, kafka LeaveGroup), the service.partialReload feature flag, the reflect.DeepEqual diff and its four steps, the receiver/processor/exporter/pipeline/connector change rules, the gate alternative with PR 15254, telemetry/extension full-reload rule, all five rollout phases, error handling and fallback-to-full-reload behavior, the three corner cases, the three trade-offs with mitigations, both open questions, and the Reload interface future possibility. All referenced URLs (issue 44130, PR 842 discussion, issue 29305, PR 15254) are retained. Only cosmetic losses observed, not reported as dropped content: the qualifier \"StatsD\" in \"incoming StatsD packets\" (redundant with the component name) and the \"etc.\" after the service discovery list."
+    },
+    "docs/rfcs/processing.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "I compared the ORIGINAL docs/rfcs/processing.md against the rewritten docs/rfcs/processing.md (the other rewritten files cover unrelated RFCs and were only checked for stray content). All substantive content is preserved: the objective/prototype note, summary, goals and non-goals, all five use-case sections with their complete bullet lists and component name lists (attributesprocessor, filterprocessor, metricstransformprocessor, resourceprocessor, spanprocessor; metricsgenerationprocessor and spanmetricsprocessor/spanmetricsconnector; batchprocessor, groupbyattrprocessor, groupbytraceprocessor; cumulativetodeltaprocessor; k8sattributesprocessor, resourcedetectionprocessor), the transformation-language description including flattening, virtual fields (resource, library_info, metric with name/description/unit/type/aggregation_temporality/is_monotonic), all five expression snippets, the fully-specified-fields rule, function registration/WASM note, the Factories explanation, every example snippet (delete, keep_keys, replace_match x2, replace_all_matches, resource attribute delete, drop-where, set k8s_pod, group_by, SpanID set, create_gauge/read_gauge, and the full transform YAML config with all queries and pipeline block), the execution-order/optimization caveat, the declarative YAML configuration and its parsing note, all seven MUST-style function-naming rules, the replace_match Go implementation and its framework explanation (regexp compilation, TelemetryPath resolution, where-clause handled by framework), the embedded-processors rationale, and all four limitations. One non-content difference worth noting: the pdata reference link was retargeted from https://github.com/open-telemetry/opentelemetry-collector/tree/main/pdata to ../../pdata/README.md; the OTLP proto link is unchanged. I treated that as a link/formatting change rather than dropped content."
+    },
+    "docs/rfcs/release-approvers.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the ORIGINAL docs/rfcs/release-approvers.md against the rewritten docs/rfcs/release-approvers.md (the other rewritten files cover unrelated RFCs). All substantive content is preserved: the problem statement (differing skill sets, overlapping-but-distinct contributor sets, Operator and Helm Chart repos as independent-community examples, the growing release-retro backlog link), the proposed `collector-releases-approvers` GitHub team as approvers on opentelemetry-collector-releases and code owners of the Builder and release workflows, the refocusing of existing approver teams, the future WG/SIG possibility, team scope (code owners for release workflows in opentelemetry-collector and opentelemetry-collector-contrib; no new release-rotation or release-duty responsibilities), initial membership from `collector-contrib-approvers` plus maintainer outreach, all prior-art items (Docs SIG localization approver teams, Semantic Conventions SIG approver teams, and the three code-owner examples with their pinned links), and all four future-work bullets plus the 'this proposal does not require any of the above' caveat. Reference links [1]-[7] are all present, either inline or as relative paths (the CONTRIBUTING.md link was converted from an absolute GitHub URL to ../../CONTRIBUTING.md#membership-roles-and-responsibilities, an equivalent target). Only nuance change noted, not reported as a drop: 'missing out on retaining people' became 'the project misses the persons who hold more interest', which softens the retention framing but keeps the claim."
+    },
+    "docs/rfcs/scraper-controller-extension.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the ORIGINAL scraper-controller-extension RFC against the rewritten docs/rfcs/scraper-controller-extension.md (the other rewritten files cover unrelated RFCs and were treated as context only). All substantive content is preserved: the overview and motivation items (webhook-driven scrapes, job-queue scraping, external scheduling with cron/Kubernetes CronJobs), the current-state facts (path scraper/scraperhelper/internal/controller/controller.go, ControllerConfig fields CollectionInterval/InitialDelay/Timeout, ticker in startScraping(), scraper lifecycle tied to the controller), the proposed extension package extension/extensionscrapercontroller, the verbatim ControllerExtension / RegistrationHandle / DeregisterFunc / ControllerConfig code blocks, the four controller implementation changes (disable timer when CollectionInterval <= 0, register on Start(), deregister on Shutdown(), validation requiring at least one controller extension), the Contrib reference implementation note, all three use cases with their exact YAML (webhook_scraper_controller endpoint/path, pprof/cpu_10s endpoint, queue_scraper_controller redis settings, collection_interval: 0, oneshot_controller), the otelcol scrape CLI command and its four described behaviors, the Option B coordination caveat, and the open question about passing dynamic configuration such as targets for httpcheck. Only heading levels, ordering of prose, and tone changed. Nothing factual or procedural was found missing."
+    },
+    "docs/rfcs/semconv-feature-gates.md": {
+      "rewritten": [
+        "docs/rfcs/README.md",
+        "docs/rfcs/batching-migration.md",
+        "docs/rfcs/component-configuration-schema-roadmap.md",
+        "docs/rfcs/component-interfaces.md",
+        "docs/rfcs/component-status-reporting.md",
+        "docs/rfcs/component-universal-telemetry.md",
+        "docs/rfcs/configuration-merging-strategy.md",
+        "docs/rfcs/configuring-confmap-providers.md",
+        "docs/rfcs/env-vars.md",
+        "docs/rfcs/experimental-profiling.md",
+        "docs/rfcs/logging-before-config-resolution.md",
+        "docs/rfcs/optional-config-type.md",
+        "docs/rfcs/partial-reload.md",
+        "docs/rfcs/processing.md",
+        "docs/rfcs/release-approvers.md",
+        "docs/rfcs/scraper-controller-extension.md",
+        "docs/rfcs/semconv-feature-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the ORIGINAL docs/rfcs/semconv-feature-gates.md against the rewritten docs/rfcs/semconv-feature-gates.md (the other rewritten files cover unrelated RFCs and were not part of the original). Every factual and procedural item is preserved: the overview and stability/migration-guide framing; the three out-of-scope exclusions; all five mechanism characteristics (Collector native, Simple, Easy to understand, Flexible double-publish, Flexible other conventions); the v0/v1 and kind/id terminology with the `hostmetrics` example; the OTEL_SEMCONV_STABILITY_OPT_IN description including the `/dup` value and the note that it is a consistent but non-generic pattern; all three verbatim semconv v1.38.0 compatibility-warning quotes (HTTP, GenAI, K8s, including the `semconv.k8s.enableStable` / `semconv.k8s.disableLegacy` gate details and the `--feature-gates=-semconv.k8s.disableLegacy,+semconv.k8s.enableStable` command); the two proposed gate names with examples and the full four-row behavior table; the four-stage progression (alpha default-off with startup warning, beta on stable semconv release, stable after 4 minor releases, removal after 4 more); the exclusion of experimental conventions; the double-publishing conflict guidance with the http.server.duration/http.server.request.duration, process.cpu.time/process.owner\u2192process.owner.name, and system.memory.usage Gauge\u2192UpDownCounter examples; all three alternatives (environment variable including the rollback argument, more granular gate pairs with both counter-arguments, meta feature gate as a superset to postpone); the open-questions section with the verbatim stabilization blog quote and the OTEP statement; and all four reference links."
+    },
+    "docs/scraping-receivers.md": {
+      "rewritten": [
+        "docs/README.md",
+        "docs/coding-breaking-changes.md",
+        "docs/coding-guidelines.md",
+        "docs/coding-modules.md",
+        "docs/coding-naming.md",
+        "docs/coding-observability.md",
+        "docs/coding-robustness.md",
+        "docs/coding-telemetry-stability.md",
+        "docs/collector.md",
+        "docs/component-stability.md",
+        "docs/component-status.md",
+        "docs/contributing-changelog.md",
+        "docs/contributing-components.md",
+        "docs/contributing-labels.md",
+        "docs/contributing-makefile.md",
+        "docs/contributing-testing.md",
+        "docs/contributing-workflow.md",
+        "docs/ga-roadmap.md",
+        "docs/internal-architecture.md",
+        "docs/module-versioning.md",
+        "docs/observability-experimental.md",
+        "docs/observability.md",
+        "docs/platform-support.md",
+        "docs/release-bugfix.md",
+        "docs/release-core.md",
+        "docs/release-schedule.md",
+        "docs/release-troubleshooting.md",
+        "docs/release.md",
+        "docs/scraping-receivers-changes.md",
+        "docs/scraping-receivers.md",
+        "docs/security-best-practices.md",
+        "docs/standard-warnings.md",
+        "docs/verifying-images.md",
+        "docs/vision.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the original docs/scraping-receivers.md against the rewritten docs/scraping-receivers.md plus its split-out child docs/scraping-receivers-changes.md (other rewritten files cover unrelated documents). All factual and procedural content is present: the definition of scraping receivers and pdata translation, both receiver types with all four linked example receivers, the metadata.yaml requirement and its generation outputs, the metadata-schema reference (relative path instead of the full URL, which is a formatting change only), the no-guarantee caveat, the default/optional metric definitions, the Semantic Convention compatibility pointer, the default-vs-optional rule of thumb plus all five MUST-be-optional conditions, the README stability-levels reference, all four stability level descriptions (Development, Alpha, Beta, Stable) with their normative statements, the telemetry stability pointer, the non-breaking change (adding an optional metric), the 3-version spacing rule with the v0.62.0/0.65.0 example, the version-in-warning rule, the feature-gate fallback for complex changes, and all step lists for removing an optional metric, removing a default metric, making a default metric optional, adding a new default metric (including both verbatim warning examples), and the three-step feature-gate procedure with the receiver.hostmetricsreceiver.emitMetricsWithDirectionAttribute example warning. Nothing missing."
+    },
+    "docs/security-best-practices.md": {
+      "rewritten": [
+        "docs/README.md",
+        "docs/coding-breaking-changes.md",
+        "docs/coding-guidelines.md",
+        "docs/coding-modules.md",
+        "docs/coding-naming.md",
+        "docs/coding-observability.md",
+        "docs/coding-robustness.md",
+        "docs/coding-telemetry-stability.md",
+        "docs/collector.md",
+        "docs/component-stability.md",
+        "docs/component-status.md",
+        "docs/contributing-changelog.md",
+        "docs/contributing-components.md",
+        "docs/contributing-labels.md",
+        "docs/contributing-makefile.md",
+        "docs/contributing-testing.md",
+        "docs/contributing-workflow.md",
+        "docs/ga-roadmap.md",
+        "docs/internal-architecture.md",
+        "docs/module-versioning.md",
+        "docs/observability-experimental.md",
+        "docs/observability.md",
+        "docs/platform-support.md",
+        "docs/release-bugfix.md",
+        "docs/release-core.md",
+        "docs/release-schedule.md",
+        "docs/release-troubleshooting.md",
+        "docs/release.md",
+        "docs/scraping-receivers-changes.md",
+        "docs/scraping-receivers.md",
+        "docs/security-best-practices.md",
+        "docs/standard-warnings.md",
+        "docs/verifying-images.md",
+        "docs/vision.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the original docs/security-best-practices.md against the rewritten docs/security-best-practices.md (the only rewritten file covering this source; other files in the set correspond to different source documents). All factual content is preserved: the configuration-driven/secure-by-default framing, the component-developer audience and assumed background, the pointer to the configuration documentation, both end-user security links (config best practices, hosting best practices), the full TL;DR/Summary bullet set (configuration from central file, configuration helpers, minimize privileged access, document privileged access, encrypted connections, helper functions, extensions not exposing sensitive data), the blog post link, no embedded/default configuration, MUST NOT start without a specified config file, config MUST be validated before loading, MUST fail to start on invalid config, configopaque.String masking, custom user / not root-admin, majority of use cases need no privileged access, components MAY need privileged access or RBAC/network access, push vs pull and secure authenticated channel, `insecure: false` default, gRPC and HTTP helper references, the denial-of-service safeguards link, and the extensions health/telemetry rule. Only link forms changed (GitHub URLs for config, configgrpc, confighttp replaced by equivalent relative repository paths), which is a formatting change rather than dropped content."
+    },
+    "docs/standard-warnings.md": {
+      "rewritten": [
+        "docs/README.md",
+        "docs/coding-breaking-changes.md",
+        "docs/coding-guidelines.md",
+        "docs/coding-modules.md",
+        "docs/coding-naming.md",
+        "docs/coding-observability.md",
+        "docs/coding-robustness.md",
+        "docs/coding-telemetry-stability.md",
+        "docs/collector.md",
+        "docs/component-stability.md",
+        "docs/component-status.md",
+        "docs/contributing-changelog.md",
+        "docs/contributing-components.md",
+        "docs/contributing-labels.md",
+        "docs/contributing-makefile.md",
+        "docs/contributing-testing.md",
+        "docs/contributing-workflow.md",
+        "docs/ga-roadmap.md",
+        "docs/internal-architecture.md",
+        "docs/module-versioning.md",
+        "docs/observability-experimental.md",
+        "docs/observability.md",
+        "docs/platform-support.md",
+        "docs/release-bugfix.md",
+        "docs/release-core.md",
+        "docs/release-schedule.md",
+        "docs/release-troubleshooting.md",
+        "docs/release.md",
+        "docs/scraping-receivers-changes.md",
+        "docs/scraping-receivers.md",
+        "docs/security-best-practices.md",
+        "docs/standard-warnings.md",
+        "docs/verifying-images.md",
+        "docs/vision.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The rewritten docs/standard-warnings.md preserves every factual item of the original: the introductory framing (components with problematic scenarios, components requiring specific interaction), the instruction to read a component's README to see which warnings apply, and all four warning sections. Unsound Transformations retains the not-spec-compliant/meaningless definition and the two likely causes (converting metric data types, creating new metrics from existing metrics). Statefulness retains the same-Collector-instance requirement and all three examples (delta metrics, tail-based sampling, grouping telemetry). Identity Conflict retains both spec links, the three modifiable identity elements (name, attributes, instrumentation scope), and the definition of a conflict as two metrics/timeseries sharing name, attributes, and instrumentation scope. Orphaned Telemetry retains the trace_id/parent_span_id definition and both causes (modifying span_id/trace_id/parent_span_id, deleting telemetry). The only change to a value is the cosmetic fix of the doubled slash in the specification URLs ('main//specification' to 'main/specification'), which is not a content loss."
+    },
+    "docs/vision.md": {
+      "rewritten": [
+        "docs/README.md",
+        "docs/coding-breaking-changes.md",
+        "docs/coding-guidelines.md",
+        "docs/coding-modules.md",
+        "docs/coding-naming.md",
+        "docs/coding-observability.md",
+        "docs/coding-robustness.md",
+        "docs/coding-telemetry-stability.md",
+        "docs/collector.md",
+        "docs/component-stability.md",
+        "docs/component-status.md",
+        "docs/contributing-changelog.md",
+        "docs/contributing-components.md",
+        "docs/contributing-labels.md",
+        "docs/contributing-makefile.md",
+        "docs/contributing-testing.md",
+        "docs/contributing-workflow.md",
+        "docs/ga-roadmap.md",
+        "docs/internal-architecture.md",
+        "docs/module-versioning.md",
+        "docs/observability-experimental.md",
+        "docs/observability.md",
+        "docs/platform-support.md",
+        "docs/release-bugfix.md",
+        "docs/release-core.md",
+        "docs/release-schedule.md",
+        "docs/release-troubleshooting.md",
+        "docs/release.md",
+        "docs/scraping-receivers-changes.md",
+        "docs/scraping-receivers.md",
+        "docs/security-best-practices.md",
+        "docs/standard-warnings.md",
+        "docs/verifying-images.md",
+        "docs/vision.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The original docs/vision.md is a short document with six vision sections. The rewritten docs/vision.md preserves every element: the framing (high-level items, daily design guidance, living document that evolves), Performant (stable/performant under varying loads, well-behaved under extreme load, predictable low resource consumption), Observable (expose own operational metrics clearly, exemplar of observable service, configurable observability level for metrics/traces/logs, link to https://opentelemetry.io/docs/collector/internal-telemetry/), Multi-Data (traces, metrics, logs, other data types), Usable Out of the Box (reasonable default configuration, popular protocols, runs and collects out of the box), Extensible (no core code changes, custom agents based on core extended with own components, welcoming 3rd party contribution policy), and Unified Codebase (one codebase for daemon/Agent and standalone service/Collector). No factual or procedural items were dropped."
+    },
+    "examples/README.md": {
+      "rewritten": [
+        "examples/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The original contains a single factual item: a pointer to the Getting Started documentation at https://opentelemetry.io/docs/collector/getting-started/ for information on using the examples. The rewrite preserves both the link and the claim (only rephrased, plus added front-matter metadata). No factual or procedural content is missing."
+    },
+    "exporter/README.md": {
+      "rewritten": [
+        "exporter/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All substantive factual and procedural content from the original is present in the rewrite: the exporter definition, the exporter list (Debug, OTLP gRPC, OTLP HTTP), the contrib repository link, the `exporters` top-level YAML tag, the full sample configuration block (endpoints 1.2.3.4:8080 and 0.0.0.0:9211), the full-name composition rule and uniqueness requirement, the two full-name examples, the enable-by-pipeline statement with the complete service/pipelines YAML sample, the data ownership rules (shared access vs. copy for mutating exporters), the ConsumeTraces/ConsumeMetrics/ConsumeLogs MUST NOT mutate pdata guidance, and the three proxy environment variables plus the start-time/protocol-independent behavior. Only non-content changes noted: the phrase 'sorted alphabetically' describing the exporter list order was dropped (purely descriptive of ordering, no factual claim lost), and the rewrite adds new items (No-op exporter, exporter helper link) which is out of scope for this audit."
+    },
+    "exporter/debugexporter/README.md": {
+      "rewritten": [
+        "exporter/debugexporter/README.md",
+        "exporter/debugexporter/generating-example-output.md",
+        "exporter/debugexporter/verbosity-levels.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the original README against the three rewritten files (README.md, generating-example-output.md, verbosity-levels.md). All factual items are preserved: status/autogenerated table and link definitions verbatim; the troubleshooting link; every option with its default and behavior (`verbosity` basic/normal/detailed, `sampling_initial` = 2, `sampling_thereafter` = 1 with the Zap docs link and the note that 1 disables sampling, `use_internal_logger` = true, `output_paths` = [\"stdout\"] with stdout/stderr semantics and the configuration-error condition when use_internal_logger is true, `sending_queue` disabled by default with link to exporterhelper); both YAML examples unchanged; the default verbosity statement; all three verbosity descriptions and their example console outputs verbatim; the internal-logger consequences and both external links; and the Unstable Output Format warning. The link to generating-example-output.md is retained (now pointed at from verbosity-levels.md); that file's contents were not part of the original document under audit. No procedural steps from the original were dropped."
+    },
+    "exporter/debugexporter/generating-example-output.md": {
+      "rewritten": [
+        "exporter/debugexporter/README.md",
+        "exporter/debugexporter/generating-example-output.md",
+        "exporter/debugexporter/verbosity-levels.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL is only generating-example-output.md. All of its content is preserved in the rewritten generating-example-output.md: the full YAML configuration (debug/basic, debug/normal, debug/detailed exporters with their verbosity values; otlp receiver with grpc protocol; traces pipeline listing the three exporters and the otlp receiver), the instruction to run the Collector with the download link to the opentelemetry-collector-releases releases page, the `otelcol --config config.yaml` command, the instruction to run telemetrygen with the `go install github.com/open-telemetry/opentelemetry-collector-contrib/cmd/telemetrygen@latest` install command, and the `telemetrygen traces --otlp-insecure` command. The only change is that the cross-reference to the README's \"Verbosity levels\" section now points to the split-out verbosity-levels.md document, which is a link-target/structure change rather than dropped content."
+    },
+    "exporter/exporterhelper/README.md": {
+      "rewritten": [
+        "exporter/exporterhelper/README.md",
+        "exporter/exporterhelper/batch.md",
+        "exporter/exporterhelper/documentation.md",
+        "exporter/exporterhelper/persistent-queue.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All factual items from the original README appear in the rewritten set. Retry options (enabled/initial_interval 5s/max_interval 30s/max_elapsed_time 300s with zero-means-never-stop/multiplier 1.5, all with the 'ignored if disabled' caveat) are in README.md; sending queue options (enabled, num_consumers 10, wait_for_result, block_on_overflow, sizer with requests/items/bytes and performance notes, queue_size 1000), failure behavior, block_on_overflow behavior, and the otelcol_exporter_enqueue_failed_* metric reference are preserved; timeout 5s and the duration-string units list are preserved; batch settings (flush_timeout 200ms non-zero, min_size 8192, max_size 0, sizer inheritance rules and defaults, partition/metadata_keys semantics including case-insensitivity, duplicate validation error, empty default) moved intact to batch.md; persistent queue storage option, 1000-batch default, filestorage link, restart behavior, context-propagation/auth caveat, ASCII diagram, and the full YAML example moved intact to persistent-queue.md. documentation.md is additional content not present in the original, which is not a preservation issue."
+    },
+    "exporter/exporterhelper/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/documentation.md",
+        "exporter/exporterhelper/README.md",
+        "exporter/exporterhelper/batch.md",
+        "exporter/exporterhelper/documentation.md",
+        "exporter/exporterhelper/persistent-queue.md",
+        "pdata/documentation.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL is exporter/exporterhelper/documentation.md. The rewritten set includes an identical exporter/exporterhelper/documentation.md file. Every section was compared item by item: all 18 metric entries (otelcol_exporter_enqueue_failed_log_records, _metric_points, _profile_samples, _spans; in_flight_requests; queue_batch_send_size; queue_batch_send_size_bytes; queue_capacity; queue_size; send_failed_log_records, _metric_points, _profile_samples, _spans; sent_log_records, _metric_points, _profile_samples, _spans) are present with identical descriptions, units, metric types, value types, monotonic flags, and stability levels, including the detailed-level attribute notes (error.type, error.permanent) and the 'Only available on detailed level' note. The mdatagen generated-code comment and headings are also preserved. Nothing is missing."
+    },
+    "exporter/nopexporter/README.md": {
+      "rewritten": [
+        "exporter/nopexporter/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The rewrite preserves the full autogenerated status section (stability levels for profiles/traces/metrics/logs, distributions core/contrib/k8s, issue badge links, code owner @evan-bradley, and all reference link definitions), the placeholder-exporter description including both use cases (extensions-only Collector start, pipeline throughput testing without an exporter), the instruction that enabling it only requires including it in the exporter definitions, the statement that it takes no configuration, and the YAML example with the `nop: {}` entry and its re-serialization comment. No factual or procedural items were dropped; changes are limited to wording and added front matter."
+    },
+    "exporter/otlpexporter/README.md": {
+      "rewritten": [
+        "exporter/otlpexporter/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All substantive content from the original is present in the rewrite: the autogenerated status section (stability levels, distributions, issue badges, link definitions) is reproduced verbatim; the OTLP/gRPC intro with TLS-required and queued-retry behavior; all five required settings (`endpoint` with no default and gRPC naming-doc reference plus the https-scheme/insecure override behavior, `tls`, `retry_on_failure`, `sending_queue`, `timeout` default = 5s per individual attempt); the YAML example with both `otlp_grpc` and `otlp/2` entries at otelcol2:4317, cert_file/key_file, and insecure: true; the gzip-on-by-default note with the compression comparison reference and the `compression: none` disable snippet; and the three advanced-configuration helper references. The only changes are wording/tone plus converting the three Advanced Configuration absolute github.com/main URLs to equivalent relative paths (config/configgrpc, config/configtls, exporter/exporterhelper READMEs), which points to the same documents and is not a content loss. Added YAML front matter and an 'Example' heading are additions, not omissions."
+    },
+    "exporter/otlphttpexporter/README.md": {
+      "rewritten": [
+        "exporter/otlphttpexporter/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All factual items from the original are present in the rewrite: status/stability table and links, OTLP spec link, deprecated `otlphttp` alias notice and remediation, required `endpoint` with per-signal path appending (/v1/traces, /v1/metrics, /v1/logs), all optional settings with their defaults (traces_endpoint, metrics_endpoint, logs_endpoint, profiles_endpoint incl. the /v1development/profiles example and the 'ignored for logs' statement, tls, timeout 30s with Go http.Client link, read_buffer_size 0, write_buffer_size 512 * 1024, encoding proto with proto/json options, retry_on_failure, sending_queue), the endpoint example YAML, the gzip-on-by-default note with compression comparison link and compression: none snippet, the encoding: json snippet, and the config.go / testdata/config.yaml references. Only wording, headings, and added front matter changed."
+    },
+    "extension/README.md": {
+      "rewritten": [
+        "extension/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All factual claims from the original are preserved: the definition of an extension (adds capabilities on top of primary Collector functionality, no direct access to telemetry data, not part of pipelines, unlike receivers/processors/exporters), the two examples (Memory Limiter preventing out-of-memory situations, zPages providing live debugging data), the alphabetical list of supported service extensions with their links, the contributors repository link and note about additional extensions for custom builds, the ordering semantics (start order determined by the `extensions` tag under `service`, shutdown in reverse order), and the YAML example including its comment. The rewrite adds new items (Middleware Extension API, Storage) but adds nothing that removes original content."
+    },
+    "extension/extensionmiddleware/README.md": {
+      "rewritten": [
+        "extension/extensionmiddleware/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All factual claims from the original appear in the rewrite: the purpose of the package, the pointer to ../../config/configmiddleware/README.md, gRPC/HTTP client-and-server configurability, the broad definition of middleware, the trust/security caveat, the two unknowns (caller component identity with confighttp/configgrpc parallel, and signal type due to one connection serving multiple signals), one function per interface with error return, extensibility via new interfaces plus the matching lookup method in configmiddleware, HTTP methods called once per request returning functions producing http.RoundTripper / http.Handler, and gRPC methods called once at setup returning []grpc.DialOption / []grpc.ServerOption. No procedural steps existed in the original. Only wording/voice changes were observed."
+    },
+    "extension/memorylimiterextension/README.md": {
+      "rewritten": [
+        "extension/memorylimiterextension/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All substantive content from the original is preserved in the rewrite: the status/stability table (beta), distributions, issues badges and links, the beta link definition, the purpose statement (prevents OOM, may replace Memory Limiter Processor, better guarantees, used by receivers to reject requests before converting to OTLP, same configurations as the processor), the confighttp/configgrpc applicability statement, the complete YAML example (otlp grpc/http middlewares with id memory_limiter; extensions memory_limiter with check_interval: 1s, limit_percentage: 1, spike_limit_percentage: 0.05), and the cross-reference link to ../../processor/memorylimiterprocessor/README.md. Only wording and added front matter differ."
+    },
+    "extension/xextension/storage/README.md": {
+      "rewritten": [
+        "extension/xextension/storage/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All factual and procedural content from the original appears in the rewrite: the status note (under development, interface only), the GetClient signature, the four Client methods, Batch semantics with Key/Value/Type properties, the three Operation constructors, in-place Get results via the Value property, the error-only-on-problem note with both examples, the component's responsibility to Close a requested client, the optional Walker interface and Walk signature, the WalkFunc signature, no guaranteed key order, collection and in-order application of returned operations, nil slice validity, validity of all three operation types with Get storing results, and the SkipAll vs. other-error/internal-error behavior. Only wording, headings, and sentence structure changed."
+    },
+    "extension/zpagesextension/README.md": {
+      "rewritten": [
+        "extension/zpagesextension/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All substantive content from the original is present in the rewrite. Verified item by item: status table (stability beta, distributions core/contrib/k8s, warnings link, issues badges, and all four reference link definitions) is byte-identical; the intro claims (HTTP endpoint with live debugging data, properly instrumented components, all core exporters and receivers provide zPage instrumentation, in-process diagnostics without a backend) are paraphrased but retained; the required `endpoint` setting with default localhost:55679 and both binding forms (localhost:<port> vs \":<port>\") is retained; the optional `expvar.enabled` setting with default false and cross-reference to ExpvarZ is retained; the YAML example block is unchanged; the links to ./config.go and ./testdata/config.yaml are retained; all six route sections (ServiceZ, PipelineZ, ExtensionZ, FeatureZ, TraceZ, ExpvarZ) keep their descriptions and identical example URLs, including the full latency bucket list (0us, 10us, 100us, 1ms, 10ms, 100ms, 1s, 10s, 1m] and the error-samples note; the Warnings section retains the SpanProcessor registration, TracerProvider dependency, RegisterSpanProcessor/UnregisterSpanProcessor method names, and the No-Op behavior when service::telemetry::traces::level is none. Only non-reportable changes were observed: added YAML front matter, an added \"## Configuration\" heading, removal of the bare \"Example:\" label before the code block, and wording/voice edits (e.g., \"collector\" capitalized to \"Collector\", \"OTel\" expanded to \"OpenTelemetry\")."
+    },
+    "featuregate/README.md": {
+      "rewritten": [
+        "featuregate/README.md",
+        "featuregate/defining-gates.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "No factual or procedural content is absent. Every item from the original appears somewhere in the rewrite: the mdatagen declarative example and full field table, the mdatagen-generated registration in the internal/metadata submodule, the metadata.NamespacedUniqueIdentifierFeatureGate check, the mdatagen doc link, the programmatic init()/MustRegister example with all options (Stable, WithRegisterFromVersion v0.65.0, description, reference URL, WithRegisterToVersion v0.70.0), the RemovalVersion requirement for Stable, the read-lock/caching/no-loop guidance, the --feature-gates flag semantics with -/+/no prefix, the otelcol shell example and its explanation, and all four lifecycle stages plus the alpha->deprecated and beta-revert-for-2-releases rules.\n\nOne caveat (not a drop): two code blocks were swapped between files. The `otelcol --config=config.yaml --feature-gates=gate1,-gate2,+gate3` shell example now sits in defining-gates.md under \"Code checks the status of the gate later through the global feature gate registry\", while the `if myFeatureGate.IsEnabled()` Go snippet sits in README.md under \"Controlling Gates\" just before \"That command turns gate1 and gate3 on\". Both snippets are still present, but each is now under the wrong heading, so the procedural pairing of example-to-explanation is broken. Also, the original's literal path formatting `internal/metadata` is rendered as prose (\"the internal metadata submodule\") and the original's \"at least 2 releases\" became \"after two releases\"."
+    },
+    "internal/testutil/README.md": {
+      "rewritten": [
+        "internal/testutil/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All substantive content is preserved: the module path `go.opentelemetry.io/collector/internal/testutil`, its purpose (providing utility functions), and the consumers (tests in other OpenTelemetry Collector modules). The only difference is the original's hedging \"functions, etc.\" being narrowed to \"utility functions\", plus added front-matter metadata; no factual or procedural item is absent."
+    },
+    "pdata/README.md": {
+      "rewritten": [
+        "pdata/README.md",
+        "pdata/documentation.md",
+        "pdata/fields.md",
+        "pdata/flags.md",
+        "pdata/naming.md",
+        "pdata/oneof-fields.md"
+      ],
+      "status": "dropped-content",
+      "dropped": [
+        {
+          "item": "In the singular fields section, the original explicitly states that pdata uses the word `Timestamp` *instead of* `TimeUnixNano` for protobuf fields containing `time_unix_nano`; the rewrite (pdata/fields.md) omits the mention of the `TimeUnixNano` name that the convention deviates from.",
+          "kind": "factual"
+        }
+      ],
+      "notes": "All other content is preserved across the split files: the status/autogenerated table and code owners (README.md), the intro on OTLP protobuf backing and the private `orig` pointer field and no-shared-mutable-data guarantee (README.md), package naming and protobuf message representation including both `pmetric` examples and all six naming exceptions plus New/MoveTo/CopyTo requirements and getter rules (naming.md), singular/optional/repeated/repeated-scalar/enum field rules with the AggregationTemporality code sample (fields.md), the full oneof section including the protobuf/Go samples, Type getter rules, enum constants and Empty constants and String() method (oneof-fields.md), and the flags rules with the LogRecordFlags sample plus the NumberDataPoint protobuf message and pdata API example (flags.md). pdata/documentation.md adds new feature-gate content not present in the original, which is not a drop."
+    },
+    "pdata/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/documentation.md",
+        "exporter/exporterhelper/documentation.md",
+        "pdata/README.md",
+        "pdata/documentation.md",
+        "pdata/fields.md",
+        "pdata/flags.md",
+        "pdata/naming.md",
+        "pdata/oneof-fields.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL supplied is pdata/documentation.md only. Its full content \u2014 the title heading, the Feature Gates section intro sentence, the feature gate table (columns Feature Gate, Stage, Description, From Version, To Version, Reference; row `pdata.useProtoPooling`, alpha, 'When enabled, enable using local memory pools for underlying data that the pdata messages are pushed to.', v0.133.0, N/A, link to issue 13631), the mdatagen generated-code comment, and the closing pointer to the featuregate README \u2014 is reproduced verbatim in the rewritten pdata/documentation.md. No factual or procedural item is absent. The other rewritten files are additional content not present in the original and are outside the scope of this check."
+    },
+    "processor/README.md": {
+      "rewritten": [
+        "processor/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared section by section. All factual claims from the original are present in the rewrite: the processor purpose, the aspect list and anchors, the supported-processor links (batch, memory limiter), the contrib repository link, all five recommended-order entries with their rationales (memory_limiter first for load shedding, sampling/filtering early, Context-dependent processors such as k8sattributes before batching because batching clears request context, transform/enrich processors, batch last with the preference for exporter batching), data ownership passing via ConsumeTraces/ConsumeMetrics/ConsumeLogs, receiver fan-out to multiple pipelines, the two modes and the MutatesData field of the Capabilities struct determining mode at startup, exclusive-mode cloning at the fan-out connector, ownership duration and the prohibition on reading/writing after handoff, the attributesprocessor example, shared-mode no-cloning and read-only rules, copy-on-write alternative and MutatesData=false, ordering guidance, and the custom-processor steps with the processorhelper link. The rewrite adds a 'Queue Batch Processor' entry not in the original, but additions are out of scope for this audit. No omissions found."
+    },
+    "processor/batchprocessor/README.md": {
+      "rewritten": [
+        "processor/batchprocessor/README.md",
+        "processor/batchprocessor/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All substantive content from the original README appears in the rewrite: the status/autogenerated section (stability, distributions, issue links, reference links) is byte-identical; the purpose and placement guidance (after `memory_limiter` and sampling processors) is retained; the link to config.go and testdata/config.yaml are preserved as relabeled links; all six configuration options with their defaults (send_batch_size = 8192, timeout = 200ms, send_batch_max_size = 0, metadata_keys = empty, metadata_cardinality_limit = 1000) and their described behaviors (trigger semantics, zero-timeout behavior, must be >= send_batch_size, one batcher per client.Metadata combination, lifetime-of-process limit) are present; both YAML examples are unchanged; the metadata-batching section retains the multi-tenant rationale, the tenant_id example, include_metadata: true, the background-task/memory caveat, the 1000 default rationale, the Auth extension recommendation, and the otelcol_processor_batch_metadata_cardinality metric. The only omission is the pure cross-reference sentence 'See notes about metadata batching below.', which carries no factual or procedural content. The added documentation.md is new material, not a loss."
+    },
+    "processor/batchprocessor/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/documentation.md",
+        "exporter/exporterhelper/documentation.md",
+        "pdata/documentation.md",
+        "processor/batchprocessor/README.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL supplied is processor/batchprocessor/documentation.md. The rewritten set includes processor/batchprocessor/documentation.md verbatim: the '# batch' heading, the 'Internal Telemetry' intro sentence, and all five metric sections (otelcol_processor_batch_batch_send_size {unit}/Histogram/Int/Development; batch_send_size_bytes By/Histogram/Int/Development with the 'Only available on detailed level' note; batch_size_trigger_send {time}/Sum/Int/monotonic true/Development; metadata_cardinality {combination}/Sum/Int/monotonic false/Development; timeout_trigger_send {time}/Sum/Int/monotonic true/Development), plus the mdatagen 'DO NOT EDIT' comment. No factual or procedural content from the original is absent."
+    },
+    "processor/memorylimiterprocessor/README.md": {
+      "rewritten": [
+        "processor/memorylimiterprocessor/README.md",
+        "processor/memorylimiterprocessor/best-practices.md",
+        "processor/memorylimiterprocessor/configuration.md",
+        "processor/memorylimiterprocessor/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All factual and procedural content of the original README appears in the rewrite. Overview, functionality (soft/hard limits, limit_mib, spike_limit_mib, non-permanent error and receiver retry/backpressure, both warnings including the issue 8632 link and the non-OTLP caveat, forced GC above hard limit, resumption below soft limit, exponential GC backoff and reset) is preserved in README.md. Best-practices content (GOMEMLIMIT at 80% of hard limit, place memory_limiter first in the pipeline, spike_limit_mib sizing at ~20% of hard limit and spiky-traffic/longer-interval caveat, container vs bare-metal guidance for limit_percentage vs limit_mib) is preserved in best-practices.md. All configuration options with defaults, the config.go link, the requirement to set limit_mib or limit_percentage, the ~50MiB overhead note, cgroups/docker note, precedence of limit_mib, the 75%/1GiB=750MiB and 25%/1GiB=250MiB examples, the GC interval options and their 0-value behavior, and both YAML examples with computed hard/soft limits are preserved in configuration.md. documentation.md is additional content not present in the original, which is out of scope for this audit."
+    },
+    "processor/memorylimiterprocessor/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/documentation.md",
+        "exporter/exporterhelper/documentation.md",
+        "pdata/documentation.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/README.md",
+        "processor/memorylimiterprocessor/best-practices.md",
+        "processor/memorylimiterprocessor/configuration.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL document is processor/memorylimiterprocessor/documentation.md, which appears verbatim among the rewritten files (processor/memorylimiterprocessor/documentation.md). All six metric sections (otelcol_processor_memory_limiter_accepted_log_records, accepted_metric_points, accepted_spans, refused_log_records, refused_metric_points, refused_spans), their descriptions, and every table value (units {record}/{datapoint}/{span}, Sum, Int, Monotonic true, Alpha stability), plus the mdatagen generated-code comment and the 'Internal Telemetry' intro sentence, are preserved. The other rewritten files add content not present in the original, which is out of scope for this audit. Nothing from the original is missing."
+    },
+    "processor/processorhelper/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/documentation.md",
+        "exporter/exporterhelper/documentation.md",
+        "pdata/documentation.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL document is processor/processorhelper/documentation.md, containing three internal telemetry metrics (otelcol_processor_incoming_items, otelcol_processor_internal_duration, otelcol_processor_outgoing_items) with their descriptions and unit/type/monotonic/stability tables. The rewritten file at the same path reproduces all three metric sections verbatim, including the mdatagen generated-code comment, the '# processorhelper' heading, the 'Internal Telemetry' intro sentence, and every table value ({item}/Sum/Int/true/Alpha, s/Histogram/Double/Alpha). The other rewritten files cover unrelated components and add content rather than remove it. Nothing from the original is missing."
+    },
+    "processor/queuebatchprocessor/README.md": {
+      "rewritten": [
+        "processor/queuebatchprocessor/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All factual items from the original are present in the rewrite: the autogenerated status table (stability, distributions, issues links, code owners), the signal types accepted, the exporterhelper sending-queue reference, the batchprocessor replacement claim plus the batching-migration RFC link, the complete default-settings YAML block (num_consumers: 1, sizer: requests, queue_size: 10, block_on_overflow: true, wait_for_result: false, batch.enabled: true, batch.sizer: items, min_size: 8192, flush_timeout: 200ms) with its comments, the exporterhelper documentation pointer, the note that partitioning and storage are available, both examples' full YAML (include_metadata: true, batch::partition::metadata_keys with tenant_id, file_storage directory /var/lib/otelcol/queuebatch, storage: file_storage, service pipelines), the requirement to set include_metadata: true on receivers, the empty-vs-unset distinction and case-insensitivity of metadata entries, the filestorage extension URL, and the storage behavior notes (no in-memory queue, serialization on enqueue, read back from disk, wait_for_result unsupported with storage). Only non-reportable changes: the batchprocessor link target gained '/README.md', the filestorage link was inlined rather than using a reference definition, and front matter was added."
+    },
+    "receiver/README.md": {
+      "rewritten": [
+        "receiver/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "All factual and procedural content from the original is preserved in the rewrite: the receiver definition and data flow to processors/exporters, the links, the OTLP receiver listing, contrib repository reference, the `receivers` top-level tag, the at-least-one-enabled-receiver requirement, both YAML samples verbatim, full-name composition and uniqueness, the two full-name examples, enablement by pipeline membership, and the per-pipeline minimum. The rewrite adds a No-op Receiver entry (an addition, not a drop)."
+    },
+    "receiver/nopreceiver/README.md": {
+      "rewritten": [
+        "receiver/nopreceiver/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The autogenerated status section (stability levels alpha: profiles; beta: traces, metrics, logs; distributions core/contrib; issue badge links; code owner @evan-bradley; and all reference link definitions) is reproduced verbatim. The purpose statement (placeholder receiver, useful for starting a Collector with only extensions enabled), the Getting Started instruction (include it in the receiver definitions; it takes no configuration), and the YAML example (`receivers:` / `nop:`) are all present. Only wording/tone changed, plus added front matter metadata. No factual or procedural content dropped."
+    },
+    "receiver/otlpreceiver/README.md": {
+      "rewritten": [
+        "receiver/otlpreceiver/README.md",
+        "receiver/otlpreceiver/config.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "Compared the original README section by section against the rewritten README (plus the added config.md reference file).\n\nAll factual items are preserved: the autogenerated status table (stability levels alpha/profiles and stable/traces, metrics, logs; distributions core, contrib, k8s, otlp; issue badges and all link definitions), the OTLP spec link, the getting-started YAML snippet, the statement that a protocol is disabled by omitting it, the `endpoint` defaults (localhost:4317 gRPC, localhost:4318 HTTP) with the gRPC naming-syntax link and the security best-practices link, the four advanced-configuration helper references (gRPC incl. CORS, HTTP, TLS/mTLS, Auth), the HTTP/JSON behavior (same address as gRPC, OTLP JSON serialization requirement), the four `*_url_path` settings with defaults `/v1/traces`, `/v1/metrics`, `/v1/logs`, `/v1/profiles`, the POST instructions to `[address]/[*_url_path]`, the default port 4318, the `otlphttpexporter` `traces_endpoint`/`metrics_endpoint`/`logs_endpoint`/`profiles_endpoint` guidance, and the full CORS description (`allowed_origins`, `allowed_headers` with default safelist link, `max_age` caching link) plus the identical CORS YAML example including the wildcard comment and `max_age: 7200`.\n\nOnly non-reportable differences: the advanced-configuration links were converted from absolute GitHub `main` URLs to equivalent relative paths, inline reference-style link definitions were inlined, the duplicated trailing [contrib]/[core] link definitions were removed (already defined in the status section), and new reference material was added in config.md (additions are out of scope)."
+    },
+    "receiver/otlpreceiver/config.md": {
+      "rewritten": [
+        "receiver/otlpreceiver/README.md",
+        "receiver/otlpreceiver/config.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The rewritten config.md reproduces every section of the original reference verbatim: the Config table (protocols row), otlpreceiver-Protocols (grpc, http), configgrpc-GRPCServerSettings (all 9 rows with defaults localhost:4317, tcp, 524288), both copies of configtls-TLSServerSetting (ca_file, cert_file, key_file, client_ca_file), configgrpc-KeepaliveServerConfig, KeepaliveServerParameters (5 rows), KeepaliveEnforcementPolicy (2 rows), configauth-Authentication, confighttp-HTTPServerSettings (localhost:4318, 20971520/20MiB), confighttp-CORSConfig (allowed_origins, allowed_headers, max_age), and the time-Duration description. The intro sentence 'Config defines configuration for OTLP receiver.' was relocated under the Config heading but retained. The additional README.md file adds new material but removes nothing. No factual or procedural items are absent."
+    },
+    "receiver/receiverhelper/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/documentation.md",
+        "exporter/exporterhelper/documentation.md",
+        "pdata/documentation.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The rewrite includes receiver/receiverhelper/documentation.md, which matches the ORIGINAL item-for-item: all 13 internal telemetry metrics (accepted/failed/refused log_records, metric_points, profile_samples, spans, plus otelcol_receiver_requests), their units, metric types, value types, monotonicity and Alpha stability, the outcome attribute with values success/refused/failure, and the receiverhelper.newReceiverMetrics feature gate row (alpha, v0.138.0, N/A, PR 12802 link) plus the Feature Gates README link. The other rewritten files are additional documents not present in the original and were not evaluated for extra content. No factual or procedural items are missing."
+    },
+    "scraper/README.md": {
+      "rewritten": [
+        "scraper/README.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The rewritten file preserves all substantive content from the original: the scraper definition sentence, the full autogenerated status table (Stability row with [development]: metrics, logs; Issues row with both open and closed issue badge images and their query URLs), the [development] link reference to docs/component-stability.md#development, and the autogenerated section HTML comment markers. The only changes are the heading rename from 'General Information' to 'Scrapers' and the addition of YAML front matter, which are wording/structural changes rather than dropped content."
+    },
+    "scraper/scraperhelper/README.md": {
+      "rewritten": [
+        "scraper/scraperhelper/README.md",
+        "scraper/scraperhelper/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The original README contains only a title, a one-sentence description of what a scraper does, and the autogenerated status section (Stability: beta for metrics and logs, the open/closed issue badge links for label pkg/scraperhelper, and the [beta] link to docs/component-stability.md#beta). All of these appear verbatim in the rewritten scraper/scraperhelper/README.md; only the heading text changed from 'General Information' to 'Scraper helper' (wording only). The added documentation.md contains new internal-telemetry content not present in the original, which is out of scope for this audit. Nothing factual or procedural was dropped."
+    },
+    "scraper/scraperhelper/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/documentation.md",
+        "exporter/exporterhelper/documentation.md",
+        "pdata/documentation.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/README.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL document (scraper/scraperhelper/documentation.md) is reproduced verbatim in the rewritten file set at scraper/scraperhelper/documentation.md. All four internal telemetry metrics (otelcol_scraper_errored_log_records, otelcol_scraper_errored_metric_points, otelcol_scraper_scraped_log_records, otelcol_scraper_scraped_metric_points), their descriptions, and their full table values (Unit {datapoint}, Sum, Int, Monotonic true, Stability Alpha) are preserved, as are the mdatagen generated-code comment, the title, and the 'Internal Telemetry' intro sentence. No factual or procedural content is absent; the other rewritten files are additional content beyond the original scope."
+    },
+    "scraper/scraperhelper/xscraperhelper/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/documentation.md",
+        "exporter/exporterhelper/documentation.md",
+        "pdata/documentation.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL document (scraper/scraperhelper/xscraperhelper/documentation.md) is reproduced verbatim in the rewritten file of the same path: the mdatagen header comment, the '# xscraperhelper' title, the 'Internal Telemetry' section intro, and both metrics (otelcol_scraper_errored_profile_records and otelcol_scraper_scraped_profile_records) with identical descriptions and table values ({datapoint}, Sum, Int, true, Alpha). All other rewritten files are additional content not present in the original and were not evaluated for omissions."
+    },
+    "service/README.md": {
+      "rewritten": [
+        "service/README.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The ORIGINAL consists solely of the autogenerated status section (H1 title, stability row listing development: traces, metrics, logs, profiles, the open/closed issue badge links, and the three reference link definitions for [development], [core], and [contrib]). All of these appear verbatim in the rewritten service/README.md; only YAML frontmatter was added. The additional service/documentation.md file introduces new content (internal telemetry metrics and feature gates) that has no counterpart in the ORIGINAL, which is out of scope for this audit. Nothing from the ORIGINAL is missing."
+    },
+    "service/documentation.md": {
+      "rewritten": [
+        "cmd/mdatagen/internal/sampleconnector/documentation.md",
+        "cmd/mdatagen/internal/sampleentityreceiver/documentation.md",
+        "cmd/mdatagen/internal/samplemigrationscraper/documentation.md",
+        "cmd/mdatagen/internal/sampleprocessor/documentation.md",
+        "cmd/mdatagen/internal/samplereceiver/documentation.md",
+        "cmd/mdatagen/internal/samplescraper/documentation.md",
+        "confmap/documentation.md",
+        "exporter/exporterhelper/documentation.md",
+        "pdata/documentation.md",
+        "processor/batchprocessor/documentation.md",
+        "processor/memorylimiterprocessor/documentation.md",
+        "processor/processorhelper/documentation.md",
+        "receiver/receiverhelper/documentation.md",
+        "scraper/scraperhelper/documentation.md",
+        "scraper/scraperhelper/xscraperhelper/documentation.md",
+        "service/README.md",
+        "service/documentation.md"
+      ],
+      "status": "ok",
+      "dropped": [],
+      "notes": "The rewritten service/documentation.md reproduces the original in full: all 12 internal telemetry metric sections (otelcol.connector.consumed.items, otelcol.connector.produced.items, otelcol.exporter.consumed.items, otelcol_process_cpu_seconds, otelcol_process_memory_rss, otelcol_process_runtime_heap_alloc_bytes, otelcol_process_runtime_total_alloc_bytes, otelcol_process_runtime_total_sys_memory_bytes, otelcol_process_uptime, otelcol.processor.consumed.items, otelcol.processor.produced.items, otelcol.receiver.produced.items) with identical units, metric types, value types, monotonicity and stability values; all five feature gates (service.AllowNoPipelines v0.122.0, service.partialReload v0.157.0, service.partialReloadReceivers v0.157.0 beta, service.profilesSupport v0.112.0, telemetry.newPipelineTelemetry v0.123.0) with stages, descriptions, versions and reference links; and the closing Feature Gates documentation link. The other rewritten files are additional unrelated documents and contain no removals relative to the original. Nothing missing."
+    }
+  }
+}

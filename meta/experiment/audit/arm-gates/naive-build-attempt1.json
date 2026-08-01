@@ -1,0 +1,773 @@
+{
+  "generated_at": "2026-08-01T07:55:45.948468+00:00",
+  "rewrite_model": "claude-opus-5",
+  "token_count_model": "claude-sonnet-5",
+  "treatment": "rewrite to approximately N tokens; preserve all factual and procedural content; no other constraints",
+  "original_total_tokens": 253161,
+  "ace_total_tokens": 286934,
+  "ratio": 1.133405224343402,
+  "naive_total_tokens": 320753,
+  "within_band": false,
+  "passes": [
+    {
+      "pass": 1,
+      "targets_total": 286934,
+      "output_total": 453336,
+      "batch_ids": [
+        "msgbatch_018nVBboyH2wWfgS1Lzz9Uen"
+      ],
+      "usage": {
+        "input_tokens": 256524,
+        "output_tokens": 488677,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "cost_usd_standard": 13.499545
+    },
+    {
+      "pass": 2,
+      "targets_total": 181610,
+      "output_total": 320753,
+      "batch_ids": [
+        "msgbatch_016GKs1NCQB6BYdNGucxm6SZ"
+      ],
+      "usage": {
+        "input_tokens": 256513,
+        "output_tokens": 348590,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "cost_usd_standard": 9.997315
+    }
+  ],
+  "usage_totals": {
+    "input_tokens": 513037,
+    "output_tokens": 837267,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "cost_usd_standard": 23.49686,
+  "files": {
+    ".chloggen/README.md": {
+      "orig_tokens": 562,
+      "target_pass1": 637,
+      "out_tokens_pass1": 1337,
+      "target_pass2": 403,
+      "out_tokens_pass2": 1029
+    },
+    "AGENTS.md": {
+      "orig_tokens": 863,
+      "target_pass1": 978,
+      "out_tokens_pass1": 1646,
+      "target_pass2": 619,
+      "out_tokens_pass2": 1012
+    },
+    "CLAUDE.md": {
+      "orig_tokens": 14,
+      "target_pass1": 16,
+      "out_tokens_pass1": 87,
+      "target_pass2": 10,
+      "out_tokens_pass2": 250
+    },
+    "CONTRIBUTING.md": {
+      "orig_tokens": 8365,
+      "target_pass1": 9481,
+      "out_tokens_pass1": 11998,
+      "target_pass2": 6001,
+      "out_tokens_pass2": 9641
+    },
+    "README.md": {
+      "orig_tokens": 16071,
+      "target_pass1": 18215,
+      "out_tokens_pass1": 22885,
+      "target_pass2": 11529,
+      "out_tokens_pass2": 20254
+    },
+    "VERSIONING.md": {
+      "orig_tokens": 4380,
+      "target_pass1": 4964,
+      "out_tokens_pass1": 4639,
+      "target_pass2": 3142,
+      "out_tokens_pass2": 4645
+    },
+    "cmd/builder/README.md": {
+      "orig_tokens": 4119,
+      "target_pass1": 4668,
+      "out_tokens_pass1": 8367,
+      "target_pass2": 2955,
+      "out_tokens_pass2": 4516
+    },
+    "cmd/builder/RELEASE.md": {
+      "orig_tokens": 233,
+      "target_pass1": 264,
+      "out_tokens_pass1": 461,
+      "target_pass2": 167,
+      "out_tokens_pass2": 295
+    },
+    "cmd/builder/test/README.md": {
+      "orig_tokens": 132,
+      "target_pass1": 150,
+      "out_tokens_pass1": 295,
+      "target_pass2": 95,
+      "out_tokens_pass2": 152
+    },
+    "cmd/mdatagen/README.md": {
+      "orig_tokens": 5021,
+      "target_pass1": 5691,
+      "out_tokens_pass1": 11208,
+      "target_pass2": 3602,
+      "out_tokens_pass2": 6368
+    },
+    "cmd/mdatagen/internal/sampleconnector/documentation.md": {
+      "orig_tokens": 2239,
+      "target_pass1": 2538,
+      "out_tokens_pass1": 4206,
+      "target_pass2": 1606,
+      "out_tokens_pass2": 2768
+    },
+    "cmd/mdatagen/internal/sampleentityreceiver/documentation.md": {
+      "orig_tokens": 977,
+      "target_pass1": 1107,
+      "out_tokens_pass1": 1902,
+      "target_pass2": 701,
+      "out_tokens_pass2": 1037
+    },
+    "cmd/mdatagen/internal/samplefactoryreceiver/README.md": {
+      "orig_tokens": 1012,
+      "target_pass1": 1147,
+      "out_tokens_pass1": 2455,
+      "target_pass2": 726,
+      "out_tokens_pass2": 1209
+    },
+    "cmd/mdatagen/internal/samplemigrationscraper/documentation.md": {
+      "orig_tokens": 1773,
+      "target_pass1": 2010,
+      "out_tokens_pass1": 3738,
+      "target_pass2": 1272,
+      "out_tokens_pass2": 2527
+    },
+    "cmd/mdatagen/internal/sampleprocessor/README.md": {
+      "orig_tokens": 763,
+      "target_pass1": 865,
+      "out_tokens_pass1": 1813,
+      "target_pass2": 547,
+      "out_tokens_pass2": 1447
+    },
+    "cmd/mdatagen/internal/sampleprocessor/documentation.md": {
+      "orig_tokens": 414,
+      "target_pass1": 469,
+      "out_tokens_pass1": 1119,
+      "target_pass2": 297,
+      "out_tokens_pass2": 715
+    },
+    "cmd/mdatagen/internal/samplereceiver/README.md": {
+      "orig_tokens": 9101,
+      "target_pass1": 10315,
+      "out_tokens_pass1": 18023,
+      "target_pass2": 6529,
+      "out_tokens_pass2": 12056
+    },
+    "cmd/mdatagen/internal/samplereceiver/documentation.md": {
+      "orig_tokens": 5038,
+      "target_pass1": 5710,
+      "out_tokens_pass1": 10108,
+      "target_pass2": 3614,
+      "out_tokens_pass2": 7340
+    },
+    "cmd/mdatagen/internal/samplescraper/README.md": {
+      "orig_tokens": 5870,
+      "target_pass1": 6653,
+      "out_tokens_pass1": 13881,
+      "target_pass2": 4211,
+      "out_tokens_pass2": 9436
+    },
+    "cmd/mdatagen/internal/samplescraper/documentation.md": {
+      "orig_tokens": 2363,
+      "target_pass1": 2678,
+      "out_tokens_pass1": 4753,
+      "target_pass2": 1695,
+      "out_tokens_pass2": 3342
+    },
+    "cmd/otelcorecol/README.md": {
+      "orig_tokens": 227,
+      "target_pass1": 257,
+      "out_tokens_pass1": 469,
+      "target_pass2": 163,
+      "out_tokens_pass2": 397
+    },
+    "cmd/schemagen/README.md": {
+      "orig_tokens": 3465,
+      "target_pass1": 3927,
+      "out_tokens_pass1": 5175,
+      "target_pass2": 2486,
+      "out_tokens_pass2": 3954
+    },
+    "config/configauth/README.md": {
+      "orig_tokens": 1305,
+      "target_pass1": 1479,
+      "out_tokens_pass1": 2610,
+      "target_pass2": 936,
+      "out_tokens_pass2": 2043
+    },
+    "config/configgrpc/README.md": {
+      "orig_tokens": 3422,
+      "target_pass1": 3879,
+      "out_tokens_pass1": 5345,
+      "target_pass2": 2455,
+      "out_tokens_pass2": 3569
+    },
+    "config/confighttp/README.md": {
+      "orig_tokens": 3400,
+      "target_pass1": 3854,
+      "out_tokens_pass1": 5748,
+      "target_pass2": 2439,
+      "out_tokens_pass2": 4354
+    },
+    "config/configmiddleware/README.md": {
+      "orig_tokens": 495,
+      "target_pass1": 561,
+      "out_tokens_pass1": 1021,
+      "target_pass2": 355,
+      "out_tokens_pass2": 653
+    },
+    "config/confignet/README.md": {
+      "orig_tokens": 497,
+      "target_pass1": 563,
+      "out_tokens_pass1": 996,
+      "target_pass2": 356,
+      "out_tokens_pass2": 594
+    },
+    "config/configtls/README.md": {
+      "orig_tokens": 2973,
+      "target_pass1": 3370,
+      "out_tokens_pass1": 5239,
+      "target_pass2": 2133,
+      "out_tokens_pass2": 3823
+    },
+    "confmap/README.md": {
+      "orig_tokens": 3626,
+      "target_pass1": 4110,
+      "out_tokens_pass1": 7170,
+      "target_pass2": 2601,
+      "out_tokens_pass2": 4719
+    },
+    "confmap/documentation.md": {
+      "orig_tokens": 294,
+      "target_pass1": 333,
+      "out_tokens_pass1": 765,
+      "target_pass2": 211,
+      "out_tokens_pass2": 496
+    },
+    "confmap/provider/envprovider/README.md": {
+      "orig_tokens": 887,
+      "target_pass1": 1005,
+      "out_tokens_pass1": 1855,
+      "target_pass2": 636,
+      "out_tokens_pass2": 1383
+    },
+    "confmap/provider/fileprovider/README.md": {
+      "orig_tokens": 758,
+      "target_pass1": 859,
+      "out_tokens_pass1": 1582,
+      "target_pass2": 544,
+      "out_tokens_pass2": 1350
+    },
+    "confmap/provider/httpprovider/README.md": {
+      "orig_tokens": 770,
+      "target_pass1": 873,
+      "out_tokens_pass1": 1638,
+      "target_pass2": 553,
+      "out_tokens_pass2": 1225
+    },
+    "confmap/provider/httpsprovider/README.md": {
+      "orig_tokens": 865,
+      "target_pass1": 980,
+      "out_tokens_pass1": 2529,
+      "target_pass2": 620,
+      "out_tokens_pass2": 1393
+    },
+    "confmap/provider/yamlprovider/README.md": {
+      "orig_tokens": 740,
+      "target_pass1": 839,
+      "out_tokens_pass1": 1888,
+      "target_pass2": 531,
+      "out_tokens_pass2": 1075
+    },
+    "connector/README.md": {
+      "orig_tokens": 2014,
+      "target_pass1": 2283,
+      "out_tokens_pass1": 3457,
+      "target_pass2": 1445,
+      "out_tokens_pass2": 2555
+    },
+    "connector/forwardconnector/README.md": {
+      "orig_tokens": 1671,
+      "target_pass1": 1894,
+      "out_tokens_pass1": 3833,
+      "target_pass2": 1199,
+      "out_tokens_pass2": 2533
+    },
+    "docs/README.md": {
+      "orig_tokens": 1042,
+      "target_pass1": 1181,
+      "out_tokens_pass1": 2050,
+      "target_pass2": 748,
+      "out_tokens_pass2": 1343
+    },
+    "docs/coding-guidelines.md": {
+      "orig_tokens": 12586,
+      "target_pass1": 14265,
+      "out_tokens_pass1": 21122,
+      "target_pass2": 9029,
+      "out_tokens_pass2": 14282
+    },
+    "docs/component-stability.md": {
+      "orig_tokens": 7214,
+      "target_pass1": 8176,
+      "out_tokens_pass1": 12950,
+      "target_pass2": 5175,
+      "out_tokens_pass2": 8268
+    },
+    "docs/component-status.md": {
+      "orig_tokens": 2299,
+      "target_pass1": 2606,
+      "out_tokens_pass1": 3458,
+      "target_pass2": 1649,
+      "out_tokens_pass2": 2885
+    },
+    "docs/ga-roadmap.md": {
+      "orig_tokens": 1371,
+      "target_pass1": 1554,
+      "out_tokens_pass1": 2147,
+      "target_pass2": 984,
+      "out_tokens_pass2": 1562
+    },
+    "docs/internal-architecture.md": {
+      "orig_tokens": 2103,
+      "target_pass1": 2384,
+      "out_tokens_pass1": 3649,
+      "target_pass2": 1509,
+      "out_tokens_pass2": 2914
+    },
+    "docs/observability.md": {
+      "orig_tokens": 2740,
+      "target_pass1": 3106,
+      "out_tokens_pass1": 4764,
+      "target_pass2": 1966,
+      "out_tokens_pass2": 3555
+    },
+    "docs/platform-support.md": {
+      "orig_tokens": 2847,
+      "target_pass1": 3227,
+      "out_tokens_pass1": 5784,
+      "target_pass2": 2042,
+      "out_tokens_pass2": 3647
+    },
+    "docs/release.md": {
+      "orig_tokens": 6574,
+      "target_pass1": 7451,
+      "out_tokens_pass1": 8909,
+      "target_pass2": 4716,
+      "out_tokens_pass2": 7232
+    },
+    "docs/rfcs/README.md": {
+      "orig_tokens": 1454,
+      "target_pass1": 1648,
+      "out_tokens_pass1": 2674,
+      "target_pass2": 1043,
+      "out_tokens_pass2": 1901
+    },
+    "docs/rfcs/batching-migration.md": {
+      "orig_tokens": 6730,
+      "target_pass1": 7628,
+      "out_tokens_pass1": 12360,
+      "target_pass2": 4828,
+      "out_tokens_pass2": 7920
+    },
+    "docs/rfcs/component-configuration-schema-roadmap.md": {
+      "orig_tokens": 5721,
+      "target_pass1": 6484,
+      "out_tokens_pass1": 10452,
+      "target_pass2": 4104,
+      "out_tokens_pass2": 6650
+    },
+    "docs/rfcs/component-interfaces.md": {
+      "orig_tokens": 4224,
+      "target_pass1": 4788,
+      "out_tokens_pass1": 7397,
+      "target_pass2": 3031,
+      "out_tokens_pass2": 5208
+    },
+    "docs/rfcs/component-status-reporting.md": {
+      "orig_tokens": 3314,
+      "target_pass1": 3756,
+      "out_tokens_pass1": 4842,
+      "target_pass2": 2377,
+      "out_tokens_pass2": 3691
+    },
+    "docs/rfcs/component-universal-telemetry.md": {
+      "orig_tokens": 4107,
+      "target_pass1": 4655,
+      "out_tokens_pass1": 6721,
+      "target_pass2": 2946,
+      "out_tokens_pass2": 4612
+    },
+    "docs/rfcs/configuration-merging-strategy.md": {
+      "orig_tokens": 3386,
+      "target_pass1": 3838,
+      "out_tokens_pass1": 5106,
+      "target_pass2": 2429,
+      "out_tokens_pass2": 4185
+    },
+    "docs/rfcs/configuring-confmap-providers.md": {
+      "orig_tokens": 2351,
+      "target_pass1": 2665,
+      "out_tokens_pass1": 3499,
+      "target_pass2": 1687,
+      "out_tokens_pass2": 2675
+    },
+    "docs/rfcs/env-vars.md": {
+      "orig_tokens": 3860,
+      "target_pass1": 4375,
+      "out_tokens_pass1": 7427,
+      "target_pass2": 2769,
+      "out_tokens_pass2": 4260
+    },
+    "docs/rfcs/experimental-profiling.md": {
+      "orig_tokens": 1134,
+      "target_pass1": 1285,
+      "out_tokens_pass1": 2038,
+      "target_pass2": 813,
+      "out_tokens_pass2": 1344
+    },
+    "docs/rfcs/logging-before-config-resolution.md": {
+      "orig_tokens": 1154,
+      "target_pass1": 1308,
+      "out_tokens_pass1": 1999,
+      "target_pass2": 828,
+      "out_tokens_pass2": 1313
+    },
+    "docs/rfcs/optional-config-type.md": {
+      "orig_tokens": 3410,
+      "target_pass1": 3865,
+      "out_tokens_pass1": 5297,
+      "target_pass2": 2446,
+      "out_tokens_pass2": 4310
+    },
+    "docs/rfcs/partial-reload.md": {
+      "orig_tokens": 5347,
+      "target_pass1": 6060,
+      "out_tokens_pass1": 7313,
+      "target_pass2": 3836,
+      "out_tokens_pass2": 6297
+    },
+    "docs/rfcs/processing.md": {
+      "orig_tokens": 5366,
+      "target_pass1": 6082,
+      "out_tokens_pass1": 7397,
+      "target_pass2": 3850,
+      "out_tokens_pass2": 6139
+    },
+    "docs/rfcs/release-approvers.md": {
+      "orig_tokens": 1552,
+      "target_pass1": 1759,
+      "out_tokens_pass1": 2769,
+      "target_pass2": 1113,
+      "out_tokens_pass2": 2169
+    },
+    "docs/rfcs/scraper-controller-extension.md": {
+      "orig_tokens": 2908,
+      "target_pass1": 3296,
+      "out_tokens_pass1": 4933,
+      "target_pass2": 2086,
+      "out_tokens_pass2": 3492
+    },
+    "docs/rfcs/semconv-feature-gates.md": {
+      "orig_tokens": 4940,
+      "target_pass1": 5599,
+      "out_tokens_pass1": 8696,
+      "target_pass2": 3544,
+      "out_tokens_pass2": 5988
+    },
+    "docs/scraping-receivers.md": {
+      "orig_tokens": 3173,
+      "target_pass1": 3596,
+      "out_tokens_pass1": 5450,
+      "target_pass2": 2276,
+      "out_tokens_pass2": 3922
+    },
+    "docs/security-best-practices.md": {
+      "orig_tokens": 1239,
+      "target_pass1": 1404,
+      "out_tokens_pass1": 2639,
+      "target_pass2": 889,
+      "out_tokens_pass2": 1540
+    },
+    "docs/standard-warnings.md": {
+      "orig_tokens": 643,
+      "target_pass1": 729,
+      "out_tokens_pass1": 1120,
+      "target_pass2": 461,
+      "out_tokens_pass2": 669
+    },
+    "docs/vision.md": {
+      "orig_tokens": 401,
+      "target_pass1": 454,
+      "out_tokens_pass1": 690,
+      "target_pass2": 287,
+      "out_tokens_pass2": 515
+    },
+    "examples/README.md": {
+      "orig_tokens": 61,
+      "target_pass1": 69,
+      "out_tokens_pass1": 99,
+      "target_pass2": 44,
+      "out_tokens_pass2": 90
+    },
+    "exporter/README.md": {
+      "orig_tokens": 1107,
+      "target_pass1": 1255,
+      "out_tokens_pass1": 2151,
+      "target_pass2": 794,
+      "out_tokens_pass2": 1370
+    },
+    "exporter/debugexporter/README.md": {
+      "orig_tokens": 3460,
+      "target_pass1": 3922,
+      "out_tokens_pass1": 5498,
+      "target_pass2": 2482,
+      "out_tokens_pass2": 4743
+    },
+    "exporter/debugexporter/generating-example-output.md": {
+      "orig_tokens": 391,
+      "target_pass1": 443,
+      "out_tokens_pass1": 878,
+      "target_pass2": 280,
+      "out_tokens_pass2": 604
+    },
+    "exporter/exporterhelper/README.md": {
+      "orig_tokens": 3046,
+      "target_pass1": 3452,
+      "out_tokens_pass1": 4785,
+      "target_pass2": 2185,
+      "out_tokens_pass2": 3198
+    },
+    "exporter/exporterhelper/documentation.md": {
+      "orig_tokens": 1994,
+      "target_pass1": 2260,
+      "out_tokens_pass1": 4408,
+      "target_pass2": 1430,
+      "out_tokens_pass2": 2797
+    },
+    "exporter/nopexporter/README.md": {
+      "orig_tokens": 937,
+      "target_pass1": 1062,
+      "out_tokens_pass1": 2503,
+      "target_pass2": 672,
+      "out_tokens_pass2": 1546
+    },
+    "exporter/otlpexporter/README.md": {
+      "orig_tokens": 1522,
+      "target_pass1": 1725,
+      "out_tokens_pass1": 3558,
+      "target_pass2": 1092,
+      "out_tokens_pass2": 2326
+    },
+    "exporter/otlphttpexporter/README.md": {
+      "orig_tokens": 1828,
+      "target_pass1": 2072,
+      "out_tokens_pass1": 3214,
+      "target_pass2": 1311,
+      "out_tokens_pass2": 2087
+    },
+    "extension/README.md": {
+      "orig_tokens": 418,
+      "target_pass1": 474,
+      "out_tokens_pass1": 761,
+      "target_pass2": 300,
+      "out_tokens_pass2": 423
+    },
+    "extension/extensionmiddleware/README.md": {
+      "orig_tokens": 731,
+      "target_pass1": 829,
+      "out_tokens_pass1": 1303,
+      "target_pass2": 525,
+      "out_tokens_pass2": 806
+    },
+    "extension/memorylimiterextension/README.md": {
+      "orig_tokens": 811,
+      "target_pass1": 919,
+      "out_tokens_pass1": 1900,
+      "target_pass2": 582,
+      "out_tokens_pass2": 1225
+    },
+    "extension/xextension/storage/README.md": {
+      "orig_tokens": 828,
+      "target_pass1": 938,
+      "out_tokens_pass1": 1549,
+      "target_pass2": 594,
+      "out_tokens_pass2": 988
+    },
+    "extension/zpagesextension/README.md": {
+      "orig_tokens": 1636,
+      "target_pass1": 1854,
+      "out_tokens_pass1": 2655,
+      "target_pass2": 1173,
+      "out_tokens_pass2": 2000
+    },
+    "featuregate/README.md": {
+      "orig_tokens": 1832,
+      "target_pass1": 2076,
+      "out_tokens_pass1": 3306,
+      "target_pass2": 1314,
+      "out_tokens_pass2": 2090
+    },
+    "internal/testutil/README.md": {
+      "orig_tokens": 70,
+      "target_pass1": 79,
+      "out_tokens_pass1": 139,
+      "target_pass2": 50,
+      "out_tokens_pass2": 101
+    },
+    "pdata/README.md": {
+      "orig_tokens": 4892,
+      "target_pass1": 5545,
+      "out_tokens_pass1": 10254,
+      "target_pass2": 3510,
+      "out_tokens_pass2": 6889
+    },
+    "pdata/documentation.md": {
+      "orig_tokens": 277,
+      "target_pass1": 314,
+      "out_tokens_pass1": 719,
+      "target_pass2": 199,
+      "out_tokens_pass2": 457
+    },
+    "processor/README.md": {
+      "orig_tokens": 2261,
+      "target_pass1": 2563,
+      "out_tokens_pass1": 3073,
+      "target_pass2": 1622,
+      "out_tokens_pass2": 2517
+    },
+    "processor/batchprocessor/README.md": {
+      "orig_tokens": 1890,
+      "target_pass1": 2142,
+      "out_tokens_pass1": 3261,
+      "target_pass2": 1356,
+      "out_tokens_pass2": 2508
+    },
+    "processor/batchprocessor/documentation.md": {
+      "orig_tokens": 584,
+      "target_pass1": 662,
+      "out_tokens_pass1": 1394,
+      "target_pass2": 419,
+      "out_tokens_pass2": 928
+    },
+    "processor/memorylimiterprocessor/README.md": {
+      "orig_tokens": 3558,
+      "target_pass1": 4033,
+      "out_tokens_pass1": 6615,
+      "target_pass2": 2553,
+      "out_tokens_pass2": 4496
+    },
+    "processor/memorylimiterprocessor/documentation.md": {
+      "orig_tokens": 779,
+      "target_pass1": 883,
+      "out_tokens_pass1": 1877,
+      "target_pass2": 559,
+      "out_tokens_pass2": 1197
+    },
+    "processor/processorhelper/documentation.md": {
+      "orig_tokens": 363,
+      "target_pass1": 411,
+      "out_tokens_pass1": 831,
+      "target_pass2": 260,
+      "out_tokens_pass2": 582
+    },
+    "processor/queuebatchprocessor/README.md": {
+      "orig_tokens": 1860,
+      "target_pass1": 2108,
+      "out_tokens_pass1": 3232,
+      "target_pass2": 1334,
+      "out_tokens_pass2": 2744
+    },
+    "receiver/README.md": {
+      "orig_tokens": 776,
+      "target_pass1": 880,
+      "out_tokens_pass1": 1538,
+      "target_pass2": 557,
+      "out_tokens_pass2": 938
+    },
+    "receiver/nopreceiver/README.md": {
+      "orig_tokens": 827,
+      "target_pass1": 937,
+      "out_tokens_pass1": 2193,
+      "target_pass2": 593,
+      "out_tokens_pass2": 1405
+    },
+    "receiver/otlpreceiver/README.md": {
+      "orig_tokens": 2333,
+      "target_pass1": 2644,
+      "out_tokens_pass1": 4539,
+      "target_pass2": 1673,
+      "out_tokens_pass2": 3079
+    },
+    "receiver/otlpreceiver/config.md": {
+      "orig_tokens": 4111,
+      "target_pass1": 4659,
+      "out_tokens_pass1": 10226,
+      "target_pass2": 2949,
+      "out_tokens_pass2": 6359
+    },
+    "receiver/receiverhelper/documentation.md": {
+      "orig_tokens": 1900,
+      "target_pass1": 2153,
+      "out_tokens_pass1": 3627,
+      "target_pass2": 1363,
+      "out_tokens_pass2": 2576
+    },
+    "scraper/README.md": {
+      "orig_tokens": 453,
+      "target_pass1": 513,
+      "out_tokens_pass1": 1049,
+      "target_pass2": 325,
+      "out_tokens_pass2": 936
+    },
+    "scraper/scraperhelper/README.md": {
+      "orig_tokens": 484,
+      "target_pass1": 549,
+      "out_tokens_pass1": 1183,
+      "target_pass2": 347,
+      "out_tokens_pass2": 966
+    },
+    "scraper/scraperhelper/documentation.md": {
+      "orig_tokens": 497,
+      "target_pass1": 563,
+      "out_tokens_pass1": 1171,
+      "target_pass2": 356,
+      "out_tokens_pass2": 758
+    },
+    "scraper/scraperhelper/xscraperhelper/documentation.md": {
+      "orig_tokens": 286,
+      "target_pass1": 324,
+      "out_tokens_pass1": 682,
+      "target_pass2": 205,
+      "out_tokens_pass2": 295
+    },
+    "service/README.md": {
+      "orig_tokens": 540,
+      "target_pass1": 612,
+      "out_tokens_pass1": 1326,
+      "target_pass2": 387,
+      "out_tokens_pass2": 852
+    },
+    "service/documentation.md": {
+      "orig_tokens": 1909,
+      "target_pass1": 2164,
+      "out_tokens_pass1": 3946,
+      "target_pass2": 1370,
+      "out_tokens_pass2": 3234
+    }
+  }
+}
