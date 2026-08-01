@@ -44,6 +44,13 @@ DOC_PATH_RE = re.compile(r"(^|/)(docs?|documentation|website)(/|$)|\.mdx?$", re.
 # filter. Excluded by author.
 BOT_AUTHOR_RE = re.compile(r"\[bot\]$|^(renovate|dependabot|github-actions|opentelemetrybot)", re.IGNORECASE)
 
+# Experiment 2: doc-referencing selection — the PR body or linked-issue body
+# must invoke in-repo documentation (registered in
+# meta/experiment2/PREREGISTRATION.md §3).
+DOC_REF_RE = re.compile(
+    r"docs/[\w/.-]+\.md|CONTRIBUTING\.md|AGENTS\.md|coding-guidelines", re.IGNORECASE
+)
+
 STRATA = ("feature", "bugfix", "config-integration", "other")
 FEATURE_RE = re.compile(r"\b(feat|feature|add|implement|support|introduce)\b", re.IGNORECASE)
 BUGFIX_RE = re.compile(r"\b(fix|bug|regression|crash|incorrect|broken)\b", re.IGNORECASE)
@@ -182,6 +189,12 @@ def main() -> None:
     ap.add_argument("--limit", type=int, default=500, help="max merged PRs to consider in the first pass")
     ap.add_argument("--allow-unknown-ci", action="store_true",
                     help="treat PRs with no recorded checks as passing (log it)")
+    ap.add_argument("--min-lines", type=int, default=MIN_CHANGED_LINES,
+                    help="changed-lines band lower bound (Experiment 2 overrides)")
+    ap.add_argument("--max-lines", type=int, default=MAX_CHANGED_LINES,
+                    help="changed-lines band upper bound (Experiment 2 overrides)")
+    ap.add_argument("--require-doc-reference", action="store_true",
+                    help="keep only PRs whose body or linked-issue body cites in-repo docs")
     ap.add_argument("--drop", type=int, action="append", default=[],
                     help="PR number to exclude (requires a matching --reason)")
     ap.add_argument("--reason", action="append", default=[],
@@ -209,11 +222,11 @@ def main() -> None:
             audit.append({"pr": pr["number"], "excluded_by": "bot-author", "value": author})
             continue
         lines = pr["additions"] + pr["deletions"]
-        if not (MIN_CHANGED_LINES <= lines <= MAX_CHANGED_LINES):
+        if not (args.min_lines <= lines <= args.max_lines):
             audit.append({"pr": pr["number"], "excluded_by": "changed-lines", "value": lines})
             continue
         survivors.append(pr)
-    print(f"  {len(survivors)} after bot-author and {MIN_CHANGED_LINES}-{MAX_CHANGED_LINES} line filters", file=sys.stderr)
+    print(f"  {len(survivors)} after bot-author and {args.min_lines}-{args.max_lines} line filters", file=sys.stderr)
 
     by_stratum: dict[str, list[dict]] = {s: [] for s in STRATA}
     for pr in survivors:
@@ -239,6 +252,17 @@ def main() -> None:
         if ci == "fail" or (ci == "unknown" and not args.allow_unknown_ci):
             audit.append({"pr": pr["number"], "excluded_by": f"ci-{ci}"})
             continue
+        if args.require_doc_reference:
+            referenced = bool(DOC_REF_RE.search(body))
+            if not referenced and issues:
+                # Only fetch the issue body when the PR body alone doesn't match.
+                issue = issue_detail(args.repo, issues[0]["number"], allow_fail=True)
+                if issue is not None:
+                    d["_issue_detail"] = issue
+                    referenced = bool(DOC_REF_RE.search(issue.get("body") or ""))
+            if not referenced:
+                audit.append({"pr": pr["number"], "excluded_by": "no-doc-reference"})
+                continue
 
         stratum = classify(d["title"], labels, files)
         d["_stratum"] = stratum
@@ -264,7 +288,7 @@ def main() -> None:
             # Linked issues can live in another repository (e.g. the contrib
             # repo); a failed fetch is recorded, not fatal — the PR body
             # already satisfied the description filter.
-            issue = issue_detail(args.repo, ref["number"], allow_fail=True)
+            issue = d.get("_issue_detail") or issue_detail(args.repo, ref["number"], allow_fail=True)
             if issue is not None:
                 issue_block = {
                     "number": issue["number"],
@@ -310,11 +334,12 @@ def main() -> None:
             },
             "filters": {
                 "min_changed_files": MIN_CHANGED_FILES,
-                "changed_lines": [MIN_CHANGED_LINES, MAX_CHANGED_LINES],
+                "changed_lines": [args.min_lines, args.max_lines],
                 "docs_only_threshold": DOCS_ONLY_THRESHOLD,
                 "min_body_chars": MIN_BODY_CHARS,
                 "allow_unknown_ci": args.allow_unknown_ci,
                 "exclude_bot_authors": True,
+                "require_doc_reference": args.require_doc_reference,
             },
             "eligible_by_stratum": counts,
         },
