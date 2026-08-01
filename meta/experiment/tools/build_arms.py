@@ -632,6 +632,32 @@ RESUME_PROMPT = (
 )
 
 
+def repair_prompt(preservation_path: Path) -> str:
+    """Build a repair prompt from a preservation report: every dropped item
+    must be restored into the governed corpus, in conformant language."""
+    report = json.loads(read_text(preservation_path))
+    sections = []
+    for rel, entry in sorted(report["files"].items()):
+        items = entry.get("dropped") or []
+        if not items:
+            continue
+        targets = ", ".join(entry.get("rewritten") or ["(unmapped)"])
+        lines = "\n".join(f"  - ({it.get('kind', 'factual')}) {it['item']}" for it in items)
+        sections.append(f"SOURCE {rel} (migrated into: {targets}):\n{lines}")
+    worklist = "\n\n".join(sections)
+    return (
+        "A content-preservation review compared each original document of this "
+        "repository against its migrated form and found the factual and "
+        "procedural items below missing from the governed corpus. Restore every "
+        "listed item into the most appropriate governed document (usually one of "
+        "the files each source was migrated into). Re-express content in "
+        "ACE-100-conformant language — restoring meaning, not original wording. "
+        "Do not remove or rewrite unrelated content. When done, run the full "
+        "sweep of tools/check.sh and tools/lint.py until clean, commit, and "
+        "report which document received each restored item.\n\n" + worklist
+    )
+
+
 def find_transcript(session_id: str) -> Path | None:
     hits = sorted((Path.home() / ".claude" / "projects").glob(f"*/{session_id}.jsonl"))
     return hits[0] if hits else None
@@ -745,7 +771,11 @@ def step_ace(args) -> None:
         if not cost["sessions"] or not cost["sessions"][-1].get("session_id"):
             die("--resume given but no prior session recorded in arms/gates/migration-cost.json")
         resume_session = cost["sessions"][-1]["session_id"]
-        record = run_migration_session(ace_work, RESUME_PROMPT, resume_session)
+        prompt = RESUME_PROMPT
+        if args.repair:
+            prompt = repair_prompt(Path(args.repair))
+            log(f"resume in repair mode: worklist from {args.repair}")
+        record = run_migration_session(ace_work, prompt, resume_session)
     else:
         if ace_work.exists():
             if not args.force:
@@ -1333,6 +1363,7 @@ def main() -> None:
     ap.add_argument("--kit-tarball", help="explicit kit tarball path (default: newest under <kit>/meta/dist)")
     ap.add_argument("--skill-tarball", help="explicit skill tarball path (default: newest under <kit>/meta/dist)")
     ap.add_argument("--resume", action="store_true", help="ace: continue the migration in a new session")
+    ap.add_argument("--repair", help="ace --resume: preservation report whose dropped items the session must restore")
     ap.add_argument("--force", action="store_true", help="rebuild a step's outputs from scratch")
     ap.add_argument("--poll-seconds", type=int, default=BATCH_POLL_SECONDS, help="Message Batches poll interval")
     args = ap.parse_args()
