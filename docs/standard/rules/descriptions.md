@@ -23,3 +23,7 @@ Descriptive text gives information. It does not give instructions. The imperativ
 **ACE 6.6 (M)** — Use a maximum of five sentences in each paragraph.
 
 **ACE 6.7** — In a table cell, a full sentence obeys ACE 6.1. A cell can hold a fragment. A fragment obeys the word rules and the term limits.
+
+## Note
+
+The usual repair for a sentence over the ACE 6.1 limit is a division into two sentences. That repair adds a sentence to the paragraph, and ACE 6.6 has a limit of five. When you divide sentences, check the paragraph, and divide the paragraph when the count passes five.

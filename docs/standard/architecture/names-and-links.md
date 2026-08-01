@@ -23,3 +23,7 @@ isPartOf: docs/standard/architecture/README.md
 **ACE 14.7** — Do not repeat the content of another document. Link to it. One fact lives in one document.
 
 **ACE 14.8** — Do not move or rename a file whose path an external system references. Examples: commit trailers, test assertions, published links. Declare the path exempt (ACE 13.7) and keep it. A rename that orphans history is a larger loss than a broken convention.
+
+**ACE 14.9 (M)** — A backticked span that contains `/` names a repository path. The path must resolve from the repository root or from the document. A backticked path is an identifier and a pointer at the same time. ACE 1.5 exempts it from the word rules only, never from resolution.
+
+Two shapes are outside this rule: a placeholder in angle brackets, and a span with spaces. When an example must show a path that has no file, declare the exemption (ACE 13.7). Field data: four conforming divisions left 101 stale backticked paths, and no check saw one of them.

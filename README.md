@@ -1,12 +1,12 @@
 ---
 "@type": TechArticle
 name: ACE-100 kit
-description: This kit contains ACE-100 Issue 1, a controlled language for monorepo documentation, designed for LLM agents.
+description: This kit contains ACE-100, a controlled language for monorepo documentation, designed for LLM agents.
 ---
 
 # ACE-100 kit
 
-ACE-100 is Agent-Consumable English. It is a controlled language and a document architecture for monorepos. This kit is Issue 2. The kit obeys its own rules. This file is the root index of the kit.
+ACE-100 is Agent-Consumable English. It is a controlled language and a document architecture for monorepos. This kit is the draft of Issue 3. The kit obeys its own rules. This file is the root index of the kit.
 
 ## Contents
 

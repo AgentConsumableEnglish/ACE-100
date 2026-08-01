@@ -10,7 +10,7 @@ isPartOf: docs/standard/README.md
 
 Commit messages and PR text are governed prose. Layer L1 applies to all of it. Layer L2 applies to bodies.
 
-**ACE 16.1 (M)** — Write the commit subject in the imperative. Use a maximum of 15 words. Do not put a period at the end. A structured prefix or trailer that a tool reads is an identifier, not prose. Examples: a conventional-commit prefix, a `Ticket:` trailer. Keep it verbatim, outside the count.
+**ACE 16.1 (M)** — Write the commit subject in the imperative. Use a maximum of 15 words, with no final period. A structured prefix or trailer that a tool reads is an identifier, not prose. Examples: a conventional-commit prefix, a `Ticket:` trailer. Keep it verbatim, outside the count.
 
 **ACE 16.2** — Write the commit body as descriptive text. Tell what the change does and why. Section 6 applies.
 

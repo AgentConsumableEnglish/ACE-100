@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# ACE-100 canonical checker (Issue 2). Settles the mechanical rules a shell can:
+# ACE-100 canonical checker (Issue 3 draft). Settles the mechanical rules a shell can:
 # front matter and its mandatory properties (ACE 13.2), the parent index that
 # `isPartOf` names (ACE 13.2, 11.3), the H1 (ACE 13.6), the 120-line size limit
 # (ACE 15.1), American spelling in prose (ACE 1.12), link resolution (ACE 14.5),
-# and one README.md index per directory (ACE 11.3).
+# backticked repository paths (ACE 14.9), and one README.md index per
+# directory (ACE 11.3).
 #
 # It does NOT check: vocabulary layers, voice, tense, modality, sentence limits,
 # meaning, or topic division. A clean run is necessary and not sufficient.
@@ -138,6 +139,7 @@ for f in "${files[@]}"; do
       NR<=c {next}
       /^```/ {code = !code; next}
       code {next}
+      /^[[:space:]]*>/ {next}  # a blockquote is quoted text (ACE 1.5)
       indict && /^[[:space:]]*\|/ {next}
       {
         gsub(/`[^`]*`/, "")
@@ -164,6 +166,25 @@ for f in "${files[@]}"; do
       note "$f — ACE 14.5: link points at a directory: $target"
     fi
   done < <(grep -o '](\([^)]*\))' "$f" 2>/dev/null | sed 's/^](//; s/)$//')
+
+  # --- backticked repository paths resolve (ACE 14.9) ---------------------------
+  # A backticked span with a slash is an identifier and a pointer at the same
+  # time. ACE 1.5 exempts it from the word rules, so no other check reads it,
+  # and a division strands it silently. Placeholders in angle brackets, globs,
+  # spans with spaces, and URLs are not paths. The path resolves from the
+  # repository root or from the document, and an anchor or a final slash drops.
+  while IFS= read -r span; do
+    [ -n "$span" ] || continue
+    case "$span" in
+      *'<'*|*'*'*|*' '*|*'://'*) continue ;;
+      */*) : ;;
+      *) continue ;;
+    esac
+    p=${span%%#*}; p=${p%/}
+    [ -e "$p" ] || [ -e "$dir/$p" ] \
+      || note "$f — ACE 14.9: backticked path does not resolve: $span"
+  done < <(awk -v c="$close" 'NR<=c {next} /^```/ {code=!code; next} code {next} {print}' "$f" \
+    | grep -o '`[^`]*`' | sed 's/^`//; s/`$//' | sort -u)
 done
 
 # --- every governed directory has an index (ACE 11.3) --------------------------

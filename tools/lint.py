@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
-"""ACE-100 extended linter (Issue 2).
+"""ACE-100 extended linter (Issue 3 draft).
 
 Settles the pattern rules beyond tools/check.sh: sentence word limits with the
-canonical count (ACE 5.1, 6.1, 8.5-8.8), modality (ACE 3.7), contractions
-(ACE 4.2), Latin abbreviations (ACE 8.4), replacements-table words (ACE 1.3),
-"-ing" forms outside the allowlist (ACE 3.4), heading depth (ACE 14.3),
-kebab-case names (ACE 14.1), document types and genres (ACE 12.1, 12.5), and
-exemption declarations (ACE 13.7, 17.7).
+canonical count over logical sentences (ACE 5.1, 6.1, 8.5-8.8), paragraph
+sentence counts (ACE 6.6), modality (ACE 3.7), contractions (ACE 4.2), Latin
+abbreviations (ACE 8.4), replacements-table words (ACE 1.3), the progressive
+form (ACE 3.3), heading depth (ACE 14.3), kebab-case names (ACE 14.1),
+document types and genres (ACE 12.1, 12.5), and exemption declarations
+(ACE 13.7, 17.7).
 
 It does NOT check: the function-word layer (needs part-of-speech reading),
-voice, tense, meaning, one-name-per-item, or topic division. A clean run is
-necessary and not sufficient.
+voice, the perfect tenses, "-ing" verb forms beyond the progressive (ACE 3.4
+is a rule about grammar, and grammar needs a reader), meaning,
+one-name-per-item, or topic division. A clean run is necessary and not
+sufficient.
 
   tools/lint.py <path>...   # lint the given files
   tools/lint.py             # lint every .md file under the current tree
@@ -24,40 +27,16 @@ import re, sys, pathlib
 ROOT = pathlib.Path.cwd()
 TYPES = {'CollectionPage', 'TechArticle', 'HowTo', 'APIReference', 'DefinedTermSet'}
 GENRES = {'decision-record', 'rules'}
-ING_OK_SUFFIX = ('thing',)  # something, anything, nothing, everything
-ING_NOT_SUFFIX = {'string', 'thing', 'sing', 'king', 'ring', 'wing', 'spring', 'during', 'bring'}
+# Predicate adjectives that follow "be" without a progressive reading
+# ("the file is missing"). ING_NOT_VERB holds exact words whose letters end
+# in "ing" with no verb suffix — exact membership, not a suffix test, so
+# "using" and "processing" stay caught. Compounds of "thing" pass by suffix.
+ING_ADJECTIVES = {'missing', 'existing', 'remaining', 'outstanding', 'pending', 'recurring', 'load-bearing'}
+ING_NOT_VERB = {'thing', 'string', 'sing', 'king', 'ring', 'wing', 'spring', 'bring', 'during', 'sting', 'swing'}
 
 def split_fm(text):
     m = re.match(r'^---\n(.*?)\n---\n', text, re.S)
     return (m.group(1), text[m.end():]) if m else (None, text)
-
-def load_allow():
-    allow = set()
-    p = ROOT / 'docs/dictionary/ing-allowlist.md'
-    if p.exists():
-        for l in p.read_text().splitlines():
-            if l.startswith('|') and not re.match(r'\|\s*-', l):
-                w = l.strip('|').split('|')[0].strip().lower()
-                if w and w != 'word':
-                    allow.add(w)
-    return allow
-
-def load_terms():
-    """Declared technical terms, word by word.
-
-    ACE 3.4 keeps a declared term with an "-ing" form permitted, so the linter
-    reads the declarations before it reports one. The table divides into
-    sibling parts once it passes the size limit, so every `technical-terms*.md`
-    part is read, not the base one alone.
-    """
-    terms = set()
-    for p in sorted((ROOT / 'docs/dictionary').glob('technical-terms*.md')):
-        for l in p.read_text().splitlines():
-            if l.startswith('|') and not re.match(r'\|\s*-', l):
-                t = l.strip('|').split('|')[0].strip().lower()
-                if t and t != 'term':
-                    terms.update(t.split())
-    return terms
 
 def load_banned():
     banned = []
@@ -78,6 +57,8 @@ def load_banned():
 
 def clean(body):
     t = re.sub(r'```.*?```', ' CODEBLOCK. ', body, flags=re.S)
+    # A blockquote is the markdown spelling of a quotation (ACE 1.5).
+    t = re.sub(r'^[ \t]*>.*$', ' QUOTE. ', t, flags=re.M)
     t = re.sub(r'`[^`]*`', ' TICK ', t)
     t = re.sub(r'"[^"\n]*"', ' QUOTE ', t)
     t = re.sub(r'\([^)]*\)', ' PAREN ', t)   # ACE 8.7: counts once, as one word
@@ -97,9 +78,7 @@ def sweep_files():
     return files
 
 def main(argv):
-    allow = load_allow()
     banned = load_banned()
-    terms = load_terms()
     files = [pathlib.Path(a) for a in argv] if argv else sweep_files()
     if not argv and not files:
         # A sweep that matches nothing is a broken sweep, not a clean one.
@@ -167,33 +146,54 @@ def main(argv):
             for w in banned:
                 if re.search(r'\b' + re.escape(w) + r'\b', scope, re.I):
                     note(rel, f'ACE 1.3: replacements-table word: "{w}"')
-        if not in_dict:
-            for mm in re.finditer(r'\b([A-Za-z-]*[a-z]ing)\b', prose_nt):
-                wl = mm.group(1).lower()
-                head = wl.split('-')[-1]
-                if wl in allow or wl in terms or wl.endswith(ING_OK_SUFFIX):
-                    continue
-                if head in allow or head in terms:
-                    continue
-                if wl in ING_NOT_SUFFIX or head in ING_NOT_SUFFIX:
-                    continue
-                if wl in ('codeblock',):
-                    continue
-                note(rel, f'ACE 3.4: "-ing" word outside the allowlist: {wl} (review: a noun or a technical use can be correct)')
+        # The progressive form is the machine-settleable slice of the "-ing"
+        # rules (ACE 3.3). The rest of ACE 3.4 is grammar, and needs a reader.
+        for mm in re.finditer(r'\b(am|is|are|was|were|be|been|being)\s+([A-Za-z-]*[a-z]ing)\b', scope, re.I):
+            w = mm.group(2).lower()
+            if w in ING_ADJECTIVES or w in ING_NOT_VERB or w.endswith('thing'):
+                continue
+            note(rel, f'ACE 3.3: the progressive form: "{mm.group(1)} {mm.group(2)}"')
 
         limit = 15 if fmd.get('@type') == 'HowTo' else 20
         if in_tmpl:
             continue
+        # Every count runs over the logical sentence (ACE 8.8): the wrapped
+        # lines of one paragraph join before any split, so a hard-wrapped
+        # document counts the same as an unwrapped one.
+        blocks, cur = [], []
         for l in plines:
-            l = l.strip()
-            if not l or l.startswith('|') or l.startswith('#'):
-                continue
-            l = re.sub(r'^([-*]|\d+\.)\s+', '', l)
-            l = l.replace(':', '.')
-            for s in re.split(r'[.!?]+', l):
-                toks = re.findall(r"[A-Za-z0-9][A-Za-z0-9'@-]*", s)
-                if len(toks) > limit:
-                    note(rel, f'ACE {"5.1" if limit==15 else "6.1"}: {len(toks)} words: {s.strip()[:70]}')
+            if l.strip():
+                cur.append(l.strip())
+            elif cur:
+                blocks.append(cur); cur = []
+        if cur:
+            blocks.append(cur)
+        for b in blocks:
+            paras, items = [], []
+            for l in b:
+                if l.startswith('|') or l.startswith('#'):
+                    continue
+                m = re.match(r'^([-*]|\d+\.)\s+', l)
+                if m:
+                    items.append(l[m.end():])
+                else:
+                    paras.append(l)
+            para = ' '.join(paras)
+            for src in ([para] if para else []) + items:
+                for s in re.split(r'[.!?]+', src.replace(':', '.')):
+                    toks = re.findall(r"[A-Za-z0-9][A-Za-z0-9'@-]*", s)
+                    if len(toks) > limit:
+                        note(rel, f'ACE {"5.1" if limit==15 else "6.1"}: {len(toks)} words: {s.strip()[:70]}')
+            # ACE 6.6: five sentences maximum in a paragraph. A vertical list
+            # is its own structure (ACE 8.6), so the items stay outside the
+            # count. The split here is deliberate: a period ends a sentence
+            # only before a new start, so "ACE 8.5" and "changes.md" do not
+            # divide, and a rule reference never inflates the count.
+            if para:
+                sents = [s for s in re.split(r'(?<=[.!?])\s+(?=[A-Z0-9`"(*\[])', para)
+                         if re.search(r'[A-Za-z0-9]', s)]
+                if len(sents) > 5:
+                    note(rel, f'ACE 6.6: {len(sents)} sentences in one paragraph, the limit is five')
 
     for i in issues:
         print(i)

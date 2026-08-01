@@ -19,5 +19,4 @@ Issue 2 divides the vocabulary. The function layer is closed. The content layer 
 - [Function core A to S](function-a-s.md). The closed function words, letters A to S.
 - [Function core T to Z](function-t-z.md). The closed function words, letters T to Z.
 - [Replacements](replacements.md). Words that are not permitted, with their approved alternatives.
-- [The -ing allowlist](ing-allowlist.md). The approved words that end in "-ing".
 - [Technical terms](technical-terms.md). The declared names of this repository.

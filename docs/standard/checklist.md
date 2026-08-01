@@ -24,6 +24,8 @@ Run `tools/check.sh` and `tools/lint.py` first. Then do these checks in the give
 13. Size: count the body lines against the limit (ACE 15.1).
 14. Division: make sure that a reader with one question opens one document (ACE 15.5).
 15. Links: make sure that each link points to a file and operates (ACE 14.5).
-16. Paths: make sure that no load-bearing path moved (ACE 14.8).
-17. Index: make sure that the index of the directory lists the document (ACE 11.6).
-18. Exemptions: make sure that each deviation has `exempt` and a ledger row (ACE 17.7).
+16. Backticked paths: make sure that each backticked repository path resolves (ACE 14.9).
+17. Paths: make sure that no load-bearing path moved (ACE 14.8).
+18. Parts: make sure that each part keeps the properties of its source (ACE 15.2).
+19. Index: make sure that the index of the directory lists the document (ACE 11.6).
+20. Exemptions: make sure that each deviation has `exempt` and a ledger row (ACE 17.7).

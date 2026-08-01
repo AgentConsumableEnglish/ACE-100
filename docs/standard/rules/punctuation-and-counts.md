@@ -39,4 +39,4 @@ isPartOf: docs/standard/rules/README.md
 
 **ACE 8.7** — Text in parentheses counts once, as one word, in the sentence that contains it. Issue 1 also counted it as its own sentence. That made the counts different for each reader, and Issue 2 repeals it.
 
-**ACE 8.8** — This is the whole counting rule. Two readers or two tools that apply ACE 8.5 to 8.7 must get the same count.
+**ACE 8.8** — This is the whole counting rule. Two readers or two tools that apply ACE 8.5 to 8.7 must get the same count. Every count applies to the logical sentence. A line wrap inside a sentence does not change any count. A hard-wrapped document counts the same as an unwrapped one.

@@ -11,5 +11,5 @@ Two checkers settle the mechanical rules (ACE 17.2). Run the two before each rev
 
 ## The checkers
 
-- [check.sh](check.sh). The canonical checker. Zero dependencies. Front matter, the H1, the size limit, spelling, links, and indexes. Adapted from the checker of the first field migration.
-- [lint.py](lint.py). The extended linter. Sentence limits with the canonical count, modality, contractions, "-ing" forms, replacements-table words, types, and exemptions.
+- [check.sh](check.sh). The canonical checker. Zero dependencies. Front matter, the H1, the size limit, spelling, links, backticked paths, and indexes. Adapted from the checker of the first field migration.
+- [lint.py](lint.py). The extended linter. Sentence and paragraph limits with the canonical count, modality, contractions, the progressive form, replacements-table words, types, and exemptions.

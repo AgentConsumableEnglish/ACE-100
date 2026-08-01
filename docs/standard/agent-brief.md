@@ -4,7 +4,7 @@ genre: rules
 name: The agent brief
 description: This document gives the whole ACE-100 standard in one file, for a writer.
 isPartOf: docs/standard/README.md
-exempt: "ACE 15.1 — one rulebook in one read; see the deviations ledger"
+exempt: "ACE 15.1, ACE 14.9 — one rulebook in one read, and the division line names example paths; see the deviations ledger"
 ---
 
 # The agent brief
@@ -22,7 +22,7 @@ Read this once, then write. Open the full sections only when a rule needs its de
 
 ## Verbs and modality (Section 3)
 
-- Simple tenses only. Active voice. No "-ing" verb forms outside the [allowlist](../dictionary/ing-allowlist.md).
+- Simple tenses only. Active voice. No "-ing" verb forms. A deverbal noun ("the encoding") is an open content word.
 - The past participle is an adjective only ("the deployed version").
 - Modality: "can" = possibility or permission. "must" = obligation. "will" = future. "would" = counterfactual only.
 - No phrasal verbs. ("Spin up" is not correct. Write "Start".)
@@ -31,6 +31,7 @@ Read this once, then write. Open the full sections only when a rule needs its de
 
 - Procedural sentence: 15 words maximum. Descriptive sentence: 20, in every document type. Note: 20.
 - Count method: a number, a backticked span, an identifier, quoted text, or a hyphenated group is one word. Parenthetical text counts once, in its sentence.
+- Counts apply to the logical sentence. A line wrap changes no count. A sentence split can push a paragraph past five — divide the paragraph too.
 - One instruction for each sentence. Condition first, then command: "When the check is green, merge."
 - Keep articles and subjects. No contractions. No semicolons. No Latin abbreviations.
 - Paragraphs: one topic, five sentences maximum, topic sentence first.
@@ -49,7 +50,9 @@ Read this once, then write. Open the full sections only when a rule needs its de
 - Every document starts with front matter: `"@type"`, `name`, `description` (one sentence, 20 words), `isPartOf` (parent index, from the repository root). The H1 equals `name`.
 - Every governed directory has exactly one `README.md` index: links plus one-line purposes, one short lead paragraph permitted.
 - Filenames are `kebab-case.md`. Headings stop at H3. Body links are relative to the file. Link to files, never directories.
+- A backticked span with `/` is a path, and it must resolve too (ACE 14.9).
 - Size: 120 body lines maximum, everything counts. Divide by topic: `topic.md` becomes `topic/README.md` plus parts.
+- A part keeps the `@type`, the `genre`, and the `exempt` of its source. Its `isPartOf` is the new index.
 - Priority when rules conflict: one-question-one-document (15.5), then the size limit, then no-repetition (14.7).
 - Never move a path that history, tests, or external systems reference. Declare it `exempt` and add a ledger row.
 - Structured data in prose (status lines, tracker fields, error strings) is verbatim. Front matter goes above it.
