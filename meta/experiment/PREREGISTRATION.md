@@ -238,3 +238,27 @@ an *expansion* of the original, not a compression; the naive-vs-original compari
 tests "rewritten docs at matched-to-ace size", not "shorter docs". H1 is unaffected —
 it measures per-run agent cost, for which ACE-100's mechanism is architecture
 (routing agents to read less), not corpus totals. The paper reports this reframe.
+
+### Amendment 4 — no-docs ablation condition added (2026-08-01)
+
+Made with 43+ of the 72 registered cells complete and **no evaluation, judging, or
+cross-arm analysis run** (verifiable from the data tree at this commit). Purely
+additive: a fourth condition, **nodocs** — the docs corpus deleted from the
+workspace, nothing overlaid — runs 6 tasks × 4 trials = 24 cells, appended after
+the registered 72-cell schedule completes (order shuffled with seed 20260801,
+cells interleaved among themselves).
+
+Purpose: a transcript audit (archived in the analysis appendix) found agents
+consume documentation mostly through Bash commands, at ~1–3K tokens per run — real
+but low-dose contact. The nodocs floor converts that observation into a causal
+measurement: per-task docs-value = Δ(original − nodocs), the denominator of the
+value-retention readout shared with Experiment 2, and a per-task training-data
+contamination probe (documented conventions followed with the docs absent must
+come from priors).
+
+Analysis status: **descriptive/exploratory only.** H1 and H2 are unchanged and
+remain defined over the three registered arms. The audit also fixed the
+docs-consumption instrument: at analysis time, docs reads are recomputed uniformly
+from transcripts across all channels (Read, Bash reader commands, Grep, subagent
+sidechains) for every run; the per-run counters recorded during collection are
+superseded and retained for comparison.

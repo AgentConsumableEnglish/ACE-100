@@ -82,7 +82,9 @@ SEED = 20260801                 # seed for all local randomness (schedule shuffl
 MAX_TURNS = 200                 # per-run turn cap
 WALL_CLOCK_SECONDS = 45 * 60    # per-run wall-clock cap
 DEFAULT_MODEL = "claude-sonnet-5"
-ARMS = ("original", "ace", "naive")
+# "nodocs" is the ablation floor (Experiment 1 Amendment 4; Experiment 2 §2):
+# the docs corpus is deleted and nothing is overlaid.
+ARMS = ("original", "ace", "naive", "nodocs")
 
 # The FIXED prompt template. Identical bytes across arms by construction: the
 # template never varies, and the interpolated title/body come from the task
@@ -181,7 +183,9 @@ def load_corpus_paths() -> list[str]:
     return [str(p) for p in data]
 
 
-def arm_docs_dir(arm: str) -> Path:
+def arm_docs_dir(arm: str) -> Path | None:
+    if arm == "nodocs":
+        return None  # ablation floor: corpus deleted, nothing overlaid
     d = EXPERIMENT_DIR / "arms" / f"{arm}-docs"
     if not d.is_dir():
         sys.exit(f"arm docs snapshot missing: {d} (build the arms first)")
@@ -245,13 +249,15 @@ def materialize_workspace(base_commit: str, arm: str, corpus_paths: list[str]) -
             target.unlink()
 
     # 2) Copy the arm's docs tree in, keyed by corpus-relative path.
+    #    The "nodocs" ablation floor overlays nothing.
     src_root = arm_docs_dir(arm)
-    for src in sorted(src_root.rglob("*")):
-        if src.is_file():
-            rel = src.relative_to(src_root)
-            dest = ws / rel
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(src, dest)
+    if src_root is not None:
+        for src in sorted(src_root.rglob("*")):
+            if src.is_file():
+                rel = src.relative_to(src_root)
+                dest = ws / rel
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(src, dest)
 
     # 3) Commit so the run starts from a clean tree and the produced diff is
     #    recoverable with plain `git diff`. --allow-empty keeps the procedure
