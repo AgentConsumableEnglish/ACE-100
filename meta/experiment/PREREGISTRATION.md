@@ -188,3 +188,28 @@ credential-free local `go test` suite; Apache-2.0.
 
 This amendment also adds the training-data-contamination threat to §8. No tasks had
 been selected and no arms built at the time of this amendment.
+
+### Amendment 2 — task-selection filter corrections; a discarded draw (2026-08-01)
+
+Made after a first selection draw and **before any arm construction or run** (the
+temporal firewall had not been stamped). Three changes to the §4 procedure:
+
+1. **Bot-authored PRs are excluded** (author matching `[bot]`/renovate/dependabot/
+   github-actions). Rationale: an initial draw sampled two renovate dependency bumps —
+   generated PR bodies defeat the description filter, and mechanical version bumps are
+   not replayable engineering tasks. This closes a gap between the registered filters
+   and their stated intent ("realistic task ... reference implementation").
+2. **The first-pass window is recorded** in the manifest (`limit`, considered-PR count
+   and number range). Two same-day draws produced different eligible pools (500- vs
+   1000-PR windows; GitHub check-data availability also varies), so the considered
+   window is now part of the audit trail. The registered window parameter is
+   `--limit 1000`.
+3. **Cross-repository linked issues no longer abort selection** — a linked issue that
+   cannot be fetched from the target repo (e.g. it lives in the contrib repo) is
+   recorded with `fetch_failed` and the PR body alone carries the prompt.
+
+**Discarded draw:** the first completed draw (500-PR window, pre-amendment filters,
+containing the two bot tasks) is preserved verbatim at
+`audit/manifest-discarded-2026-08-01.json`. It was discarded for the reasons above,
+not for its outcome; no run was ever executed against it. The authoritative manifest
+is the post-amendment redraw with the same seed (20260801).

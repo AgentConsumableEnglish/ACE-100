@@ -1,0 +1,1953 @@
+{
+  "repo": "open-telemetry/opentelemetry-collector",
+  "generated_at": "2026-08-01T05:05:26+00:00",
+  "selection": {
+    "seed": 20260801,
+    "window_months": 18,
+    "n_requested": 6,
+    "filters": {
+      "min_changed_files": 2,
+      "changed_lines": [
+        30,
+        400
+      ],
+      "docs_only_threshold": 0.8,
+      "min_body_chars": 200,
+      "allow_unknown_ci": false
+    },
+    "eligible_by_stratum": {
+      "feature": 11,
+      "bugfix": 28,
+      "config-integration": 21,
+      "other": 52
+    }
+  },
+  "tasks": [
+    {
+      "task_id": "pr-15296",
+      "pr_number": 15296,
+      "pr_url": "https://github.com/open-telemetry/opentelemetry-collector/pull/15296",
+      "stratum": "feature",
+      "base_commit": "c05a47166bdd8f01313267a47ca40cb00cbcac97",
+      "reference_merge_commit": "6aeee1722dd6bc8aab2e32dc614bdf01b045dae6",
+      "prompt": {
+        "issue": null,
+        "pr_title": "[chore][cmd/mdatagen] Implement external default call for config generation",
+        "pr_body": "<!--Ex. Fixing a bug - Describe the bug and how this fixes the issue.\r\nEx. Adding a feature - Explain what this achieves.-->\r\n#### Description\r\n\r\nWhen mdatagen generates a `NewDefault*()` constructor for a type that is a schema-level alias to an external type (e.g. `type ControllerConfig = controller.ControllerConfig`), the generated function previously attempted to inline a struct literal. This fails or produces incorrect code because the fields of the external type are not available in the local schema definition.\r\n\r\nThis PR fixes the generated code so that when the def is an external ref (`isExternalRef`), the NewDefault*()` body delegates to the upstream package's own constructor instead:\r\n```go\r\n  // Before (broken/incomplete)                                                                                                                                                                      \r\n  func NewDefaultControllerConfig() ControllerConfig {                                                                                                                                               \r\n      return ControllerConfig{}                                                                                                                                                                      \r\n  }                                                                                                                                                                                                  \r\n                                                                                                                                                                                                     \r\n  // After (correct delegation)                                                                                                                                                                      \r\n  func NewDefaultControllerConfig() ControllerConfig {         \r\n      return controller.NewDefaultControllerConfig()                                                                                                                                                 \r\n  }\r\n```\r\n\r\n<!-- Issue number if applicable -->\r\n#### Link to tracking issue\r\nRelated to #14560"
+      },
+      "changed_files": 4,
+      "changed_lines": 72,
+      "test_command": null
+    },
+    {
+      "task_id": "pr-14518",
+      "pr_number": 14518,
+      "pr_url": "https://github.com/open-telemetry/opentelemetry-collector/pull/14518",
+      "stratum": "bugfix",
+      "base_commit": "f33c609d976f2682f7d9c19cc92a05ffbe17427e",
+      "reference_merge_commit": "cce7dc1be95c0abb7488a9424f7a2701944f4824",
+      "prompt": {
+        "issue": null,
+        "pr_title": "fix(deps): update module github.com/shirou/gopsutil/v4 to v4.26.1",
+        "pr_body": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) |\n|---|---|---|---|\n| [github.com/shirou/gopsutil/v4](https://redirect.github.com/shirou/gopsutil) | `v4.25.12` \u2192 `v4.26.1` | ![age](https://developer.mend.io/api/mc/badges/age/go/github.com%2fshirou%2fgopsutil%2fv4/v4.26.1?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/go/github.com%2fshirou%2fgopsutil%2fv4/v4.25.12/v4.26.1?slim=true) |\n\n---\n\n> [!WARNING]\n> Some dependencies could not be looked up. Check the Dependency Dashboard for more information.\n\n---\n\n### Release Notes\n\n<details>\n<summary>shirou/gopsutil (github.com/shirou/gopsutil/v4)</summary>\n\n### [`v4.26.1`](https://redirect.github.com/shirou/gopsutil/releases/tag/v4.26.1)\n\n[Compare Source](https://redirect.github.com/shirou/gopsutil/compare/v4.25.12...v4.26.1)\n\n<!-- Release notes generated using configuration in .github/release.yml at v4.26.1 -->\n\n#### What's Changed\n\n##### disk\n\n- \\[darwin]: convert CFString to Go string properly by [@&#8203;uubulb](https://redirect.github.com/uubulb) in [#&#8203;1992](https://redirect.github.com/shirou/gopsutil/pull/1992)\n\n##### host\n\n- \\[host]\\[darwin]: fix utmpx database parsing by [@&#8203;uubulb](https://redirect.github.com/uubulb) in [#&#8203;1990](https://redirect.github.com/shirou/gopsutil/pull/1990)\n- feat: Add AIX platform support to common package with uptime and boot time functions by [@&#8203;Dylan-M](https://redirect.github.com/Dylan-M) in [#&#8203;1979](https://redirect.github.com/shirou/gopsutil/pull/1979)\n\n##### mem\n\n- feat(mem): add KernelStack field for ExVirtualMemory on linux by [@&#8203;shirou](https://redirect.github.com/shirou) in [#&#8203;1986](https://redirect.github.com/shirou/gopsutil/pull/1986)\n\n##### process\n\n- Fix windows open files with context by [@&#8203;ebriney](https://redirect.github.com/ebriney) in [#&#8203;1991](https://redirect.github.com/shirou/gopsutil/pull/1991)\n- Return an error on reading empty proc pid stat file by [@&#8203;pgimalac](https://redirect.github.com/pgimalac) in [#&#8203;1995](https://redirect.github.com/shirou/gopsutil/pull/1995)\n- \\[process]\\[posix]: fix getTerminalMap path construction bug by [@&#8203;shirou](https://redirect.github.com/shirou) in [#&#8203;1994](https://redirect.github.com/shirou/gopsutil/pull/1994)\n\n##### sensor\n\n- fix(sensors): kelvin to Celsius by [@&#8203;Aoang](https://redirect.github.com/Aoang) in [#&#8203;1997](https://redirect.github.com/shirou/gopsutil/pull/1997)\n\n#### New Contributors\n\n- [@&#8203;ebriney](https://redirect.github.com/ebriney) made their first contribution in [#&#8203;1991](https://redirect.github.com/shirou/gopsutil/pull/1991)\n- [@&#8203;Aoang](https://redirect.github.com/Aoang) made their first contribution in [#&#8203;1997](https://redirect.github.com/shirou/gopsutil/pull/1997)\n\n**Full Changelog**: <https://github.com/shirou/gopsutil/compare/v4.25.12...v4.26.1>\n\n</details>\n\n---\n\n### Configuration\n\n\ud83d\udcc5 **Schedule**: Branch creation - \"on tuesday\" (UTC), Automerge - At any time (no schedule defined).\n\n\ud83d\udea6 **Automerge**: Disabled by config. Please merge this manually once you are satisfied.\n\n\u267b **Rebasing**: Whenever PR becomes conflicted, or you tick the rebase/retry checkbox.\n\n\ud83d\udd15 **Ignore**: Close this PR and you won't be reminded about this update again.\n\n---\n\n - [ ] <!-- rebase-check -->If you want to rebase/retry this PR, check this box\n\n---\n\nThis PR was generated by [Mend Renovate](https://mend.io/renovate/). View the [repository job log](https://developer.mend.io/github/open-telemetry/opentelemetry-collector).\n<!--renovate-debug:eyJjcmVhdGVkSW5WZXIiOiI0Mi45NS4yIiwidXBkYXRlZEluVmVyIjoiNDIuOTUuMiIsInRhcmdldEJyYW5jaCI6Im1haW4iLCJsYWJlbHMiOlsiZGVwZW5kZW5jaWVzIiwicmVub3ZhdGVib3QiXX0=-->"
+      },
+      "changed_files": 16,
+      "changed_lines": 66,
+      "test_command": null
+    },
+    {
+      "task_id": "pr-14676",
+      "pr_number": 14676,
+      "pr_url": "https://github.com/open-telemetry/opentelemetry-collector/pull/14676",
+      "stratum": "config-integration",
+      "base_commit": "56130faa44756f1c6225c329205f73b3c83fedf3",
+      "reference_merge_commit": "a865b780a65b96ad3d8fd4d5956e9a648cf70bc2",
+      "prompt": {
+        "issue": null,
+        "pr_title": "Update github-actions deps",
+        "pr_body": "This PR contains the following updates:\n\n| Package | Type | Update | Change |\n|---|---|---|---|\n| [actions/setup-go](https://redirect.github.com/actions/setup-go) | action | minor | `v6.2.0` \u2192 `v6.3.0` |\n| [actions/setup-go](https://redirect.github.com/actions/setup-go) ([changelog](https://redirect.github.com/actions/setup-go/compare/7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5..4b73464bb391d4059bd26b0524d20df3927bd417)) | action | digest | `7a3fe6c` \u2192 `4b73464` |\n| [anchore/sbom-action](https://redirect.github.com/anchore/sbom-action) | action | minor | `v0.22.2` \u2192 `v0.23.0` |\n| [github/codeql-action](https://redirect.github.com/github/codeql-action) | action | patch | `v4.32.4` \u2192 `v4.32.5` |\n| [lycheeverse/lychee-action](https://redirect.github.com/lycheeverse/lychee-action) | action | minor | `v2.7.0` \u2192 `v2.8.0` |\n\n---\n\n> [!WARNING]\n> Some dependencies could not be looked up. Check the [Dependency Dashboard](../issues/8903) for more information.\n\n---\n\n### Release Notes\n\n<details>\n<summary>actions/setup-go (actions/setup-go)</summary>\n\n### [`v6.3.0`](https://redirect.github.com/actions/setup-go/releases/tag/v6.3.0)\n\n[Compare Source](https://redirect.github.com/actions/setup-go/compare/v6.2.0...v6.3.0)\n\n#### What's Changed\n\n- Update default Go module caching to use go.mod by [@&#8203;priyagupta108](https://redirect.github.com/priyagupta108) in [#&#8203;705](https://redirect.github.com/actions/setup-go/pull/705)\n- Fix golang download url to go.dev by [@&#8203;178inaba](https://redirect.github.com/178inaba) in [#&#8203;469](https://redirect.github.com/actions/setup-go/pull/469)\n\n**Full Changelog**: <https://github.com/actions/setup-go/compare/v6...v6.3.0>\n\n</details>\n\n<details>\n<summary>anchore/sbom-action (anchore/sbom-action)</summary>\n\n### [`v0.23.0`](https://redirect.github.com/anchore/sbom-action/releases/tag/v0.23.0)\n\n[Compare Source](https://redirect.github.com/anchore/sbom-action/compare/v0.22.2...v0.23.0)\n\n#### v0.23.0\n\n- switch to single-file dist build with sub-action flags and update dependencies ([#&#8203;595](https://redirect.github.com/anchore/sbom-action/issues/595)) \\[[@&#8203;kzantow](https://redirect.github.com/kzantow)]\n- switch to esbuild ([#&#8203;590](https://redirect.github.com/anchore/sbom-action/issues/590)) \\[[@&#8203;willmurphyscode](https://redirect.github.com/willmurphyscode)]\n- update Syft to v1.42.1 ([#&#8203;599](https://redirect.github.com/anchore/sbom-action/issues/599)) \\[@&#8203;[anchore-actions-token-generator\\[bot\\]](https://redirect.github.com/apps/anchore-actions-token-generator)]\n\n</details>\n\n<details>\n<summary>github/codeql-action (github/codeql-action)</summary>\n\n### [`v4.32.5`](https://redirect.github.com/github/codeql-action/compare/v4.32.4...v4.32.5)\n\n[Compare Source](https://redirect.github.com/github/codeql-action/compare/v4.32.4...v4.32.5)\n\n</details>\n\n<details>\n<summary>lycheeverse/lychee-action (lycheeverse/lychee-action)</summary>\n\n### [`v2.8.0`](https://redirect.github.com/lycheeverse/lychee-action/releases/tag/v2.8.0)\n\n[Compare Source](https://redirect.github.com/lycheeverse/lychee-action/compare/v2.7.0...v2.8.0)\n\n#### What's Changed\n\n- Update lycheeVersion to  v0.23.0 by [@&#8203;github-actions](https://redirect.github.com/github-actions)\\[bot] in [#&#8203;324](https://redirect.github.com/lycheeverse/lychee-action/pull/324)\n- Update args for lychee-action to use root-dir by [@&#8203;mre](https://redirect.github.com/mre) in [#&#8203;314](https://redirect.github.com/lycheeverse/lychee-action/pull/314)\n- Update test to use `--root-dir` instead of the deprecated `--base` by [@&#8203;mre](https://redirect.github.com/mre) in [#&#8203;315](https://redirect.github.com/lycheeverse/lychee-action/pull/315)\n- Bump actions/checkout from 5 to 6 by [@&#8203;dependabot](https://redirect.github.com/dependabot)\\[bot] in [#&#8203;316](https://redirect.github.com/lycheeverse/lychee-action/pull/316)\n- Bump actions/cache from 4 to 5 by [@&#8203;dependabot](https://redirect.github.com/dependabot)\\[bot] in [#&#8203;319](https://redirect.github.com/lycheeverse/lychee-action/pull/319)\n- Bump peter-evans/create-pull-request from 7 to 8 by [@&#8203;dependabot](https://redirect.github.com/dependabot)\\[bot] in [#&#8203;318](https://redirect.github.com/lycheeverse/lychee-action/pull/318)\n- Add message with Summary report URL by [@&#8203;atteggiani](https://redirect.github.com/atteggiani) in [#&#8203;326](https://redirect.github.com/lycheeverse/lychee-action/pull/326)\n\n#### New Contributors\n\n- [@&#8203;atteggiani](https://redirect.github.com/atteggiani) made their first contribution in [#&#8203;326](https://redirect.github.com/lycheeverse/lychee-action/pull/326)\n\n**Full Changelog**: <https://github.com/lycheeverse/lychee-action/compare/v2.7.0...v2.8.0>\n\n</details>\n\n---\n\n### Configuration\n\n\ud83d\udcc5 **Schedule**: Branch creation - \"on tuesday\" (UTC), Automerge - At any time (no schedule defined).\n\n\ud83d\udea6 **Automerge**: Disabled by config. Please merge this manually once you are satisfied.\n\n\u267b **Rebasing**: Whenever PR becomes conflicted, or you tick the rebase/retry checkbox.\n\n\ud83d\udc7b **Immortal**: This PR will be recreated if closed unmerged. Get [config help](https://redirect.github.com/renovatebot/renovate/discussions) if that's undesired.\n\n---\n\n - [ ] <!-- rebase-check -->If you want to rebase/retry this PR, check this box\n\n---\n\nThis PR was generated by [Mend Renovate](https://mend.io/renovate/). View the [repository job log](https://developer.mend.io/github/open-telemetry/opentelemetry-collector).\n<!--renovate-debug:eyJjcmVhdGVkSW5WZXIiOiI0My40OC4xIiwidXBkYXRlZEluVmVyIjoiNDMuNDguMSIsInRhcmdldEJyYW5jaCI6Im1haW4iLCJsYWJlbHMiOlsiZGVwZW5kZW5jaWVzIiwicmVub3ZhdGVib3QiXX0=-->"
+      },
+      "changed_files": 18,
+      "changed_lines": 60,
+      "test_command": null
+    },
+    {
+      "task_id": "pr-15530",
+      "pr_number": 15530,
+      "pr_url": "https://github.com/open-telemetry/opentelemetry-collector/pull/15530",
+      "stratum": "other",
+      "base_commit": "fe96e04e89164822e8d8de9a231b187e62179305",
+      "reference_merge_commit": "0cba399419ac5bc738a2986874f7c5ee3b7b7e70",
+      "prompt": {
+        "issue": null,
+        "pr_title": "[chore] Validate metadata.yaml units against UCUM specification",
+        "pr_body": "<!--Ex. Fixing a bug - Describe the bug and how this fixes the issue.\r\nEx. Adding a feature - Explain what this achieves.-->\r\n#### Description\r\n\r\nValidate metrics units using `github.com/iimos/ucum`.\r\n\r\nDepends on open-telemetry/opentelemetry-collector-contrib/pull/49453\r\n\r\n<!--Authorship attestation. See AGENTS.md for details. AI agents must not check this box on behalf\r\nof the user; the human author must check it themselves before the PR is ready for review.-->\r\n#### Authorship\r\n\r\n- [x] I, a human, wrote this pull request description myself.\r\n\r\n<!--Please delete paragraphs that you did not use before submitting.-->"
+      },
+      "changed_files": 6,
+      "changed_lines": 57,
+      "test_command": null
+    },
+    {
+      "task_id": "pr-14998",
+      "pr_number": 14998,
+      "pr_url": "https://github.com/open-telemetry/opentelemetry-collector/pull/14998",
+      "stratum": "feature",
+      "base_commit": "a3c14607a3a1b19d98829ecb69219b0f6c51ba42",
+      "reference_merge_commit": "b3089969c7d23e0aa75af94fafe333cefeb2d713",
+      "prompt": {
+        "issue": null,
+        "pr_title": "Add `endpoint` attribute to otlp exporter",
+        "pr_body": "#### Description\r\n\r\nThis PR exposes the `endpoint` value of the `otlp` and `otlphttp` exporter components to the metrics generated by these exporters.\r\n\r\nThis is useful for operators of the collector to observe data flow to different endpoints across large numbers of collector instances without having to cross-reference the specific configuration per instance.\r\n\r\nThe implementation extends the `exporterhelper` with a new option `WithAttrs` that allows developers of exporters to add extra labels to metrics produced. This allows for more flexibility for implementers of exporters to add attributes that might be relevant in the specific use case.\r\n\r\n<!--Describe what testing was performed and which tests were added.-->\r\n#### Testing\r\n\r\n* Added tests to ensure attributes passed with the new option are recorded correctly\r\n* Tested a build of this branch by configuring the collector to receive OTLP and export it to another collector. The new `endpoint` shows up correctly.\r\n\r\n<!--Describe the documentation added.-->\r\n#### Documentation\r\n\r\nAssuming this change is accepted, I'll create a PR to update the [internal telemetry](https://opentelemetry.io/docs/collector/internal-telemetry/) page in the OpenTelemetry documentation"
+      },
+      "changed_files": 15,
+      "changed_lines": 345,
+      "test_command": null
+    },
+    {
+      "task_id": "pr-15154",
+      "pr_number": 15154,
+      "pr_url": "https://github.com/open-telemetry/opentelemetry-collector/pull/15154",
+      "stratum": "bugfix",
+      "base_commit": "bc8f97dc77795e925205ed5998c48df9bbbb9c3c",
+      "reference_merge_commit": "5674bf20afbf11f3fe1df5e03120b07ba2912611",
+      "prompt": {
+        "issue": {
+          "number": 15153,
+          "title": "[cmd/mdatagen] Mdatagen skips embedded structs in `allOf` when generating config struct",
+          "body": "### Component(s)\n\ncmd/mdatagen\n\n### What happened?\n\n**Describe the bug**\n<!-- A clear and concise description of what the bug is. -->\nAfter recent update of mdatagen a regression was introduced where embedded structs in `allOf` are not properly handled when generating config struct. The issue ocurrs when `allOf` object is defined internally within same schema in `$defs`. \n\n**Steps to reproduce**\n<!-- If possible, provide a recipe for reproducing the error. -->\nGiven metadata:\n\n```yaml\nconfig:\n    type: object\n    $defs:\n        embedded_type:\n            type: object\n            properties:\n                field:\n                    type: string\n    allOf:\n        - $ref: embedded_type\n```\n\n**What did you expect to see?**\n<!-- A clear and concise description of what you expected to see. -->\n\nExpected go code is:\n\n```go\ntype EmbeddedType struct {\n    Field string `mapstructure:\"field\"`\n}\n\ntype Config struct {\n    EmbeddedType `mapstructure:\",squash\"`\n}\n```\n\n**What did you see instead?**\n<!-- A clear and concise description of what you saw instead. -->\n`EmbeddedType` declaration is not generated.\n\n### Collector version\n\nv0.150.0\n\n### Environment information\n\n_No response_\n\n### OpenTelemetry Collector configuration\n\n```yaml\n\n```\n\n### Log output\n\n```shell\n\n```\n\n### Additional context\n\n_No response_\n\n### Tip\n\n<sub>[React](https://github.blog/news-insights/product-news/add-reactions-to-pull-requests-issues-and-comments/) with \ud83d\udc4d to help prioritize this issue. Please use comments to provide useful context, avoiding `+1` or `me too`, to help us triage it. Learn more [here](https://opentelemetry.io/community/end-user/issue-participation/).</sub>"
+        },
+        "pr_title": "[cmd/mdatagen] Fix ExtractDefs to handle allOf internal references",
+        "pr_body": "<!--Ex. Fixing a bug - Describe the bug and how this fixes the issue.\r\nEx. Adding a feature - Explain what this achieves.-->\r\n#### Description\r\n\r\nFix a regression in mdatagen where `allOf` entries referencing internal `$defs` definitions did not produce a struct declaration in the generated config code.\r\n\r\nWhen a schema uses `allOf` with a `$ref` pointing to a type defined in the same schema's `$defs` section, the referenced type is resolved and stored with ResolvedFrom set to the definition name. `collectDefs` correctly identified such entries as internal but was missing the `defs[md.ResolvedFrom] = md` assignment, so the type was never registered and no Go struct was emitted for it.\r\n\r\n<!-- Issue number if applicable -->\r\n#### Link to tracking issue\r\nFixes #15153\r\n\r\n<!--Describe what testing was performed and which tests were added.-->\r\n#### Testing\r\n\r\nAdded corresponding unit tests to avoid same regression in the future."
+      },
+      "changed_files": 3,
+      "changed_lines": 123,
+      "test_command": null
+    }
+  ],
+  "audit_log": [
+    {
+      "pr": 15688,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 15687,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15681,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15678,
+      "excluded_by": "changed-lines",
+      "value": 437
+    },
+    {
+      "pr": 15675,
+      "excluded_by": "changed-lines",
+      "value": 18
+    },
+    {
+      "pr": 15674,
+      "excluded_by": "changed-lines",
+      "value": 550
+    },
+    {
+      "pr": 15672,
+      "excluded_by": "changed-lines",
+      "value": 876
+    },
+    {
+      "pr": 15670,
+      "excluded_by": "changed-lines",
+      "value": 18
+    },
+    {
+      "pr": 15659,
+      "excluded_by": "changed-lines",
+      "value": 1235
+    },
+    {
+      "pr": 15657,
+      "excluded_by": "changed-lines",
+      "value": 11
+    },
+    {
+      "pr": 15639,
+      "excluded_by": "changed-lines",
+      "value": 28
+    },
+    {
+      "pr": 15632,
+      "excluded_by": "changed-lines",
+      "value": 28
+    },
+    {
+      "pr": 15631,
+      "excluded_by": "changed-lines",
+      "value": 19
+    },
+    {
+      "pr": 15624,
+      "excluded_by": "changed-lines",
+      "value": 2837
+    },
+    {
+      "pr": 15616,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15613,
+      "excluded_by": "changed-lines",
+      "value": 462
+    },
+    {
+      "pr": 15612,
+      "excluded_by": "changed-lines",
+      "value": 10
+    },
+    {
+      "pr": 15610,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15588,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15583,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15570,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 15559,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15556,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 15555,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15554,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15553,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15552,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 15550,
+      "excluded_by": "changed-lines",
+      "value": 10
+    },
+    {
+      "pr": 15546,
+      "excluded_by": "changed-lines",
+      "value": 2750
+    },
+    {
+      "pr": 15533,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15529,
+      "excluded_by": "changed-lines",
+      "value": 6010
+    },
+    {
+      "pr": 15521,
+      "excluded_by": "changed-lines",
+      "value": 424
+    },
+    {
+      "pr": 15514,
+      "excluded_by": "changed-lines",
+      "value": 626
+    },
+    {
+      "pr": 15511,
+      "excluded_by": "changed-lines",
+      "value": 27
+    },
+    {
+      "pr": 15500,
+      "excluded_by": "changed-lines",
+      "value": 1171
+    },
+    {
+      "pr": 15491,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 15482,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 15480,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15479,
+      "excluded_by": "changed-lines",
+      "value": 2940
+    },
+    {
+      "pr": 15465,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15457,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15449,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15447,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15445,
+      "excluded_by": "changed-lines",
+      "value": 10
+    },
+    {
+      "pr": 15443,
+      "excluded_by": "changed-lines",
+      "value": 21
+    },
+    {
+      "pr": 15436,
+      "excluded_by": "changed-lines",
+      "value": 18
+    },
+    {
+      "pr": 15435,
+      "excluded_by": "changed-lines",
+      "value": 18
+    },
+    {
+      "pr": 15429,
+      "excluded_by": "changed-lines",
+      "value": 4216
+    },
+    {
+      "pr": 15416,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15413,
+      "excluded_by": "changed-lines",
+      "value": 20
+    },
+    {
+      "pr": 15412,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15411,
+      "excluded_by": "changed-lines",
+      "value": 2546
+    },
+    {
+      "pr": 15409,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15399,
+      "excluded_by": "changed-lines",
+      "value": 836
+    },
+    {
+      "pr": 15398,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15397,
+      "excluded_by": "changed-lines",
+      "value": 3069
+    },
+    {
+      "pr": 15396,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 15394,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 15388,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15387,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15385,
+      "excluded_by": "changed-lines",
+      "value": 446
+    },
+    {
+      "pr": 15381,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15380,
+      "excluded_by": "changed-lines",
+      "value": 1798
+    },
+    {
+      "pr": 15376,
+      "excluded_by": "changed-lines",
+      "value": 818
+    },
+    {
+      "pr": 15367,
+      "excluded_by": "changed-lines",
+      "value": 24
+    },
+    {
+      "pr": 15361,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15359,
+      "excluded_by": "changed-lines",
+      "value": 14
+    },
+    {
+      "pr": 15358,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15357,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15355,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 15353,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15352,
+      "excluded_by": "changed-lines",
+      "value": 2763
+    },
+    {
+      "pr": 15350,
+      "excluded_by": "changed-lines",
+      "value": 498
+    },
+    {
+      "pr": 15349,
+      "excluded_by": "changed-lines",
+      "value": 29
+    },
+    {
+      "pr": 15345,
+      "excluded_by": "changed-lines",
+      "value": 18
+    },
+    {
+      "pr": 15344,
+      "excluded_by": "changed-lines",
+      "value": 18
+    },
+    {
+      "pr": 15341,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15338,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15335,
+      "excluded_by": "changed-lines",
+      "value": 5
+    },
+    {
+      "pr": 15334,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 15325,
+      "excluded_by": "changed-lines",
+      "value": 1090
+    },
+    {
+      "pr": 15323,
+      "excluded_by": "changed-lines",
+      "value": 1278
+    },
+    {
+      "pr": 15319,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 15318,
+      "excluded_by": "changed-lines",
+      "value": 431
+    },
+    {
+      "pr": 15317,
+      "excluded_by": "changed-lines",
+      "value": 22
+    },
+    {
+      "pr": 15309,
+      "excluded_by": "changed-lines",
+      "value": 3730
+    },
+    {
+      "pr": 15304,
+      "excluded_by": "changed-lines",
+      "value": 448
+    },
+    {
+      "pr": 15300,
+      "excluded_by": "changed-lines",
+      "value": 434
+    },
+    {
+      "pr": 15297,
+      "excluded_by": "changed-lines",
+      "value": 29
+    },
+    {
+      "pr": 15295,
+      "excluded_by": "changed-lines",
+      "value": 536
+    },
+    {
+      "pr": 15294,
+      "excluded_by": "changed-lines",
+      "value": 881
+    },
+    {
+      "pr": 15293,
+      "excluded_by": "changed-lines",
+      "value": 516
+    },
+    {
+      "pr": 15292,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15291,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 15289,
+      "excluded_by": "changed-lines",
+      "value": 14
+    },
+    {
+      "pr": 15288,
+      "excluded_by": "changed-lines",
+      "value": 24
+    },
+    {
+      "pr": 15284,
+      "excluded_by": "changed-lines",
+      "value": 2705
+    },
+    {
+      "pr": 15282,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15278,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15275,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15273,
+      "excluded_by": "changed-lines",
+      "value": 406
+    },
+    {
+      "pr": 15272,
+      "excluded_by": "changed-lines",
+      "value": 2051
+    },
+    {
+      "pr": 15270,
+      "excluded_by": "changed-lines",
+      "value": 462
+    },
+    {
+      "pr": 15251,
+      "excluded_by": "changed-lines",
+      "value": 5
+    },
+    {
+      "pr": 15249,
+      "excluded_by": "changed-lines",
+      "value": 481
+    },
+    {
+      "pr": 15247,
+      "excluded_by": "changed-lines",
+      "value": 524
+    },
+    {
+      "pr": 15240,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 15239,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15236,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15234,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 15229,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15226,
+      "excluded_by": "changed-lines",
+      "value": 671
+    },
+    {
+      "pr": 15224,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 15220,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15219,
+      "excluded_by": "changed-lines",
+      "value": 3130
+    },
+    {
+      "pr": 15215,
+      "excluded_by": "changed-lines",
+      "value": 14
+    },
+    {
+      "pr": 15209,
+      "excluded_by": "changed-lines",
+      "value": 18
+    },
+    {
+      "pr": 15208,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15207,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 15206,
+      "excluded_by": "changed-lines",
+      "value": 494
+    },
+    {
+      "pr": 15205,
+      "excluded_by": "changed-lines",
+      "value": 18
+    },
+    {
+      "pr": 15204,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15201,
+      "excluded_by": "changed-lines",
+      "value": 26
+    },
+    {
+      "pr": 15198,
+      "excluded_by": "changed-lines",
+      "value": 805
+    },
+    {
+      "pr": 15195,
+      "excluded_by": "changed-lines",
+      "value": 7
+    },
+    {
+      "pr": 15193,
+      "excluded_by": "changed-lines",
+      "value": 7
+    },
+    {
+      "pr": 15176,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15175,
+      "excluded_by": "changed-lines",
+      "value": 1595
+    },
+    {
+      "pr": 15168,
+      "excluded_by": "changed-lines",
+      "value": 594
+    },
+    {
+      "pr": 15163,
+      "excluded_by": "changed-lines",
+      "value": 16
+    },
+    {
+      "pr": 15158,
+      "excluded_by": "changed-lines",
+      "value": 20
+    },
+    {
+      "pr": 15147,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15144,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 15142,
+      "excluded_by": "changed-lines",
+      "value": 720
+    },
+    {
+      "pr": 15141,
+      "excluded_by": "changed-lines",
+      "value": 21
+    },
+    {
+      "pr": 15140,
+      "excluded_by": "changed-lines",
+      "value": 10
+    },
+    {
+      "pr": 15138,
+      "excluded_by": "changed-lines",
+      "value": 29
+    },
+    {
+      "pr": 15120,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15115,
+      "excluded_by": "changed-lines",
+      "value": 10
+    },
+    {
+      "pr": 15114,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15112,
+      "excluded_by": "changed-lines",
+      "value": 3274
+    },
+    {
+      "pr": 15106,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15104,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 15101,
+      "excluded_by": "changed-lines",
+      "value": 2570
+    },
+    {
+      "pr": 15078,
+      "excluded_by": "changed-lines",
+      "value": 833
+    },
+    {
+      "pr": 15073,
+      "excluded_by": "changed-lines",
+      "value": 1346
+    },
+    {
+      "pr": 15072,
+      "excluded_by": "changed-lines",
+      "value": 1304
+    },
+    {
+      "pr": 15071,
+      "excluded_by": "changed-lines",
+      "value": 450
+    },
+    {
+      "pr": 15070,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15056,
+      "excluded_by": "changed-lines",
+      "value": 1463
+    },
+    {
+      "pr": 15053,
+      "excluded_by": "changed-lines",
+      "value": 817
+    },
+    {
+      "pr": 15052,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 15048,
+      "excluded_by": "changed-lines",
+      "value": 662
+    },
+    {
+      "pr": 15045,
+      "excluded_by": "changed-lines",
+      "value": 408
+    },
+    {
+      "pr": 15044,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15043,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15037,
+      "excluded_by": "changed-lines",
+      "value": 498
+    },
+    {
+      "pr": 15035,
+      "excluded_by": "changed-lines",
+      "value": 24
+    },
+    {
+      "pr": 15033,
+      "excluded_by": "changed-lines",
+      "value": 2583
+    },
+    {
+      "pr": 15030,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 15015,
+      "excluded_by": "changed-lines",
+      "value": 11
+    },
+    {
+      "pr": 15013,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15008,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15005,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14996,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 14815,
+      "excluded_by": "changed-lines",
+      "value": 21
+    },
+    {
+      "pr": 14796,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 14793,
+      "excluded_by": "changed-lines",
+      "value": 28
+    },
+    {
+      "pr": 14787,
+      "excluded_by": "changed-lines",
+      "value": 481
+    },
+    {
+      "pr": 14784,
+      "excluded_by": "changed-lines",
+      "value": 19
+    },
+    {
+      "pr": 14781,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14777,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14775,
+      "excluded_by": "changed-lines",
+      "value": 2948
+    },
+    {
+      "pr": 14768,
+      "excluded_by": "changed-lines",
+      "value": 459
+    },
+    {
+      "pr": 14764,
+      "excluded_by": "changed-lines",
+      "value": 1126
+    },
+    {
+      "pr": 14763,
+      "excluded_by": "changed-lines",
+      "value": 24
+    },
+    {
+      "pr": 14762,
+      "excluded_by": "changed-lines",
+      "value": 644
+    },
+    {
+      "pr": 14753,
+      "excluded_by": "changed-lines",
+      "value": 439
+    },
+    {
+      "pr": 14751,
+      "excluded_by": "changed-lines",
+      "value": 11
+    },
+    {
+      "pr": 14749,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 14747,
+      "excluded_by": "changed-lines",
+      "value": 1586
+    },
+    {
+      "pr": 14741,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14739,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 14738,
+      "excluded_by": "changed-lines",
+      "value": 824
+    },
+    {
+      "pr": 14734,
+      "excluded_by": "changed-lines",
+      "value": 14
+    },
+    {
+      "pr": 14726,
+      "excluded_by": "changed-lines",
+      "value": 15
+    },
+    {
+      "pr": 14725,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14724,
+      "excluded_by": "changed-lines",
+      "value": 3098
+    },
+    {
+      "pr": 14720,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 14717,
+      "excluded_by": "changed-lines",
+      "value": 22
+    },
+    {
+      "pr": 14716,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14714,
+      "excluded_by": "changed-lines",
+      "value": 918
+    },
+    {
+      "pr": 14711,
+      "excluded_by": "changed-lines",
+      "value": 2057
+    },
+    {
+      "pr": 14710,
+      "excluded_by": "changed-lines",
+      "value": 1976
+    },
+    {
+      "pr": 14709,
+      "excluded_by": "changed-lines",
+      "value": 856
+    },
+    {
+      "pr": 14706,
+      "excluded_by": "changed-lines",
+      "value": 5
+    },
+    {
+      "pr": 14705,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14703,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 14697,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 14693,
+      "excluded_by": "changed-lines",
+      "value": 2477
+    },
+    {
+      "pr": 14689,
+      "excluded_by": "changed-lines",
+      "value": 928
+    },
+    {
+      "pr": 14688,
+      "excluded_by": "changed-lines",
+      "value": 858
+    },
+    {
+      "pr": 14685,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 14684,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 14681,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 14679,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 14678,
+      "excluded_by": "changed-lines",
+      "value": 1586
+    },
+    {
+      "pr": 14672,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14669,
+      "excluded_by": "changed-lines",
+      "value": 434
+    },
+    {
+      "pr": 14666,
+      "excluded_by": "changed-lines",
+      "value": 2716
+    },
+    {
+      "pr": 14664,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 14660,
+      "excluded_by": "changed-lines",
+      "value": 2974
+    },
+    {
+      "pr": 14652,
+      "excluded_by": "changed-lines",
+      "value": 1043
+    },
+    {
+      "pr": 14651,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 14649,
+      "excluded_by": "changed-lines",
+      "value": 568
+    },
+    {
+      "pr": 14646,
+      "excluded_by": "changed-lines",
+      "value": 1127
+    },
+    {
+      "pr": 14645,
+      "excluded_by": "changed-lines",
+      "value": 24
+    },
+    {
+      "pr": 14644,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 14637,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14635,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 14633,
+      "excluded_by": "changed-lines",
+      "value": 26
+    },
+    {
+      "pr": 14631,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14630,
+      "excluded_by": "changed-lines",
+      "value": 818
+    },
+    {
+      "pr": 14628,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 14627,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 14623,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14622,
+      "excluded_by": "changed-lines",
+      "value": 29
+    },
+    {
+      "pr": 14614,
+      "excluded_by": "changed-lines",
+      "value": 10
+    },
+    {
+      "pr": 14613,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 14611,
+      "excluded_by": "changed-lines",
+      "value": 2360
+    },
+    {
+      "pr": 14608,
+      "excluded_by": "changed-lines",
+      "value": 1747
+    },
+    {
+      "pr": 14606,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14603,
+      "excluded_by": "changed-lines",
+      "value": 630
+    },
+    {
+      "pr": 14602,
+      "excluded_by": "changed-lines",
+      "value": 1014
+    },
+    {
+      "pr": 14601,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 14600,
+      "excluded_by": "changed-lines",
+      "value": 10
+    },
+    {
+      "pr": 14581,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 14579,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14578,
+      "excluded_by": "changed-lines",
+      "value": 24
+    },
+    {
+      "pr": 14571,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14570,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 14568,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14567,
+      "excluded_by": "changed-lines",
+      "value": 491
+    },
+    {
+      "pr": 14555,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 14554,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 14551,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 14548,
+      "excluded_by": "changed-lines",
+      "value": 3774
+    },
+    {
+      "pr": 14547,
+      "excluded_by": "changed-lines",
+      "value": 0
+    },
+    {
+      "pr": 14546,
+      "excluded_by": "changed-lines",
+      "value": 1458
+    },
+    {
+      "pr": 14544,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 14540,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14539,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14538,
+      "excluded_by": "changed-lines",
+      "value": 10
+    },
+    {
+      "pr": 14534,
+      "excluded_by": "changed-lines",
+      "value": 460
+    },
+    {
+      "pr": 14530,
+      "excluded_by": "changed-lines",
+      "value": 447
+    },
+    {
+      "pr": 14521,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14519,
+      "excluded_by": "changed-lines",
+      "value": 1740
+    },
+    {
+      "pr": 14515,
+      "excluded_by": "changed-lines",
+      "value": 2545
+    },
+    {
+      "pr": 14506,
+      "excluded_by": "changed-lines",
+      "value": 15
+    },
+    {
+      "pr": 15642,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15633,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15618,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15614,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15596,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15578,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15547,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15542,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15537,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15528,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15522,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15517,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15489,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15488,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15486,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15481,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15474,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15463,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15459,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15452,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15438,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15426,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15425,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15424,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15423,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15421,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15420,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15419,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15418,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15415,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15414,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15356,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15348,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15343,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15342,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15340,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15339,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15337,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15336,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15333,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15332,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15331,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15330,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15329,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15328,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15321,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15314,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15310,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15305,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15286,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15281,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15271,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15266,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15262,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15253,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15232,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15213,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15210,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15188,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15187,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15186,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15179,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15172,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15171,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15166,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15152,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15143,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15139,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15133,
+      "excluded_by": "primarily-docs"
+    },
+    {
+      "pr": 15125,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15123,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15119,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15098,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15096,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15095,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15088,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15076,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15042,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15026,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15014,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15002,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14995,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14993,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14989,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14804,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14802,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14800,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14791,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14782,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 14779,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14774,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14773,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14757,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14756,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14752,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14748,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 14733,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14730,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14723,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14722,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14719,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14718,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14715,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14713,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14712,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14699,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14694,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14683,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14658,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14654,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14643,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 14640,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 14634,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14625,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14620,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14619,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14618,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14616,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14586,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14584,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14582,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14575,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14569,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14558,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14552,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14549,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14536,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14532,
+      "excluded_by": "primarily-docs"
+    },
+    {
+      "pr": 14531,
+      "excluded_by": "ci-fail"
+    }
+  ]
+}

@@ -1,0 +1,4366 @@
+{
+  "repo": "open-telemetry/opentelemetry-collector",
+  "generated_at": "2026-08-01T05:42:00+00:00",
+  "selection": {
+    "seed": 20260801,
+    "window_months": 18,
+    "n_requested": 6,
+    "limit": 1000,
+    "considered_prs": {
+      "count": 1000,
+      "min_number": 13639,
+      "max_number": 15688
+    },
+    "filters": {
+      "min_changed_files": 2,
+      "changed_lines": [
+        30,
+        400
+      ],
+      "docs_only_threshold": 0.8,
+      "min_body_chars": 200,
+      "allow_unknown_ci": false,
+      "exclude_bot_authors": true
+    },
+    "eligible_by_stratum": {
+      "feature": 30,
+      "bugfix": 25,
+      "config-integration": 21,
+      "other": 38
+    }
+  },
+  "tasks": [
+    {
+      "task_id": "pr-14461",
+      "pr_number": 14461,
+      "pr_url": "https://github.com/open-telemetry/opentelemetry-collector/pull/14461",
+      "stratum": "feature",
+      "base_commit": "c4695a792ee56861091ce984dbabf41e16db9b0e",
+      "reference_merge_commit": "85daf49c69632452af6dad67c4f529e4ccf17d9a",
+      "prompt": {
+        "issue": {
+          "number": 35814,
+          "title": null,
+          "body": "",
+          "fetch_failed": true
+        },
+        "pr_title": "[scraper/scraperhelper] Add scraper ID to error logs",
+        "pr_body": "<!--Ex. Fixing a bug - Describe the bug and how this fixes the issue.\r\nEx. Adding a feature - Explain what this achieves.-->\r\n#### Description\r\n\r\nThis PR adds the `scraperID` to the error logs for scrapers (metrics, logs, and profiles). Why is this important?\r\n\r\nCurrently if an error occurs in any of the scrapers in `hostmetricsreceiver/internal/scraper/...` there is no info about the which scraper errored in the logs:\r\n\r\n```bash\r\n2026-01-21T10:42:42.830Z\terror\tscraperhelper@v0.144.0/obs_metrics.go:61\tError scraping metrics\t{\"resource\": {\"service.instance.id\": \"63071771-056d-40ca-83e3-585dc1a00d57\", \"service.name\": \"otelcontribcol\", \"service.version\": \"0.144.0-dev\"}, \"otelcol.component.id\": \"hostmetrics\", \"otelcol.component.kind\": \"receiver\", \"otelcol.signal\": \"metrics\", \"error\": \"forced test error for scraper identification\"}\r\n```\r\n\r\nThe update in this PR add's the scraper ID (In this case the memory scraper errored) to the logs which then gives us:\r\n\r\n```bash\r\n2026-01-21T10:23:52.759Z\terror\tscraperhelper/obs_metrics.go:62\tError scraping metrics\t{\"resource\": {\"service.instance.id\": \"7137f19d-706f-4095-8367-0d68b2732402\", \"service.name\": \"otelcontribcol\", \"service.version\": \"0.144.0-dev\"}, \"otelcol.component.id\": \"hostmetrics\", \"otelcol.component.kind\": \"receiver\", \"otelcol.signal\": \"metrics\", \"scraper\": \"memory\", \"error\": \"forced test error for scraper identification\"}\r\n```\r\n\r\n<!-- Issue number if applicable -->\r\n#### Link to tracking issue\r\nFixes Issue in [collector-contrib](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/35814#issuecomment-2676316294).\r\n\r\n<!--Describe what testing was performed and which tests were added.-->\r\n#### Testing\r\n\r\n**Metrics scrapers:** Locally tested with `collector-contrib` by updating the mod file...\r\n**Logs scrapers:** The same pattern was applied. Logs scrapers (MySQL, PostgreSQL, Oracle, SQL Server receivers) require database connections for integration testing.\r\n**Profiles scrapers (xscraperhelper):** The same pattern was applied. Note: There are currently no profiles scrapers in collector-contrib to test against.\r\n\r\n**Metrics scraper local test**: Locally this was updated and included in the `collector-contrib` via updating the mod file. An error was forced in the `hostmetricsreceiver/internal/scraper/...` both memory and cpu, we can now see which scraper component had an error:\r\n\r\n```bash\r\n2026-01-21T11:51:34.176Z\terror\tscraperhelper/obs_metrics.go:61\tError scraping metrics\t{\"resource\": {\"service.instance.id\": \"e6832705-bc54-43dd-9b1f-0c06d58b7ead\", \"service.name\": \"otelcontribcol\", \"service.version\": \"0.144.0-dev\"}, \"otelcol.component.id\": \"hostmetrics\", \"otelcol.component.kind\": \"receiver\", \"otelcol.signal\": \"metrics\", \"scraper\": \"memory\", \"error\": \"forced test error for scraper identification\"}\r\ngo.opentelemetry.io/collector/scraper/scraperhelper.wrapObsMetrics.func1\r\n\t/home/dos/Documents/opentelemetry-collector/scraper/scraperhelper/obs_metrics.go:61\r\ngo.opentelemetry.io/collector/scraper.ScrapeMetricsFunc.ScrapeMetrics\r\n\t/home/dos/go/pkg/mod/go.opentelemetry.io/collector/scraper@v0.144.0/metrics.go:24\r\ngo.opentelemetry.io/collector/scraper/scraperhelper.scrapeMetrics\r\n\t/home/dos/Documents/opentelemetry-collector/scraper/scraperhelper/controller.go:167\r\ngo.opentelemetry.io/collector/scraper/scraperhelper.NewMetricsController.func1\r\n\t/home/dos/Documents/opentelemetry-collector/scraper/scraperhelper/controller.go:139\r\ngo.opentelemetry.io/collector/scraper/scraperhelper/internal/controller.(*Controller[...]).startScraping.func1\r\n\t/home/dos/Documents/opentelemetry-collector/scraper/scraperhelper/internal/controller/controller.go:118\r\n2026-01-21T11:51:34.177Z\terror\tscraperhelper/obs_metrics.go:61\tError scraping metrics\t{\"resource\": {\"service.instance.id\": \"e6832705-bc54-43dd-9b1f-0c06d58b7ead\", \"service.name\": \"otelcontribcol\", \"service.version\": \"0.144.0-dev\"}, \"otelcol.component.id\": \"hostmetrics\", \"otelcol.component.kind\": \"receiver\", \"otelcol.signal\": \"metrics\", \"scraper\": \"cpu\", \"error\": \"forced test error for scraper identification\"}\r\ngo.opentelemetry.io/collector/scraper/scraperhelper.wrapObsMetrics.func1\r\n\t/home/dos/Documents/opentelemetry-collector/scraper/scraperhelper/obs_metrics.go:61\r\ngo.opentelemetry.io/collector/scraper.ScrapeMetricsFunc.ScrapeMetrics\r\n\t/home/dos/go/pkg/mod/go.opentelemetry.io/collector/scraper@v0.144.0/metrics.go:24\r\ngo.opentelemetry.io/collector/scraper/scraperhelper.scrapeMetrics\r\n\t/home/dos/Documents/opentelemetry-collector/scraper/scraperhelper/controller.go:167\r\ngo.opentelemetry.io/collector/scraper/scraperhelper.NewMetricsController.func1\r\n\t/home/dos/Documents/opentelemetry-collector/scraper/scraperhelper/controller.go:139\r\ngo.opentelemetry.io/collector/scraper/scraperhelper/internal/controller.(*Controller[...]).startScraping.func1\r\n\t/home/dos/Documents/opentelemetry-collector/scraper/scraperhelper/internal/controller/controller.go:118\r\n2026-01-21T11:51:34.199Z\tinfo\tMetrics\t{\"resource\": {\"service.instance.id\": \"e6832705-bc54-43dd-9b1f-0c06d58b7ead\", \"service.name\": \"otelcontribcol\", \"service.version\": \"0.144.0-dev\"}, \"otelcol.component.id\": \"debug\", \"otelcol.component.kind\": \"exporter\", \"otelcol.signal\": \"metrics\", \"resource metrics\": 1, \"metrics\": 1, \"data points\": 1}\r\n2026-01-21T11:51:34.199Z\tinfo\tResourceMetrics #0\r\nResource SchemaURL: https://opentelemetry.io/schemas/1.9.0\r\n\r\n```\r\n\r\nCloses https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/35814"
+      },
+      "changed_files": 6,
+      "changed_lines": 181,
+      "test_command": null
+    },
+    {
+      "task_id": "pr-14690",
+      "pr_number": 14690,
+      "pr_url": "https://github.com/open-telemetry/opentelemetry-collector/pull/14690",
+      "stratum": "bugfix",
+      "base_commit": "6caf25827d9e2455fe47208da3e77bdbd7038497",
+      "reference_merge_commit": "41f564ce376cb837123b17b9145cd14537ba74c2",
+      "prompt": {
+        "issue": {
+          "number": 14682,
+          "title": "[otelcol] components command hides components that have deprecated type aliases",
+          "body": "### Component(s)\n\notelcol\n\n### What happened?\n\n**Describe the bug**  \n`otelcol components` omits *canonical* component types when the component factory exposes a deprecated type alias (e.g., snake_case rename with legacy alias). This makes the command misleading: the component works in config, but it doesn\u2019t appear in the `components` output. This seems related to the alias handling used/introduced around PR #14493\n\n**Steps to reproduce**  \n1. <your-otelcol-binary> components | grep -nE 'k8s_attributes|k8sattributes'\n2.  nothing comes out of the output while it did until version 0.145.0\n\n**What did you expect to see?**  \nThe canonical component (`k8s_attributes`) should still be present in `otelcol components` output. (Aliases can be shown separately/as metadata, but canonical should not disappear.)\n\n**What did you see instead?**  \nThe canonical factory is filtered out because `sortFactoriesByType` excludes anything for which `isComponentAlias(...)` returns true, and `isComponentAlias` currently returns true whenever `DeprecatedAlias() != \"\"`. As a result, `otelcol components` output can miss canonical components that have deprecated aliases.\n\n### Collector version\n\n0.146.0/0.146.1/0.147.0"
+        },
+        "pr_title": "fix: update sortFactoriesByType to remove alias",
+        "pr_body": "<!--Ex. Fixing a bug - Describe the bug and how this fixes the issue.\r\nEx. Adding a feature - Explain what this achieves.-->\r\n#### Description\r\nMy understanding of MakeFactoryMap behavior is that alias entries are not separate alias factories. Instead, the alias key points to the same canonical factory so fixing the sorting to reflect that.\r\n\r\n<!-- Issue number if applicable -->\r\n#### Link to tracking issue\r\nFixes #14682\r\n\r\n<!--Describe what testing was performed and which tests were added.-->\r\n#### Testing\r\nAdded unittest \r\n\r\nTo manual test \r\n\r\n1. Add k8sattributesprocessor to otelcorecol\r\n    `- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.147.0`\r\n\r\n2. regenerate it  `make genotelcorecol `\r\n3.  create binary  `make otelcorecol`\r\n4. verify output  `./bin/otelcorecol components | grep -nE 'k8s_attributes|k8sattributes|otlp_http|otlphttp' `\r\n```\r\n25:    - name: k8s_attributes\r\n26:      module: github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.147.0\r\n56:    - name: otlp_http\r\n57:      module: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.147.0\r\n```"
+      },
+      "changed_files": 3,
+      "changed_lines": 133,
+      "test_command": null
+    },
+    {
+      "task_id": "pr-15108",
+      "pr_number": 15108,
+      "pr_url": "https://github.com/open-telemetry/opentelemetry-collector/pull/15108",
+      "stratum": "config-integration",
+      "base_commit": "be4d22162d9ab5c6f2ac9a7064148ef08b166615",
+      "reference_merge_commit": "2854c982703e3832ff2866e3a8fd3ed9c904fca4",
+      "prompt": {
+        "issue": {
+          "number": 14662,
+          "title": "[pdata] pCommon.Value.AsString function escapes HTML on ValueTypeMap and ValueTypeSlice",
+          "body": "### Component(s)\n\npdata\n\n### What happened?\n\n**Describe the bug**\n<!-- A clear and concise description of what the bug is. -->\nThere is a misalignment on how Value.AsString works with value of string type and values of map and slice.\nHTML escaping is not done for strings but done for map and slices. \nFor instance, \"<\".ToString() -> \"<\" but [\"<\"].ToString() -> [\"\\u003c\"] and {\"key\": \"<\"}.ToString()\n-> {\"key\": \"\\u003c\"}.\n\nWe should make map and slice to not escape HTML as well so \n[\"<\"].ToString() -> [\"<\"] and {\"key\": \"<\"}.ToString() -> {\"key\": \"<\"}.\n\nThe issue is https://github.com/open-telemetry/opentelemetry-collector/blob/main/pdata/pcommon/value.go#L404 and https://github.com/open-telemetry/opentelemetry-collector/blob/main/pdata/pcommon/value.go#L411 uses Go's encoding/json which escapes HTML when Marshalling. \n\n**Steps to reproduce**\n<!-- If possible, provide a recipe for reproducing the error. -->\n1. Configure the collector with a receiver and exporter that uses pdata.\n2. Send an event whose body is of type map or slice and contains \"<\" \">\" or \"&\"\n3.  See the exported event body contains escaped HTML.\n\n**What did you expect to see?**\n<!-- A clear and concise description of what you expected to see. -->\nNothing should be escaped.\n\"<\".AsString() -> \"<\" | [\"<\"].AsString() -> [\"<\"] | {\"key\": \"<\"}.AsString() -> {\"key\": \"<\"}.\n\n**What did you see instead?**\n<!-- A clear and concise description of what you saw instead. -->\n\"<\".AsString() -> \"<\" but [\"<\"].AsString() -> [\"\\u003c\"] and {\"key\": \"<\"}.AsString()\n-> {\"key\": \"\\u003c\"}.\n\n### Collector version\n\nv1.52.0\n\n### Environment information\n\n## Environment\nOS: (e.g., \"Ubuntu 20.04\")\nCompiler(if manually compiled): (e.g., \"go 14.2\")\n\n\n### OpenTelemetry Collector configuration\n\n```yaml\n\n```\n\n### Log output\n\n```shell\n\n```\n\n### Additional context\n\n_No response_\n\n### Tip\n\n<sub>[React](https://github.blog/news-insights/product-news/add-reactions-to-pull-requests-issues-and-comments/) with \ud83d\udc4d to help prioritize this issue. Please use comments to provide useful context, avoiding `+1` or `me too`, to help us triage it. Learn more [here](https://opentelemetry.io/community/end-user/issue-participation/).</sub>"
+        },
+        "pr_title": "[pdata] don't HTML-escape ValueTypeMap/Slice AsString output",
+        "pr_body": "## Description\n\n`pcommon.Value.AsString` uses `json.Marshal` for `ValueTypeMap` and `ValueTypeSlice`, which HTML-escapes `<`, `>`, and `&` into `\\u003c`, `\\u003e`, and `\\u0026`. This is inconsistent with `ValueTypeStr`, which returns the raw string, and corrupts structured log bodies whose content happens to contain those characters.\n\n```\n\"<\".AsString()       -> \"<\"\n[\"<\"].AsString()     -> [\"\\u003c\"]   // surprising\n{\"key\":\"<\"}.AsString() -> {\"key\":\"\\u003c\"} // surprising\n```\n\nSwitch to `json.Encoder` with `SetEscapeHTML(false)` so that maps and slices serialize the same way strings do.\n\nCloses #14662\n\n## Link to tracking Issue\n#14662\n\n## Testing\n\nAdded `map_with_html_characters` and `slice_with_html_characters` sub-tests to `TestValueAsString`. `go test ./pcommon/... -run TestValueAsString` passes (14/14).\n\n## Documentation\n\n.chloggen entry added."
+      },
+      "changed_files": 4,
+      "changed_lines": 71,
+      "test_command": null
+    },
+    {
+      "task_id": "pr-15495",
+      "pr_number": 15495,
+      "pr_url": "https://github.com/open-telemetry/opentelemetry-collector/pull/15495",
+      "stratum": "other",
+      "base_commit": "0c436188d19dab9c8b17c35899c43bab20e698ef",
+      "reference_merge_commit": "3e8f5a9f6f25e7d068fd834a5ce5756369c78a5c",
+      "prompt": {
+        "issue": {
+          "number": 15485,
+          "title": "Shared receiver can start serving before consumers of its   other-signal pipelines are started",
+          "body": "### Component(s)\n\nservice\n\n### What happened?\n\n**Describe the bug**\n\nIf you share one OTLP receiver across pipelines of different signals (say one `otlp` receiver feeding traces, logs and metrics), the order in which components start is not deterministic between those pipelines.\nAnd since the OTLP receiver is a sharedcomponent, whichever per-signal receiver node happens to start first brings up the single HTTP/gRPC server for all signals at once.\nSo the server can start accepting data for a signal whose pipeline hasn't finished starting yet.\n\nI'm fairly sure this is what's actually behind the k8sattributes startup panic in [contrib #47672][contrib-47672] (`processor.go:202`).\nk8sattributes only sets its kube client (`kc`, an interface) in `Start()`.\nIf a span arrives before that `Start()` has run, `kc` is still nil and the call dispatches on a nil interface.\n\nThe usual \"reverse-topological start guarantees consumers are up before the receiver\" reasoning holds, but only inside a single connected pipeline.\nIt doesn't carry across signals for a shared receiver, because the graph doesn't treat that receiver as one node.\n\nHere's the chain as I read it:\n\n- A shared receiver gets one node *per signal*, not one node total. The node ID comes from `(signal, componentID)` (see `newReceiverNode` in `service/internal/graph/receiver.go`). With a different exporter per signal, the per-signal subgraphs end up disconnected from each other:\n\n  ```\n  recv[traces] -> proc[traces] -> exp[traces]\n  recv[logs]   -> proc[logs]   -> exp[logs]\n  recv[metrics]-> proc[metrics]-> exp[metrics]\n  ```\n\n- `StartAll` does `topo.Sort(componentGraph)` and starts in reverse order (`service/internal/graph/graph.go`). gonum keeps the nodes in a map, so the sort doesn't fix any relative order *between* the disconnected subgraphs. There's no barrier or two-phase \"start everything, then serve\".\n\n- The single server registers handlers for every signal at build time, not at start time (otlpreceiver's `startHTTPServer` wires `/v1/traces`, `/v1/metrics`, `/v1/logs` together). So the first receiver node to start opens the door for all three.\n\nPut together: reverse-topo does guarantee `recv[traces]` starts after the traces processors, but the server isn't tied to `recv[traces]` \u2014 it's brought up by whichever signal's node wins the race.\nIf that's `recv[logs]` and the traces pipeline's k8sattributes `Start()` hasn't run, a request comes in, gets routed into a chain whose `kc` is still nil, and you hit `processor.go:202`.\n\nWorth noting it's not specific to traces.\n`processResource` is shared by processTraces/Logs/Metrics/Profiles, so a cluster sending only logs and metrics can crash the same way.\nThe victim is just whichever shared-receiver-fed pipeline hasn't been started yet when the server goes live.\n\n**Steps to reproduce**\n\nI wrote a small test \u2014 [startorder_race_test.go](https://github.com/tank-500m/opentelemetry-collector/blob/test/sharedreceiver-startorder-race/service/internal/graph/startorder_race_test.go) \u2014 that builds a real graph through `graph.Build()` (one `examplereceiver` shared by a traces and a logs pipeline) and then runs `topo.Sort` on the resulting `componentGraph` the same way `StartAll` does.\nThe graph isn't hand-built; the nodes, per-signal IDs and edges all come from the builder.\nIt just counts how often the receiver's logs node ends up starting before the traces processor.\n\n```\n$ go test -v -count=3 -run TestSharedReceiverStartOrderIsNonDeterministic ./service/internal/graph/\n=== RUN   TestSharedReceiverStartOrderIsNonDeterministic\n    startorder_race_test.go: iters=5000  panic-window(recvLogs<procTraces)=972   safe=4028\n--- PASS\n=== RUN   TestSharedReceiverStartOrderIsNonDeterministic\n    startorder_race_test.go: iters=5000  panic-window(recvLogs<procTraces)=997   safe=4003\n--- PASS\n=== RUN   TestSharedReceiverStartOrderIsNonDeterministic\n    startorder_race_test.go: iters=5000  panic-window(recvLogs<procTraces)=1031  safe=3969\n--- PASS\n```\n\nI also reproduced the actual crash end to end.\nBuilt a collector with an `otlp` (gRPC) receiver, k8sattributes and a debug exporter, with the one receiver shared across traces/logs/metrics (separate exporter per signal).\nThe kube client never syncs (`KUBERNETES_SERVICE_HOST` points at an unreachable address), so `kc` only becomes non-nil once `Start()` runs.\nThe only code change is a delay at the very top of k8sattributes' `Start()`, gated on an env var so it's a no-op normally.\nThe panic line itself is untouched; the delay just widens the `kc == nil` window (it's microseconds in practice) enough for in-flight traffic to land in it:\n\n```go\n// processor/k8sattributesprocessor/processor.go, first lines of Start()\nif d := os.Getenv(\"K8SATTR_START_DELAY\"); d != \"\" {\n    if delay, err := time.ParseDuration(d); err == nil && delay > 0 {\n        time.Sleep(delay) // widen the window before kp.kc is set; no-op when unset\n    }\n}\n```\n\nWith that I get the panic (gRPC doesn't recover per request, so the process just dies), and the victim signal moves around between logs/metrics/traces run to run:\n\n```\npanic: runtime error: invalid memory address or nil pointer dereference\n...k8sattributesprocessor.(*kubernetesprocessor).processResource(...)\n    processor/k8sattributesprocessor/processor.go:218   // kp.kc.GetPod(...)\n...processTraces(...) -> processorhelper -> otlpreceiver Export\ngoogle.golang.org/grpc.(*Server).processUnaryRPC(...)\n```\n\nFor what it's worth, turning on the `ShareProcessorBetweenPipelines` feature gate made the crash go away (0/30 under the same setup): with a single shared processor instance, its `Start()` (and the `kc` assignment) runs before any receiver node brings the server up.\nThat only works when every fed pipeline uses the same processor id, though.\n\n**What did you expect to see?**\n\nA shared receiver shouldn't start serving a signal until the consumers of every pipeline it feeds are up \u2014 including the pipelines for other signals, not just the one whose node happened to trigger the start.\n\n**What did you see instead?**\n\nThe receiver's logs node started before the traces pipeline's processor in around 20% of fresh builds (and after it the rest of the time), so the cross-signal order really does go both ways.\nWithin a single subgraph it's always fine \u2014 a receiver never starts before its own processor, and that assertion in the test never trips \u2014 so the risk is entirely from the other signal's node, which has no ordering relationship to `proc[traces]` at all.\nAdd the shared server coming up the instant that first node starts, and that's the `processor.go:202` nil deref.\n\n**Environment**\n\n- collector v0.153.0 / k8sattributesprocessor v1.59.0.\n- Related: [contrib #47672][contrib-47672] (the panic), [core #12717][core-12717] (start order).\n\n[contrib-47672]: https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/47672\n[core-12717]: https://github.com/open-telemetry/opentelemetry-collector/issues/12717\n\n\n### Collector version\n\nv0.153.0\n\n### Environment information\n\n## Environment\nOS: (e.g., \"Ubuntu 20.04\")\nCompiler(if manually compiled): (e.g., \"go 14.2\")\n\n\n### OpenTelemetry Collector configuration\n\n```yaml\n\n```\n\n### Log output\n\n```shell\n\n```\n\n### Additional context\n\n_No response_\n\n### Tip\n\n<sub>[React](https://github.blog/news-insights/product-news/add-reactions-to-pull-requests-issues-and-comments/) with \ud83d\udc4d to help prioritize this issue. Please use comments to provide useful context, avoiding `+1` or `me too`, to help us triage it. Learn more [here](https://opentelemetry.io/community/end-user/issue-participation/).</sub>"
+        },
+        "pr_title": "[service] Start receivers after every other component type",
+        "pr_body": "#### Description\r\n\r\nThis PR constrains the start order of components so that receivers only start after every other type of component has started across all pipelines. Note that this is still reverse topological order, but with some of the free parameters fixed.\r\n\r\nThis avoids startup issues with pipelines like this:\r\n```\r\nreceiver/1 \u2192 exporter/1\r\nreceiver/2 \u2192 exporter/2\r\n```\r\nin which `receiver/1` and `receiver/2` are two instances of a `sharedcomponent`.\r\n\r\nSince `receiver/1` and `exporter/2` are in disconnected parts of the component graph, their order in the startup schedule is undefined, so the service might (depending on the hash of the component instance identities) decide to start `receiver/1` before `exporter/2`. But since starting `receiver/1` also starts `receiver/2`, which the service has no knowledge of, there is a chance for `receiver/2` to emit data to an unstarted `exporter/2`, which violates the standard component lifecycle.\r\n\r\n#### Link to tracking issue\r\nFixes #15485\r\n\r\n#### Testing\r\nI added a unit test in `graph_test.go` which checks that a shared receiver which eagerly sends data on startup does not send data to an unstarted exporter. This test fails with the previous code in `graph.go`.\r\n\r\n#### Authorship\r\n\r\n- [x] I, a human, wrote this pull request description myself."
+      },
+      "changed_files": 3,
+      "changed_lines": 167,
+      "test_command": null
+    },
+    {
+      "task_id": "pr-14985",
+      "pr_number": 14985,
+      "pr_url": "https://github.com/open-telemetry/opentelemetry-collector/pull/14985",
+      "stratum": "feature",
+      "base_commit": "f1f655be1c221f42e3b7c3628cfa9560fa05e6b7",
+      "reference_merge_commit": "efde8a253d80453156e4de80308576bd3876c7d3",
+      "prompt": {
+        "issue": {
+          "number": 15085,
+          "title": "Support Windows named pipes as a transport in confignet",
+          "body": "### Component(s)\n\nconfig/confignet\n\n### Is your feature request related to a problem? Please describe.\n\nIt's often convenient to interact with collector components over a local network. Binding to ports on localhost is a solution, but can be troublesome - they're a global namespace of limited size, and are frequently gated behind a security boundary. IPC mechanisms which expose a network-like API, such as unix domain sockets, are much more convenient. The `confignet` already supports these, leveraging support from the Go stdlib.\n\nUnix domain sockets are even supported on modern Windows versions. However, `confignet` lacks support for a Windows-native IPC mechanism that can be used this way.  \n\n### Describe the solution you'd like\n\nI'd like to add support for Windows [named pipes](https://learn.microsoft.com/en-us/windows/win32/ipc/named-pipes) as a transport in `confignet`. Named pipes aren't exactly semantically equivalent to unix domain sockets, but they're close enough for our purposes. They can be used to implement a server/client architecture passing around messages of raw bytes.\n\n### Describe alternatives you've considered\n\nI looked at other Windows IPC mechanisms, but none of the others map cleanly onto `net.Conn`. Named pipes, on the other hand, are frequently and idiomatically used this way.\n\n### Additional context\n\nIn terms of implementation, we can use microsoft's official library: https://github.com/microsoft/go-winio. I created an example implementation in this PR: . \n\n### Tip\n\n<sub>[React](https://github.blog/news-insights/product-news/add-reactions-to-pull-requests-issues-and-comments/) with \ud83d\udc4d to help prioritize this issue. Please use comments to provide useful context, avoiding `+1` or `me too`, to help us triage it. Learn more [here](https://opentelemetry.io/community/end-user/issue-participation/).</sub>"
+        },
+        "pr_title": "Support npipe transport in confignet",
+        "pr_body": "#### Description\r\n\r\nSupport using Windows named pipes as a transport in confignet. The implementation uses https://github.com/microsoft/go-winio/.\r\n\r\n#### Link to tracking issue\r\nFixes https://github.com/open-telemetry/opentelemetry-collector/issues/15085\r\n\r\n#### Testing\r\n\r\nAdded unit tests covering the new transport. There's also a unit test for validating named path paths.\r\n\r\n#### Documentation\r\n\r\nAdded the new value to the config schema and README."
+      },
+      "changed_files": 37,
+      "changed_lines": 279,
+      "test_command": null
+    },
+    {
+      "task_id": "pr-15307",
+      "pr_number": 15307,
+      "pr_url": "https://github.com/open-telemetry/opentelemetry-collector/pull/15307",
+      "stratum": "bugfix",
+      "base_commit": "478a9fd73b2f92776b16fa174733450aeecdb4ad",
+      "reference_merge_commit": "dbd5c55bf7ce728eae7d9d98146037d1aa795674",
+      "prompt": {
+        "issue": {
+          "number": 15306,
+          "title": "Remove extra line in README.md",
+          "body": "### Component(s)\n\ncmd/mdatagen\n\n### What happened?\n\n**Describe the bug**\nIn the README.md the generated content contains a extra white line between the description and status table\n\n**Steps to reproduce**\n<!-- If possible, provide a recipe for reproducing the error. -->\nWe can see the extra line in all README.md that is generated via\n```\nmake generate\n```\nExample\n[scraper/zookeeperscraper](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/scraper/zookeeperscraper/README.md)\n\nFailure Run For Reference: [Link](https://github.com/open-telemetry/opentelemetry-collector-contrib/actions/runs/25904496301/job/76135175087?pr=48394)\n\n**What did you expect to see?**\n<!-- A clear and concise description of what you expected to see. -->\nSingle blank line between description and status table\n\n**What did you see instead?**\n<!-- A clear and concise description of what you saw instead. -->\nDouble blank line between description and status table\n\n\n### Collector version\n\nv0.152.0\n\n### Environment information\n\n## Environment\nOS: (e.g., \"Ubuntu 20.04\")\nCompiler(if manually compiled): (e.g., \"go 14.2\")\n\n\n### OpenTelemetry Collector configuration\n\n```yaml\n\n```\n\n### Log output\n\n```shell\n\n```\n\n### Additional context\n\n_No response_\n\n### Tip\n\n<sub>[React](https://github.blog/news-insights/product-news/add-reactions-to-pull-requests-issues-and-comments/) with \ud83d\udc4d to help prioritize this issue. Please use comments to provide useful context, avoiding `+1` or `me too`, to help us triage it. Learn more [here](https://opentelemetry.io/community/end-user/issue-participation/).</sub>"
+        },
+        "pr_title": "[cmd/mdatagen] Fix the extra blank line in the readme template file",
+        "pr_body": "<!--Ex. Fixing a bug - Describe the bug and how this fixes the issue.\r\nEx. Adding a feature - Explain what this achieves.-->\r\n#### Description\r\nFixes the extra blank line in REAME.md files\r\n\r\n<!-- Issue number if applicable -->\r\n#### Link to tracking issue\r\nFixes #15306 \r\n\r\n<!--Describe what testing was performed and which tests were added.-->\r\n#### Testing\r\nLocal testing is done\r\n\r\n<!--Describe the documentation added.-->\r\n#### Documentation\r\n\r\n<!--Please delete paragraphs that you did not use before submitting.-->"
+      },
+      "changed_files": 5,
+      "changed_lines": 58,
+      "test_command": null
+    }
+  ],
+  "audit_log": [
+    {
+      "pr": 15688,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 15687,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15681,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15678,
+      "excluded_by": "changed-lines",
+      "value": 437
+    },
+    {
+      "pr": 15675,
+      "excluded_by": "changed-lines",
+      "value": 18
+    },
+    {
+      "pr": 15674,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15672,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15670,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15669,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15668,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15659,
+      "excluded_by": "changed-lines",
+      "value": 1235
+    },
+    {
+      "pr": 15657,
+      "excluded_by": "changed-lines",
+      "value": 11
+    },
+    {
+      "pr": 15639,
+      "excluded_by": "changed-lines",
+      "value": 28
+    },
+    {
+      "pr": 15632,
+      "excluded_by": "changed-lines",
+      "value": 28
+    },
+    {
+      "pr": 15631,
+      "excluded_by": "changed-lines",
+      "value": 19
+    },
+    {
+      "pr": 15626,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15625,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15624,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 15616,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15613,
+      "excluded_by": "changed-lines",
+      "value": 462
+    },
+    {
+      "pr": 15612,
+      "excluded_by": "changed-lines",
+      "value": 10
+    },
+    {
+      "pr": 15610,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15588,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15583,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15582,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15578,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15577,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15570,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 15559,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15556,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 15555,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15554,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15553,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15552,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15551,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15550,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15549,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15546,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 15533,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15529,
+      "excluded_by": "changed-lines",
+      "value": 6010
+    },
+    {
+      "pr": 15522,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15521,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15518,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15516,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15515,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15514,
+      "excluded_by": "changed-lines",
+      "value": 626
+    },
+    {
+      "pr": 15511,
+      "excluded_by": "changed-lines",
+      "value": 27
+    },
+    {
+      "pr": 15500,
+      "excluded_by": "changed-lines",
+      "value": 1171
+    },
+    {
+      "pr": 15491,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 15484,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15483,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15482,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15481,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15480,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15479,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 15465,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15457,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15456,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15449,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15448,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15447,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15445,
+      "excluded_by": "changed-lines",
+      "value": 10
+    },
+    {
+      "pr": 15443,
+      "excluded_by": "changed-lines",
+      "value": 21
+    },
+    {
+      "pr": 15436,
+      "excluded_by": "changed-lines",
+      "value": 18
+    },
+    {
+      "pr": 15435,
+      "excluded_by": "changed-lines",
+      "value": 18
+    },
+    {
+      "pr": 15429,
+      "excluded_by": "changed-lines",
+      "value": 4216
+    },
+    {
+      "pr": 15416,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15415,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15414,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15413,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15412,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15411,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 15409,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15399,
+      "excluded_by": "changed-lines",
+      "value": 836
+    },
+    {
+      "pr": 15398,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15397,
+      "excluded_by": "changed-lines",
+      "value": 3069
+    },
+    {
+      "pr": 15396,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 15394,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 15388,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15387,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15385,
+      "excluded_by": "changed-lines",
+      "value": 446
+    },
+    {
+      "pr": 15381,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15380,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15379,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15378,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15376,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15375,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15374,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15373,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15367,
+      "excluded_by": "changed-lines",
+      "value": 24
+    },
+    {
+      "pr": 15361,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15359,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15358,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15357,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15355,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 15353,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15352,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 15350,
+      "excluded_by": "changed-lines",
+      "value": 498
+    },
+    {
+      "pr": 15349,
+      "excluded_by": "changed-lines",
+      "value": 29
+    },
+    {
+      "pr": 15345,
+      "excluded_by": "changed-lines",
+      "value": 18
+    },
+    {
+      "pr": 15344,
+      "excluded_by": "changed-lines",
+      "value": 18
+    },
+    {
+      "pr": 15341,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15338,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15335,
+      "excluded_by": "changed-lines",
+      "value": 5
+    },
+    {
+      "pr": 15334,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 15325,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15323,
+      "excluded_by": "changed-lines",
+      "value": 1278
+    },
+    {
+      "pr": 15319,
+      "excluded_by": "bot-author",
+      "value": "app/dependabot"
+    },
+    {
+      "pr": 15318,
+      "excluded_by": "changed-lines",
+      "value": 431
+    },
+    {
+      "pr": 15317,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15316,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15309,
+      "excluded_by": "changed-lines",
+      "value": 3730
+    },
+    {
+      "pr": 15304,
+      "excluded_by": "changed-lines",
+      "value": 448
+    },
+    {
+      "pr": 15300,
+      "excluded_by": "changed-lines",
+      "value": 434
+    },
+    {
+      "pr": 15297,
+      "excluded_by": "changed-lines",
+      "value": 29
+    },
+    {
+      "pr": 15295,
+      "excluded_by": "changed-lines",
+      "value": 536
+    },
+    {
+      "pr": 15294,
+      "excluded_by": "changed-lines",
+      "value": 881
+    },
+    {
+      "pr": 15293,
+      "excluded_by": "changed-lines",
+      "value": 516
+    },
+    {
+      "pr": 15292,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15291,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 15290,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15289,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15288,
+      "excluded_by": "bot-author",
+      "value": "app/dependabot"
+    },
+    {
+      "pr": 15284,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 15282,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15278,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15275,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15273,
+      "excluded_by": "changed-lines",
+      "value": 406
+    },
+    {
+      "pr": 15272,
+      "excluded_by": "changed-lines",
+      "value": 2051
+    },
+    {
+      "pr": 15270,
+      "excluded_by": "changed-lines",
+      "value": 462
+    },
+    {
+      "pr": 15251,
+      "excluded_by": "changed-lines",
+      "value": 5
+    },
+    {
+      "pr": 15249,
+      "excluded_by": "changed-lines",
+      "value": 481
+    },
+    {
+      "pr": 15247,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15245,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15244,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15241,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15240,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15239,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15236,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15234,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 15229,
+      "excluded_by": "bot-author",
+      "value": "opentelemetrybot"
+    },
+    {
+      "pr": 15226,
+      "excluded_by": "changed-lines",
+      "value": 671
+    },
+    {
+      "pr": 15224,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 15220,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15219,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 15215,
+      "excluded_by": "changed-lines",
+      "value": 14
+    },
+    {
+      "pr": 15209,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15208,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15207,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15206,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15205,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15204,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15201,
+      "excluded_by": "changed-lines",
+      "value": 26
+    },
+    {
+      "pr": 15198,
+      "excluded_by": "changed-lines",
+      "value": 805
+    },
+    {
+      "pr": 15195,
+      "excluded_by": "changed-lines",
+      "value": 7
+    },
+    {
+      "pr": 15193,
+      "excluded_by": "changed-lines",
+      "value": 7
+    },
+    {
+      "pr": 15176,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15175,
+      "excluded_by": "changed-lines",
+      "value": 1595
+    },
+    {
+      "pr": 15168,
+      "excluded_by": "changed-lines",
+      "value": 594
+    },
+    {
+      "pr": 15163,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15162,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15158,
+      "excluded_by": "changed-lines",
+      "value": 20
+    },
+    {
+      "pr": 15147,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15144,
+      "excluded_by": "bot-author",
+      "value": "app/dependabot"
+    },
+    {
+      "pr": 15142,
+      "excluded_by": "changed-lines",
+      "value": 720
+    },
+    {
+      "pr": 15141,
+      "excluded_by": "changed-lines",
+      "value": 21
+    },
+    {
+      "pr": 15140,
+      "excluded_by": "changed-lines",
+      "value": 10
+    },
+    {
+      "pr": 15138,
+      "excluded_by": "changed-lines",
+      "value": 29
+    },
+    {
+      "pr": 15120,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15115,
+      "excluded_by": "changed-lines",
+      "value": 10
+    },
+    {
+      "pr": 15114,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15112,
+      "excluded_by": "changed-lines",
+      "value": 3274
+    },
+    {
+      "pr": 15111,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15110,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15106,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15104,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 15101,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 15078,
+      "excluded_by": "changed-lines",
+      "value": 833
+    },
+    {
+      "pr": 15073,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15072,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15071,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15070,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15069,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15056,
+      "excluded_by": "changed-lines",
+      "value": 1463
+    },
+    {
+      "pr": 15053,
+      "excluded_by": "changed-lines",
+      "value": 817
+    },
+    {
+      "pr": 15052,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 15048,
+      "excluded_by": "changed-lines",
+      "value": 662
+    },
+    {
+      "pr": 15045,
+      "excluded_by": "changed-lines",
+      "value": 408
+    },
+    {
+      "pr": 15044,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 15043,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15037,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15036,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15035,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 15033,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 15030,
+      "excluded_by": "bot-author",
+      "value": "app/dependabot"
+    },
+    {
+      "pr": 15015,
+      "excluded_by": "changed-lines",
+      "value": 11
+    },
+    {
+      "pr": 15013,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15008,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 15005,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14997,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14996,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14995,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14994,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14992,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14991,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14815,
+      "excluded_by": "changed-lines",
+      "value": 21
+    },
+    {
+      "pr": 14800,
+      "excluded_by": "bot-author",
+      "value": "app/dependabot"
+    },
+    {
+      "pr": 14798,
+      "excluded_by": "bot-author",
+      "value": "app/dependabot"
+    },
+    {
+      "pr": 14796,
+      "excluded_by": "bot-author",
+      "value": "app/dependabot"
+    },
+    {
+      "pr": 14793,
+      "excluded_by": "changed-lines",
+      "value": 28
+    },
+    {
+      "pr": 14787,
+      "excluded_by": "changed-lines",
+      "value": 481
+    },
+    {
+      "pr": 14784,
+      "excluded_by": "changed-lines",
+      "value": 19
+    },
+    {
+      "pr": 14781,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14777,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14775,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 14768,
+      "excluded_by": "changed-lines",
+      "value": 459
+    },
+    {
+      "pr": 14764,
+      "excluded_by": "changed-lines",
+      "value": 1126
+    },
+    {
+      "pr": 14763,
+      "excluded_by": "changed-lines",
+      "value": 24
+    },
+    {
+      "pr": 14762,
+      "excluded_by": "changed-lines",
+      "value": 644
+    },
+    {
+      "pr": 14753,
+      "excluded_by": "changed-lines",
+      "value": 439
+    },
+    {
+      "pr": 14751,
+      "excluded_by": "changed-lines",
+      "value": 11
+    },
+    {
+      "pr": 14749,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14747,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14746,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14741,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14739,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14738,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14737,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14736,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14735,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14734,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14726,
+      "excluded_by": "changed-lines",
+      "value": 15
+    },
+    {
+      "pr": 14725,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14724,
+      "excluded_by": "changed-lines",
+      "value": 3098
+    },
+    {
+      "pr": 14720,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 14717,
+      "excluded_by": "changed-lines",
+      "value": 22
+    },
+    {
+      "pr": 14716,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14714,
+      "excluded_by": "changed-lines",
+      "value": 918
+    },
+    {
+      "pr": 14711,
+      "excluded_by": "changed-lines",
+      "value": 2057
+    },
+    {
+      "pr": 14710,
+      "excluded_by": "changed-lines",
+      "value": 1976
+    },
+    {
+      "pr": 14709,
+      "excluded_by": "changed-lines",
+      "value": 856
+    },
+    {
+      "pr": 14706,
+      "excluded_by": "changed-lines",
+      "value": 5
+    },
+    {
+      "pr": 14705,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14703,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 14697,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 14693,
+      "excluded_by": "changed-lines",
+      "value": 2477
+    },
+    {
+      "pr": 14689,
+      "excluded_by": "changed-lines",
+      "value": 928
+    },
+    {
+      "pr": 14688,
+      "excluded_by": "changed-lines",
+      "value": 858
+    },
+    {
+      "pr": 14685,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14684,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14681,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 14679,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14678,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14676,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14675,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14672,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14669,
+      "excluded_by": "changed-lines",
+      "value": 434
+    },
+    {
+      "pr": 14666,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 14664,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 14660,
+      "excluded_by": "changed-lines",
+      "value": 2974
+    },
+    {
+      "pr": 14652,
+      "excluded_by": "changed-lines",
+      "value": 1043
+    },
+    {
+      "pr": 14651,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 14649,
+      "excluded_by": "changed-lines",
+      "value": 568
+    },
+    {
+      "pr": 14646,
+      "excluded_by": "changed-lines",
+      "value": 1127
+    },
+    {
+      "pr": 14645,
+      "excluded_by": "changed-lines",
+      "value": 24
+    },
+    {
+      "pr": 14644,
+      "excluded_by": "bot-author",
+      "value": "app/dependabot"
+    },
+    {
+      "pr": 14637,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14635,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 14633,
+      "excluded_by": "changed-lines",
+      "value": 26
+    },
+    {
+      "pr": 14631,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14630,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14628,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14627,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 14623,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14622,
+      "excluded_by": "changed-lines",
+      "value": 29
+    },
+    {
+      "pr": 14614,
+      "excluded_by": "changed-lines",
+      "value": 10
+    },
+    {
+      "pr": 14613,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 14611,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 14608,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 14606,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14603,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14602,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14601,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14600,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14581,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 14579,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14578,
+      "excluded_by": "changed-lines",
+      "value": 24
+    },
+    {
+      "pr": 14571,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14570,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 14568,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14567,
+      "excluded_by": "changed-lines",
+      "value": 491
+    },
+    {
+      "pr": 14555,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 14554,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 14553,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14552,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14551,
+      "excluded_by": "bot-author",
+      "value": "app/dependabot"
+    },
+    {
+      "pr": 14548,
+      "excluded_by": "changed-lines",
+      "value": 3774
+    },
+    {
+      "pr": 14547,
+      "excluded_by": "changed-lines",
+      "value": 0
+    },
+    {
+      "pr": 14546,
+      "excluded_by": "changed-lines",
+      "value": 1458
+    },
+    {
+      "pr": 14544,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 14540,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14539,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14538,
+      "excluded_by": "changed-lines",
+      "value": 10
+    },
+    {
+      "pr": 14534,
+      "excluded_by": "changed-lines",
+      "value": 460
+    },
+    {
+      "pr": 14530,
+      "excluded_by": "changed-lines",
+      "value": 447
+    },
+    {
+      "pr": 14521,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14519,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14518,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14515,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 14506,
+      "excluded_by": "changed-lines",
+      "value": 15
+    },
+    {
+      "pr": 14499,
+      "excluded_by": "changed-lines",
+      "value": 28
+    },
+    {
+      "pr": 14485,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 14482,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14481,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14477,
+      "excluded_by": "changed-lines",
+      "value": 409
+    },
+    {
+      "pr": 14468,
+      "excluded_by": "changed-lines",
+      "value": 16
+    },
+    {
+      "pr": 14460,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14457,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14455,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14454,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14453,
+      "excluded_by": "changed-lines",
+      "value": 636
+    },
+    {
+      "pr": 14451,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 14439,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 14432,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 14424,
+      "excluded_by": "changed-lines",
+      "value": 617
+    },
+    {
+      "pr": 14421,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14420,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14419,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14418,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14416,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14412,
+      "excluded_by": "changed-lines",
+      "value": 1201
+    },
+    {
+      "pr": 14408,
+      "excluded_by": "changed-lines",
+      "value": 567
+    },
+    {
+      "pr": 14406,
+      "excluded_by": "changed-lines",
+      "value": 7
+    },
+    {
+      "pr": 14391,
+      "excluded_by": "changed-lines",
+      "value": 9
+    },
+    {
+      "pr": 14390,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 14389,
+      "excluded_by": "changed-lines",
+      "value": 25
+    },
+    {
+      "pr": 14388,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14387,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14386,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14385,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14384,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14383,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14382,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14380,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14378,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14377,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14376,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14375,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14370,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14369,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14368,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14366,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14365,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14362,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14361,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14358,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14355,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 14352,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 14351,
+      "excluded_by": "changed-lines",
+      "value": 23
+    },
+    {
+      "pr": 14349,
+      "excluded_by": "changed-lines",
+      "value": 1052
+    },
+    {
+      "pr": 14348,
+      "excluded_by": "changed-lines",
+      "value": 24
+    },
+    {
+      "pr": 14347,
+      "excluded_by": "changed-lines",
+      "value": 0
+    },
+    {
+      "pr": 14345,
+      "excluded_by": "changed-lines",
+      "value": 9
+    },
+    {
+      "pr": 14344,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14336,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14334,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14333,
+      "excluded_by": "changed-lines",
+      "value": 1644
+    },
+    {
+      "pr": 14324,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14323,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14322,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14321,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14320,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14315,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 14308,
+      "excluded_by": "changed-lines",
+      "value": 460
+    },
+    {
+      "pr": 14299,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14294,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14293,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14292,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14291,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 14285,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 14283,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 14281,
+      "excluded_by": "changed-lines",
+      "value": 3957
+    },
+    {
+      "pr": 14277,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14276,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14271,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14269,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14266,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14265,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14255,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 14252,
+      "excluded_by": "changed-lines",
+      "value": 7
+    },
+    {
+      "pr": 14250,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 14248,
+      "excluded_by": "changed-lines",
+      "value": 514
+    },
+    {
+      "pr": 14247,
+      "excluded_by": "changed-lines",
+      "value": 894
+    },
+    {
+      "pr": 14245,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14244,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14243,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14242,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14238,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14237,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 14235,
+      "excluded_by": "changed-lines",
+      "value": 1875
+    },
+    {
+      "pr": 14231,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 14226,
+      "excluded_by": "changed-lines",
+      "value": 450
+    },
+    {
+      "pr": 14225,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14223,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14219,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14215,
+      "excluded_by": "changed-lines",
+      "value": 7
+    },
+    {
+      "pr": 14214,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14212,
+      "excluded_by": "changed-lines",
+      "value": 11
+    },
+    {
+      "pr": 14211,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14209,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14207,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14206,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14204,
+      "excluded_by": "bot-author",
+      "value": "app/dependabot"
+    },
+    {
+      "pr": 14200,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14198,
+      "excluded_by": "bot-author",
+      "value": "app/dependabot"
+    },
+    {
+      "pr": 14195,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14192,
+      "excluded_by": "bot-author",
+      "value": "app/dependabot"
+    },
+    {
+      "pr": 14191,
+      "excluded_by": "changed-lines",
+      "value": 5
+    },
+    {
+      "pr": 14190,
+      "excluded_by": "changed-lines",
+      "value": 606
+    },
+    {
+      "pr": 14185,
+      "excluded_by": "changed-lines",
+      "value": 5
+    },
+    {
+      "pr": 14183,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14181,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14179,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14178,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14176,
+      "excluded_by": "changed-lines",
+      "value": 16
+    },
+    {
+      "pr": 14175,
+      "excluded_by": "changed-lines",
+      "value": 13
+    },
+    {
+      "pr": 14173,
+      "excluded_by": "changed-lines",
+      "value": 16
+    },
+    {
+      "pr": 14172,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 14171,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14170,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 14168,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14167,
+      "excluded_by": "changed-lines",
+      "value": 14
+    },
+    {
+      "pr": 14166,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14161,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14159,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14158,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14157,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14156,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14153,
+      "excluded_by": "changed-lines",
+      "value": 5
+    },
+    {
+      "pr": 14149,
+      "excluded_by": "changed-lines",
+      "value": 27
+    },
+    {
+      "pr": 14148,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14146,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14145,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14143,
+      "excluded_by": "changed-lines",
+      "value": 11
+    },
+    {
+      "pr": 14139,
+      "excluded_by": "changed-lines",
+      "value": 720
+    },
+    {
+      "pr": 14137,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 14136,
+      "excluded_by": "changed-lines",
+      "value": 27
+    },
+    {
+      "pr": 14135,
+      "excluded_by": "changed-lines",
+      "value": 25
+    },
+    {
+      "pr": 14130,
+      "excluded_by": "changed-lines",
+      "value": 448
+    },
+    {
+      "pr": 14128,
+      "excluded_by": "changed-lines",
+      "value": 1058
+    },
+    {
+      "pr": 14127,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14124,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14123,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14122,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14121,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14120,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14119,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14117,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 14089,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14086,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14085,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14084,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14082,
+      "excluded_by": "changed-lines",
+      "value": 454
+    },
+    {
+      "pr": 14079,
+      "excluded_by": "changed-lines",
+      "value": 885
+    },
+    {
+      "pr": 14078,
+      "excluded_by": "changed-lines",
+      "value": 71233
+    },
+    {
+      "pr": 14077,
+      "excluded_by": "changed-lines",
+      "value": 10754
+    },
+    {
+      "pr": 14075,
+      "excluded_by": "changed-lines",
+      "value": 2179
+    },
+    {
+      "pr": 14073,
+      "excluded_by": "changed-lines",
+      "value": 465
+    },
+    {
+      "pr": 14070,
+      "excluded_by": "changed-lines",
+      "value": 870
+    },
+    {
+      "pr": 14068,
+      "excluded_by": "changed-lines",
+      "value": 7
+    },
+    {
+      "pr": 14063,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14060,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14059,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14057,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14056,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14054,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14053,
+      "excluded_by": "changed-lines",
+      "value": 511
+    },
+    {
+      "pr": 14052,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14049,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 14040,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 14039,
+      "excluded_by": "changed-lines",
+      "value": 806
+    },
+    {
+      "pr": 14037,
+      "excluded_by": "changed-lines",
+      "value": 11
+    },
+    {
+      "pr": 14035,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14024,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14022,
+      "excluded_by": "changed-lines",
+      "value": 5
+    },
+    {
+      "pr": 14017,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 14015,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14014,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14013,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14012,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14011,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 14001,
+      "excluded_by": "changed-lines",
+      "value": 468
+    },
+    {
+      "pr": 14000,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 13996,
+      "excluded_by": "changed-lines",
+      "value": 516
+    },
+    {
+      "pr": 13994,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 13993,
+      "excluded_by": "changed-lines",
+      "value": 11
+    },
+    {
+      "pr": 13988,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 13987,
+      "excluded_by": "changed-lines",
+      "value": 19
+    },
+    {
+      "pr": 13986,
+      "excluded_by": "changed-lines",
+      "value": 16
+    },
+    {
+      "pr": 13985,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 13984,
+      "excluded_by": "changed-lines",
+      "value": 7
+    },
+    {
+      "pr": 13983,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 13982,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 13981,
+      "excluded_by": "changed-lines",
+      "value": 16
+    },
+    {
+      "pr": 13980,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 13978,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 13977,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 13976,
+      "excluded_by": "changed-lines",
+      "value": 19
+    },
+    {
+      "pr": 13973,
+      "excluded_by": "changed-lines",
+      "value": 19
+    },
+    {
+      "pr": 13972,
+      "excluded_by": "changed-lines",
+      "value": 8
+    },
+    {
+      "pr": 13971,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 13970,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 13968,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 13967,
+      "excluded_by": "changed-lines",
+      "value": 5
+    },
+    {
+      "pr": 13965,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 13964,
+      "excluded_by": "changed-lines",
+      "value": 20
+    },
+    {
+      "pr": 13963,
+      "excluded_by": "changed-lines",
+      "value": 29
+    },
+    {
+      "pr": 13962,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 13961,
+      "excluded_by": "changed-lines",
+      "value": 9
+    },
+    {
+      "pr": 13960,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 13959,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 13958,
+      "excluded_by": "changed-lines",
+      "value": 19
+    },
+    {
+      "pr": 13953,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 13950,
+      "excluded_by": "changed-lines",
+      "value": 684
+    },
+    {
+      "pr": 13949,
+      "excluded_by": "changed-lines",
+      "value": 28
+    },
+    {
+      "pr": 13948,
+      "excluded_by": "changed-lines",
+      "value": 2439
+    },
+    {
+      "pr": 13946,
+      "excluded_by": "changed-lines",
+      "value": 15
+    },
+    {
+      "pr": 13944,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13942,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 13941,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13940,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13939,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13938,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13937,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13934,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 13933,
+      "excluded_by": "bot-author",
+      "value": "app/otelbot"
+    },
+    {
+      "pr": 13926,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 13922,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13917,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13915,
+      "excluded_by": "changed-lines",
+      "value": 547
+    },
+    {
+      "pr": 13913,
+      "excluded_by": "changed-lines",
+      "value": 629
+    },
+    {
+      "pr": 13903,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 13895,
+      "excluded_by": "changed-lines",
+      "value": 16
+    },
+    {
+      "pr": 13890,
+      "excluded_by": "changed-lines",
+      "value": 23
+    },
+    {
+      "pr": 13889,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 13888,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 13887,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 13885,
+      "excluded_by": "changed-lines",
+      "value": 27
+    },
+    {
+      "pr": 13884,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13882,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13881,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13880,
+      "excluded_by": "changed-lines",
+      "value": 14
+    },
+    {
+      "pr": 13878,
+      "excluded_by": "changed-lines",
+      "value": 2614
+    },
+    {
+      "pr": 13876,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 13868,
+      "excluded_by": "changed-lines",
+      "value": 1329
+    },
+    {
+      "pr": 13866,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 13864,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 13863,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 13862,
+      "excluded_by": "changed-lines",
+      "value": 25
+    },
+    {
+      "pr": 13861,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 13854,
+      "excluded_by": "changed-lines",
+      "value": 27
+    },
+    {
+      "pr": 13851,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13850,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13848,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13846,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13845,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13841,
+      "excluded_by": "changed-lines",
+      "value": 2
+    },
+    {
+      "pr": 13839,
+      "excluded_by": "changed-lines",
+      "value": 22
+    },
+    {
+      "pr": 13838,
+      "excluded_by": "changed-lines",
+      "value": 1466
+    },
+    {
+      "pr": 13830,
+      "excluded_by": "changed-lines",
+      "value": 6
+    },
+    {
+      "pr": 13828,
+      "excluded_by": "changed-lines",
+      "value": 5
+    },
+    {
+      "pr": 13823,
+      "excluded_by": "changed-lines",
+      "value": 5
+    },
+    {
+      "pr": 13821,
+      "excluded_by": "changed-lines",
+      "value": 1251
+    },
+    {
+      "pr": 13820,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 13805,
+      "excluded_by": "changed-lines",
+      "value": 14
+    },
+    {
+      "pr": 13802,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13801,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13794,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13793,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13792,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13790,
+      "excluded_by": "changed-lines",
+      "value": 2338
+    },
+    {
+      "pr": 13782,
+      "excluded_by": "changed-lines",
+      "value": 1049
+    },
+    {
+      "pr": 13777,
+      "excluded_by": "changed-lines",
+      "value": 7
+    },
+    {
+      "pr": 13776,
+      "excluded_by": "changed-lines",
+      "value": 7
+    },
+    {
+      "pr": 13772,
+      "excluded_by": "changed-lines",
+      "value": 23
+    },
+    {
+      "pr": 13767,
+      "excluded_by": "changed-lines",
+      "value": 7
+    },
+    {
+      "pr": 13765,
+      "excluded_by": "changed-lines",
+      "value": 671
+    },
+    {
+      "pr": 13759,
+      "excluded_by": "changed-lines",
+      "value": 27
+    },
+    {
+      "pr": 13758,
+      "excluded_by": "changed-lines",
+      "value": 6452
+    },
+    {
+      "pr": 13755,
+      "excluded_by": "changed-lines",
+      "value": 16
+    },
+    {
+      "pr": 13753,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13752,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13751,
+      "excluded_by": "changed-lines",
+      "value": 9
+    },
+    {
+      "pr": 13750,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13747,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13746,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13745,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13743,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13742,
+      "excluded_by": "changed-lines",
+      "value": 27
+    },
+    {
+      "pr": 13739,
+      "excluded_by": "changed-lines",
+      "value": 834
+    },
+    {
+      "pr": 13737,
+      "excluded_by": "changed-lines",
+      "value": 22
+    },
+    {
+      "pr": 13736,
+      "excluded_by": "changed-lines",
+      "value": 2371
+    },
+    {
+      "pr": 13733,
+      "excluded_by": "changed-lines",
+      "value": 428
+    },
+    {
+      "pr": 13732,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13730,
+      "excluded_by": "changed-lines",
+      "value": 747
+    },
+    {
+      "pr": 13729,
+      "excluded_by": "changed-lines",
+      "value": 459
+    },
+    {
+      "pr": 13728,
+      "excluded_by": "changed-lines",
+      "value": 3
+    },
+    {
+      "pr": 13720,
+      "excluded_by": "changed-lines",
+      "value": 27
+    },
+    {
+      "pr": 13716,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 13713,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13711,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13710,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13707,
+      "excluded_by": "changed-lines",
+      "value": 2703
+    },
+    {
+      "pr": 13696,
+      "excluded_by": "changed-lines",
+      "value": 445
+    },
+    {
+      "pr": 13693,
+      "excluded_by": "changed-lines",
+      "value": 1502
+    },
+    {
+      "pr": 13692,
+      "excluded_by": "changed-lines",
+      "value": 1477
+    },
+    {
+      "pr": 13688,
+      "excluded_by": "changed-lines",
+      "value": 994
+    },
+    {
+      "pr": 13683,
+      "excluded_by": "bot-author",
+      "value": "app/dependabot"
+    },
+    {
+      "pr": 13682,
+      "excluded_by": "changed-lines",
+      "value": 1
+    },
+    {
+      "pr": 13681,
+      "excluded_by": "changed-lines",
+      "value": 16
+    },
+    {
+      "pr": 13680,
+      "excluded_by": "changed-lines",
+      "value": 1964
+    },
+    {
+      "pr": 13679,
+      "excluded_by": "changed-lines",
+      "value": 671
+    },
+    {
+      "pr": 13678,
+      "excluded_by": "changed-lines",
+      "value": 6032
+    },
+    {
+      "pr": 13677,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13676,
+      "excluded_by": "changed-lines",
+      "value": 2659
+    },
+    {
+      "pr": 13675,
+      "excluded_by": "changed-lines",
+      "value": 1575
+    },
+    {
+      "pr": 13667,
+      "excluded_by": "changed-lines",
+      "value": 3500
+    },
+    {
+      "pr": 13666,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13665,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13664,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13663,
+      "excluded_by": "changed-lines",
+      "value": 12
+    },
+    {
+      "pr": 13662,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13661,
+      "excluded_by": "bot-author",
+      "value": "app/renovate"
+    },
+    {
+      "pr": 13659,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 13655,
+      "excluded_by": "changed-lines",
+      "value": 29
+    },
+    {
+      "pr": 13651,
+      "excluded_by": "changed-lines",
+      "value": 1621
+    },
+    {
+      "pr": 13650,
+      "excluded_by": "changed-lines",
+      "value": 924
+    },
+    {
+      "pr": 13648,
+      "excluded_by": "changed-lines",
+      "value": 413
+    },
+    {
+      "pr": 13647,
+      "excluded_by": "changed-lines",
+      "value": 1085
+    },
+    {
+      "pr": 13646,
+      "excluded_by": "changed-lines",
+      "value": 1766
+    },
+    {
+      "pr": 13641,
+      "excluded_by": "changed-lines",
+      "value": 638
+    },
+    {
+      "pr": 13639,
+      "excluded_by": "changed-lines",
+      "value": 4
+    },
+    {
+      "pr": 15642,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15633,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15618,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15614,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15596,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15547,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15542,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15537,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15528,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15517,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15489,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15488,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15486,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15474,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15463,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15459,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15452,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15438,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15426,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15425,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15424,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15423,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15421,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15420,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15419,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15418,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15356,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15348,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15343,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15342,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15340,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15339,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15337,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15336,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15333,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15332,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15331,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15330,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15329,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15328,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15321,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15314,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15310,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15305,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15286,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15281,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15271,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15266,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15262,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15253,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15232,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15213,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15210,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15188,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15187,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15186,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15179,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15172,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15171,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15166,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15152,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15143,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15139,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15133,
+      "excluded_by": "primarily-docs"
+    },
+    {
+      "pr": 15125,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15123,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15119,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15098,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15096,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15095,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15088,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15076,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 15042,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15026,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 15014,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 15002,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14993,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14989,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14804,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14802,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14791,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14782,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 14779,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14774,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14773,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14757,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14756,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14752,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14748,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 14733,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14730,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14723,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14722,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14719,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14718,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14715,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14713,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14712,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14699,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14694,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14683,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14658,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14654,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14643,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 14640,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 14634,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14625,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14620,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14619,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14618,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14616,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14586,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14584,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14582,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14575,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14569,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14558,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14549,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14536,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14532,
+      "excluded_by": "primarily-docs"
+    },
+    {
+      "pr": 14531,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14504,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14494,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14493,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14488,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 14480,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14479,
+      "excluded_by": "primarily-docs"
+    },
+    {
+      "pr": 14467,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 14462,
+      "excluded_by": "primarily-docs"
+    },
+    {
+      "pr": 14441,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14436,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14434,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14428,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14425,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14413,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14410,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14409,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14403,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14400,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14398,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 14397,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14395,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14392,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14374,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14373,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14357,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14356,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 14340,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 14337,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14319,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14313,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14310,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14305,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14300,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14280,
+      "excluded_by": "primarily-docs"
+    },
+    {
+      "pr": 14279,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14275,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14273,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14258,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14256,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14253,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14251,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14239,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14232,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14229,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14227,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14221,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14213,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14201,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14199,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14197,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14188,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14182,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14163,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14160,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14155,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14154,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14151,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14115,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14101,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14094,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14091,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14076,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14071,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14050,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14043,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14041,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14036,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14032,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14031,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14030,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14029,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14028,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14025,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14019,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14009,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14008,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 14007,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 14006,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13979,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 13974,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13955,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13952,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13945,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13924,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13921,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13920,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13906,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13899,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13896,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13883,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13865,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13859,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13858,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13844,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13837,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13824,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13807,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13791,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13786,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13780,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 13773,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 13764,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13731,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13725,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13724,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13719,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13714,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13701,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13700,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13699,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13698,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13695,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13694,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13691,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13689,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13687,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13686,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13660,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 13658,
+      "excluded_by": "changed-files",
+      "value": 1
+    },
+    {
+      "pr": 13656,
+      "excluded_by": "ci-fail"
+    },
+    {
+      "pr": 13649,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13645,
+      "excluded_by": "no-issue-thin-body"
+    },
+    {
+      "pr": 13644,
+      "excluded_by": "no-issue-thin-body"
+    }
+  ]
+}

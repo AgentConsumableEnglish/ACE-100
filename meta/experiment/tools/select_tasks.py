@@ -39,6 +39,11 @@ MIN_BODY_CHARS = 200          # "self-contained description" floor when no linke
 DOCS_ONLY_THRESHOLD = 0.8     # >80% of changed files being docs => "primarily documentation"
 DOC_PATH_RE = re.compile(r"(^|/)(docs?|documentation|website)(/|$)|\.mdx?$", re.IGNORECASE)
 
+# Amendment 2: bot-authored PRs (dependency bumps, CI-action updates) are not
+# replayable engineering tasks; their generated bodies defeat the description
+# filter. Excluded by author.
+BOT_AUTHOR_RE = re.compile(r"\[bot\]$|^(renovate|dependabot|github-actions|opentelemetrybot)", re.IGNORECASE)
+
 STRATA = ("feature", "bugfix", "config-integration", "other")
 FEATURE_RE = re.compile(r"\b(feat|feature|add|implement|support|introduce)\b", re.IGNORECASE)
 BUGFIX_RE = re.compile(r"\b(fix|bug|regression|crash|incorrect|broken)\b", re.IGNORECASE)
@@ -69,7 +74,7 @@ def list_merged_prs(repo: str, since: dt.date, limit: int) -> list[dict]:
     return gh_json([
         "pr", "list", "-R", repo, "--state", "merged", "--limit", str(limit),
         "--search", f"merged:>={since.isoformat()}",
-        "--json", "number,title,mergedAt,additions,deletions,labels,url",
+        "--json", "number,title,mergedAt,additions,deletions,labels,url,author",
     ])
 
 
@@ -82,8 +87,15 @@ def pr_detail(repo: str, number: int) -> dict:
     ])
 
 
-def issue_detail(repo: str, number: int) -> dict:
-    return gh_json(["issue", "view", str(number), "-R", repo, "--json", "number,title,body,url"])
+def issue_detail(repo: str, number: int, allow_fail: bool = False) -> dict | None:
+    try:
+        return gh_json(["issue", "view", str(number), "-R", repo,
+                        "--json", "number,title,body,url"], attempts=2)
+    except SystemExit:
+        if allow_fail:
+            print(f"  issue #{number} not fetchable in {repo}; continuing", file=sys.stderr)
+            return None
+        raise
 
 
 def base_commit_of_merge(repo: str, merge_sha: str) -> str:
@@ -188,15 +200,20 @@ def main() -> None:
     prs = list_merged_prs(args.repo, since, args.limit)
     print(f"  {len(prs)} merged PRs in window", file=sys.stderr)
 
-    # Cheap first-pass filter on total changed lines before fetching detail.
+    # Cheap first-pass filters (bot authors, total changed lines) before
+    # fetching per-PR detail.
     survivors = []
     for pr in prs:
+        author = (pr.get("author") or {}).get("login", "")
+        if BOT_AUTHOR_RE.search(author) or (pr.get("author") or {}).get("is_bot"):
+            audit.append({"pr": pr["number"], "excluded_by": "bot-author", "value": author})
+            continue
         lines = pr["additions"] + pr["deletions"]
         if not (MIN_CHANGED_LINES <= lines <= MAX_CHANGED_LINES):
             audit.append({"pr": pr["number"], "excluded_by": "changed-lines", "value": lines})
             continue
         survivors.append(pr)
-    print(f"  {len(survivors)} within {MIN_CHANGED_LINES}-{MAX_CHANGED_LINES} changed lines", file=sys.stderr)
+    print(f"  {len(survivors)} after bot-author and {MIN_CHANGED_LINES}-{MAX_CHANGED_LINES} line filters", file=sys.stderr)
 
     by_stratum: dict[str, list[dict]] = {s: [] for s in STRATA}
     for pr in survivors:
@@ -244,12 +261,23 @@ def main() -> None:
         issue_block = None
         if d["_issues"]:
             ref = d["_issues"][0]
-            issue = issue_detail(args.repo, ref["number"])
-            issue_block = {
-                "number": issue["number"],
-                "title": issue["title"],
-                "body": clean_body(issue.get("body") or "", d["url"]),
-            }
+            # Linked issues can live in another repository (e.g. the contrib
+            # repo); a failed fetch is recorded, not fatal — the PR body
+            # already satisfied the description filter.
+            issue = issue_detail(args.repo, ref["number"], allow_fail=True)
+            if issue is not None:
+                issue_block = {
+                    "number": issue["number"],
+                    "title": issue["title"],
+                    "body": clean_body(issue.get("body") or "", d["url"]),
+                }
+            else:
+                issue_block = {
+                    "number": ref["number"],
+                    "title": ref.get("title"),
+                    "body": "",
+                    "fetch_failed": True,
+                }
         tasks.append({
             "task_id": f"pr-{d['number']}",
             "pr_number": d["number"],
@@ -274,12 +302,19 @@ def main() -> None:
             "seed": args.seed,
             "window_months": args.window_months,
             "n_requested": args.n,
+            "limit": args.limit,
+            "considered_prs": {
+                "count": len(prs),
+                "min_number": min(p["number"] for p in prs) if prs else None,
+                "max_number": max(p["number"] for p in prs) if prs else None,
+            },
             "filters": {
                 "min_changed_files": MIN_CHANGED_FILES,
                 "changed_lines": [MIN_CHANGED_LINES, MAX_CHANGED_LINES],
                 "docs_only_threshold": DOCS_ONLY_THRESHOLD,
                 "min_body_chars": MIN_BODY_CHARS,
                 "allow_unknown_ci": args.allow_unknown_ci,
+                "exclude_bot_authors": True,
             },
             "eligible_by_stratum": counts,
         },
