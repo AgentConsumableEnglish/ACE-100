@@ -81,7 +81,9 @@ TARGET_REPO_DIR = Path(os.environ.get("ACE_EXPERIMENT_REPO", str(EXP_DIR / "repo
 
 # The three documentation states, keyed to arms/<arm>-docs/ trees built at
 # the pinned commit C by build_arms.
-ARM_NAMES = ("original", "ace", "naive")
+# "nodocs" (Experiment 1 Amendment 4): ablation floor — corpus deleted,
+# nothing overlaid.
+ARM_NAMES = ("original", "ace", "naive", "nodocs")
 
 # Seed for all local randomness (pre-registration). Derived sub-seeds keep
 # the salt, the double-score sample, and the shuffle independent of each
@@ -257,6 +259,9 @@ def replace_docs_corpus(workspace: Path, arm: str) -> None:
         if is_corpus_doc(rel):
             path.unlink()
     # 2. Copy the arm's docs tree in at its corpus-relative paths.
+    #    The "nodocs" ablation floor overlays nothing.
+    if arm == "nodocs":
+        return
     arm_docs = ARMS_DIR / f"{arm}-docs"
     if not arm_docs.is_dir():
         raise RuntimeError(f"arm docs tree missing: {arm_docs}")
