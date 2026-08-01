@@ -307,16 +307,15 @@ def invoke_claude(prompt: str, workspace: Path, model: str) -> dict:
     The 45-minute wall clock is enforced here by killing the process;
     the 200-turn cap is enforced by the harness via --max-turns.
 
-    Session hygiene: each run gets a pristine harness config directory
-    (CLAUDE_CONFIG_DIR next to the workspace), so no run inherits the
-    operator's ~/.claude state — memory, CLAUDE.md, or settings — which
-    would otherwise contaminate the experiment. Transcripts are therefore
-    located under that directory, not under ~/.claude.
+    Session hygiene: runs use the operator's normal harness config — a
+    pristine CLAUDE_CONFIG_DIR breaks authentication (macOS keeps the OAuth
+    in the Keychain but login state in the config dir). The contamination
+    surface was audited instead and is recorded in
+    audit/harness-environment.json: no user-level CLAUDE.md, no hooks,
+    preference-only settings, and project memory is keyed by cwd so fresh
+    temp workspaces load none.
     """
-    config_dir = workspace.parent / "claude-config"
-    config_dir.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ)
-    env["CLAUDE_CONFIG_DIR"] = str(config_dir)
     cmd = [
         CLAUDE_BIN,
         "-p", prompt,
@@ -387,15 +386,14 @@ def munge_cwd(path: Path) -> str:
 
 def locate_transcript(workspace: Path, session_id: str | None,
                       started_at_iso: str) -> Path | None:
-    """Find the transcript JSONL under the run's isolated CLAUDE_CONFIG_DIR
-    (see invoke_claude — runs never write to ~/.claude).
+    """Find the transcript JSONL under ~/.claude/projects.
 
     Primary: <projects>/<munged-cwd>/<session_id>.jsonl. Fallbacks: glob for
     the session id anywhere under projects/, then (for wall-clock kills where
     no session id was reported) the newest .jsonl in the munged project dir
     modified after the run started.
     """
-    projects = workspace.parent / "claude-config" / "projects"
+    projects = Path.home() / ".claude" / "projects"
     if not projects.is_dir():
         return None
     project_dir = projects / munge_cwd(workspace)
@@ -602,7 +600,14 @@ def run_one_cell(manifest: dict, task_id: str, arm: str, trial: int,
         elif harness.get("subtype") == "error_max_turns":
             status = "cap_turns"
         elif harness.get("is_error") or harness.get("subtype") not in (None, "success"):
-            status = "failed"
+            # No model work at all (zero tokens) means the harness never got
+            # off the ground — auth, config, or environment trouble. That is
+            # an infrastructure failure (retryable), not a task failure.
+            u = harness.get("usage") or {}
+            spent = sum(u.get(k, 0) or 0 for k in (
+                "input_tokens", "output_tokens",
+                "cache_read_input_tokens", "cache_creation_input_tokens"))
+            status = "infra" if spent == 0 else "failed"
         else:
             status = "completed"
 
