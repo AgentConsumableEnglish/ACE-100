@@ -19,7 +19,7 @@ A second field report from the same monorepo drove this issue. The corpus passed
 - ACE 8.8: every count applies to the logical sentence. A line wrap changes no count.
 - ACE 3.4: the rule is about grammar, not about letters. A deverbal noun is an open content word, and the allowlist is retired. Field data: the list grew from 22 rows to 63 in one pass.
 - Section 6: a note warns that a sentence division can push a paragraph past the ACE 6.6 limit.
-- The checkers: `lint.py` settles ACE 6.6, counts logical sentences, treats a blockquote as quoted text, and reports the progressive form (ACE 3.3).
+- The checkers: `lint.py` settles ACE 6.6, counts logical sentences, treats a blockquote as quoted text, and reports the progressive form (ACE 3.3). Without git, `check.sh` reads the current directory as the root.
 
 A review of [caveman](https://github.com/JuliusBrussee/caveman), a compression project for agent replies, also joined this draft. Documentation output becomes input for future sessions. Thus a dense document saves context in every later read. The review took the practices that keep full grammar, and it refused the fragment style. The changes below have this source, not a field report.
 
@@ -31,6 +31,14 @@ A review of [caveman](https://github.com/JuliusBrussee/caveman), a compression p
 - Tools: `tools/measure.py` reports the bytes of each document, the corpus total, and the front-matter share. Bytes are exact, and a token count is an estimate. The snapshot of this draft is `tools/measurements/issue-3.txt`.
 - About: a new self-compliance rule. The standard makes no quantitative claim without a committed measurement.
 - Front matter: the audit kept every property. The block lets an agent decide from four lines, without the body. The known duplication is the `name` and H1 pair (ACE 13.6). A trim waits for field evidence from the monorepo.
+
+This issue also gained a release pipeline. This work changes the kit, not a rule.
+
+- Release: each issue is a GitHub release. The assets are the kit archive, the skill archive, and the adopt command.
+- Adoption: the adopt command adopts a repository, or upgrades it to a newer issue.
+- A manifest separates the files of the standard from the three files that an adopter extends.
+- Upgrades overwrite the files of the standard, keep the files of the adopter, and remove dropped files.
+- Skill: the `ace-migrate` skill guides an agent rewrite of an existing repository. The `--migrate` flag installs it into the shared skills directory.
 
 ## Issue 2 — 2026-07-31
 

@@ -19,13 +19,20 @@ ACE-100 is Agent-Consumable English. It is a controlled language and a document 
 
 ## Adopt the kit
 
-1. Copy the `docs/` and `tools/` trees into the root of your repository.
-2. Make sure that your root `README.md` links to `docs/README.md`.
-3. Add the dictionary owners to `CODEOWNERS` for the path `docs/dictionary/`.
-4. Give each writer [the agent brief](docs/standard/agent-brief.md).
-5. Run `tools/check.sh` from the first document (ACE 18.1).
-6. Write the technical terms of your repository in [technical-terms.md](docs/dictionary/technical-terms.md).
-7. For a rewrite of an existing repository, read [Migration](docs/standard/migration.md) first.
+Run the adopt command from the root of your repository:
+
+```bash
+curl -fsSL https://github.com/AgentConsumableEnglish/ACE-100/releases/latest/download/adopt.sh | sh
+```
+
+The command copies the `docs/` and `tools/` trees, links your root `README.md` to the documentation map, and runs the checkers. A later run upgrades the kit to the newest issue, and it keeps your own documents. An issue argument, for example `issue-2`, pins one issue. The `--owners` flag writes the dictionary owners to a `CODEOWNERS` file. The `--migrate` flag installs the `ace-migrate` skill, for an agent rewrite of an existing repository.
+
+After the command:
+
+1. Write the technical terms of your repository in [technical-terms.md](docs/dictionary/technical-terms.md).
+2. Give each writer [the agent brief](docs/standard/agent-brief.md).
+3. Run `tools/check.sh` from the first document (ACE 18.1).
+4. For a rewrite of an existing repository, read [Migration](docs/standard/migration.md) first.
 
 ## Root exception
 

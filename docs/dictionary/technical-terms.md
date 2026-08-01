@@ -15,6 +15,7 @@ A technical term is a name for a real thing in this domain (ACE 1.6). Add the te
 | ASD-STE100 | standard | Simplified Technical English, the source model |
 | front matter | format | The YAML block at the top of a document |
 | git | tool | The version-control system |
+| GitHub | product | The hosting service for git repositories |
 | kebab-case | format | Lowercase words connected with hyphens |
 | LLM | abbreviation | Large language model |
 | markdown | format | The text format of governed documents |
