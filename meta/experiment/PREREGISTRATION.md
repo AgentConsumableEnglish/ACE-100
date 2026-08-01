@@ -153,7 +153,10 @@ Single repository; single primary subject model; LLM-judge blinding is imperfect
 network-off is unrealistic for production agents; migration performed by a stronger
 model than the subject (documented asymmetry); the evaluators are the spec's authors —
 mitigated by this pre-registration, mechanical task selection, the temporal firewall,
-and full artifact release.
+and full artifact release. Training-data contamination (added by Amendment 1): the
+subject model may know the target repository's documentation from pretraining, which
+dilutes the in-repo-docs manipulation; partially observable via the docs-usage
+manipulation check, and irreducible for any repository with a real PR history.
 
 ## 9. Artifacts and layout
 
@@ -171,4 +174,17 @@ and full artifact release.
 
 ## Amendments
 
-None.
+### Amendment 1 — target repository selected (2026-08-01)
+
+**Target repository: `open-telemetry/opentelemetry-collector`.** Chosen against the
+§3 criteria from a verified shortlist (40 repositories scouted across six search
+angles; the top 8 by independent-mention count were clone-inspected; evidence
+archived in `scouting/shortlist.json`). Rationale: the only high-scoring candidate
+with no disqualifiers — ~92 curated in-repo markdown docs (within the 20–150 band)
+including MUST-level prose conventions not recoverable from source
+(`docs/coding-guidelines.md`); genuinely multi-module (100 `go.mod` files); ~1,775
+merged PRs in 18 months (~813 substantive) clustering in the 30–400 line band;
+credential-free local `go test` suite; Apache-2.0.
+
+This amendment also adds the training-data-contamination threat to §8. No tasks had
+been selected and no arms built at the time of this amendment.

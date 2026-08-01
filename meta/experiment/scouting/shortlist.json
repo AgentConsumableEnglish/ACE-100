@@ -1,0 +1,501 @@
+{
+  "verified": [
+    {
+      "repo": "typescript-eslint/typescript-eslint",
+      "accessible": true,
+      "license": "MIT",
+      "monorepo": {
+        "verdict": true,
+        "evidence": "pnpm-workspace.yaml + nx.json at root; 19 packages under packages/ (eslint-plugin, parser, typescript-estree, scope-manager, type-utils, rule-tester, ast-spec, project-service, utils, website, etc.), each with its own README and a matching per-package doc in docs/packages/ (e.g. docs/packages/TypeScript_ESTree.mdx, docs/packages/Parser.mdx)."
+      },
+      "docs": {
+        "md_file_count": 120,
+        "doc_dirs": [
+          "docs/ (users, packages, contributing, maintenance, troubleshooting, developers)",
+          "packages/eslint-plugin/docs/rules/ (163 per-rule docs)",
+          "packages/*/README.md",
+          ".github/"
+        ],
+        "load_bearing": "strong",
+        "evidence": "docs/contributing/Pull_Requests.mdx encodes conventions not recoverable from source: PR title grammar <type>(<package>): synced with a CI validation workflow, 100%-coverage expectation, one-error-per-invalid-case rule-test convention, and the ast-spec fixture directory layout (fixtures/<name>/fixture.ts + snapshots/, error paths under fixtures/_errors/). docs/contributing/Local_Development.mdx documents the manual regeneration workflow (pnpm run generate-configs from root; pnpm run test docs -u in eslint-plugin to regenerate doc snapshots) and the cross-package build-order requirement -- pure operational prose. docs/users/Shared_Configurations.mdx states a semantic policy (all configs except all/strict/strict-type-checked are stable; rule additions/removals are breaking changes reserved for majors) that is a governance decision, not derivable from code. Rule docs in packages/eslint-plugin/docs/rules are snapshot-tested against rule metadata (packages/eslint-plugin/tests/docs.test.mts), so CI fails when docs and source drift -- the docs are load-bearing in the literal sense. Count note: 283 md+mdx total; ~120 after excluding the 163 templated per-rule reference docs."
+      },
+      "pr_history": {
+        "merged_pr_estimate_18mo": 886,
+        "suitability": "Excellent. Excluding ~450 chore commits (mostly renovate deps), ~435 substantive PRs in 18 months: 234 fix, 83 feat, 108 docs, 11 test. Sampled fix/feat diff stats cluster in the 30-400 changed-line band (e.g. 38+13, 68+2, 116+0, 157+37, 179+14, 208+12), typically 2-10 files (rule + tests). Contribution policy requires the PR template and an 'accepting prs' linked issue, so PRs come with real descriptions and reference issues -- ideal replayable tasks.",
+        "evidence": "git log since 2025-02-01: 993 commits, 886 ending in (#NNNN) squash suffixes. Spot check via web: PR #12617 (class-literal-property-style fix) merged 2026-07-30 with a substantive description and linked issue #12616."
+      },
+      "tests": {
+        "present": true,
+        "runner": "vitest, orchestrated through Nx (pnpm run test at root = nx run-many -t test; per-package pnpm exec nx test <pkg>)",
+        "cheap_to_run": "Yes. Plain pnpm install + pnpm run build then vitest; CI's only secrets are NX_CLOUD_ACCESS_TOKEN (optional remote cache) and CODECOV_TOKEN (coverage upload), neither needed locally. No paid services. Caveat: the full multi-package suite plus required pre-build is CPU-heavy (thousands of rule tests), though per-package runs are fast and free."
+      },
+      "size_fit": "Core prose docs (~120 md/mdx excluding the 163 templated per-rule reference docs) sit inside the 20-150 band; counting rule docs pushes the total to ~283, above the band, but those are reference-style and template-driven. Repo checkout is 65MB / ~7.4k files -- substantial yet nowhere near kubernetes-scale, and clearly not a toy.",
+      "disqualifiers": [
+        "None hard. Soft concerns: (1) counting the 163 per-rule docs puts total markdown above the 150-file band; (2) typescript-eslint is extremely high-profile, so an LLM's prior memorized knowledge of its docs/rules could contaminate a 'docs are the only source of this knowledge' experiment; (3) full test suite is CPU-heavy and needs a full workspace build first."
+      ],
+      "score": 9,
+      "summary": "Strong fit on all five criteria. In-repo docs/ tree carries genuinely prose-only knowledge (CI-enforced PR title grammar, fixture layout conventions, manual regeneration workflows, config stability guarantees) and rule docs are snapshot-tested against source; classic pnpm+Nx monorepo with 19 packages and per-package docs; ~886 squash-merged PRs in 18 months (~435 substantive, mostly 30-400 lines, with template-enforced descriptions and linked issues); vitest suite runs locally with no credentials; MIT license. Main caveats are the docs count exceeding 150 if per-rule reference docs are included, and model prior-knowledge contamination risk from the project's popularity."
+    },
+    {
+      "repo": "rust-lang/rust-analyzer",
+      "accessible": true,
+      "license": "MIT OR Apache-2.0 (LICENSE-MIT + LICENSE-APACHE dual license)",
+      "monorepo": {
+        "verdict": true,
+        "evidence": "Root Cargo.toml declares workspace members [\"xtask/\", \"lib/*\", \"lib/ungrammar/ungrammar2json\", \"crates/*\"] \u2014 35 crates under crates/ (parser, syntax, hir, hir-ty, ide, ide-assists, rust-analyzer, vfs, ...), publishable libs under lib/, plus a separate npm package in editors/code (VS Code extension with its own test suite). Caveat: docs are centralized in docs/book rather than per-crate; most crates have no README."
+      },
+      "docs": {
+        "md_file_count": 42,
+        "doc_dirs": [
+          "docs/book/src/",
+          "docs/book/src/contributing/",
+          "root (README, CONTRIBUTING, AGENTS.md, AI_POLICY.md, PRIVACY.md)",
+          "editors/code/",
+          "lib/"
+        ],
+        "load_bearing": "strong",
+        "evidence": "docs/book/src/contributing/architecture.md (517 lines) contains explicit 'Architecture Invariant' sections that the doc itself says 'talk about things which are deliberately absent in the source code' (e.g. parser is tree/token-representation independent and never fails; syntax crate must know nothing about salsa or LSP) \u2014 unrecoverable from source. docs/book/src/contributing/style.md (1166 lines) encodes a three-tier change taxonomy (internal vs pub-API vs new inter-crate dependency, each with different review process), a crates.io dependency ban policy with named exceptions (itertools, either), and PR-title conventions. docs/book/src/contributing/testing.md documents the custom fixture DSL ($0 cursor markers, ^^^ annotations, expect-test snapshots, UPDATE_EXPECT=1 workflow) that all IDE/type-inference tests depend on. docs/book/src/contributing/lsp-extensions.md is hash-locked to lsp/ext.rs (header 'lsp/ext.rs hash: 98191ad3d886c851' enforced by a test), so protocol semantics deliberately live in prose. Minor caveat: configuration_generated.md (1852 lines, excluded from count) is auto-generated from config.rs doc comments, so end-user config semantics are partly source-derived."
+      },
+      "pr_history": {
+        "merged_pr_estimate_18mo": 3100,
+        "suitability": "Excellent. A 60-PR sample of recent merge commits shows median 45 changed lines with 50% of PRs falling in the 30-400 line band; the rest are mostly tiny fixes plus occasional large refactors and non-replayable rustc-pull subtree syncs to filter out. Merge commit bodies carry meaningful conventional-commit titles (fix:/feat:/perf: e.g. 'fix: avoid panic when checking Copy for hrtb closure arguments') and branch names frequently embed issue numbers (fix/22331-qualified-paths-on-type-name-collision).",
+        "evidence": "git log --since=2025-02-01: 2,334 'Merge pull request #N' merge-queue commits plus 781 bors-style 'Merge #N' commits = ~3,100 merged PRs in 18 months; 7,290 total commits."
+      },
+      "tests": {
+        "present": true,
+        "runner": "cargo test / cargo nextest run (CI uses 'cargo nextest run --no-fail-fast'); expect-test snapshot tests throughout; npm test for the VS Code extension; auxiliary: cargo miri (intern crate), cargo clippy, typos, cargo codegen --check",
+        "cheap_to_run": "Yes \u2014 pure local cargo test, no credentials, secrets, network services, or paid infra anywhere in ci.yaml (only exceptions: proc-macro-srv tests need RUSTC_BOOTSTRAP=1/nightly, and the VS Code extension tests need xvfb+npm \u2014 both skippable). The real cost is compute time: the workspace is ~573k lines of Rust across 35 crates, so a cold build plus full suite takes tens of minutes and significant RAM."
+      },
+      "size_fit": "Docs volume fits the band: ~42 substantive markdown files after excluding generated (configuration_generated.md), changelogs, issue templates, and test data \u2014 lower-middle of 20-150. The concern is code size, not docs: 74M working tree, ~573k LOC of Rust, which makes test cycles slow (free but compute-heavy) and puts some tasks (hir-ty type inference) at high domain difficulty.",
+      "disqualifiers": [
+        "None hard. Soft concerns: (1) full local build/test of a 573k-LOC Rust workspace is slow and memory-hungry, though credential-free; (2) per-crate docs are sparse \u2014 prose is centralized in docs/book, so the 'per-package docs' ideal is only partly met; (3) end-user configuration semantics are auto-generated from config.rs doc comments rather than hand-written prose (contributor docs, however, are genuinely prose-only); (4) repo has an AI_POLICY.md forbidding autonomous AI-opened PRs and AI work on E-easy+E-has-instructions issues \u2014 irrelevant for offline replay, but a blocker if the experiment ever submits upstream; (5) a fraction of merged PRs are large automated rustc-pull subtree syncs that must be filtered from the task pool."
+      ],
+      "score": 9,
+      "summary": "Strong fit. Docs are genuinely load-bearing (architecture invariants, a 1166-line style/process guide, a testing-fixture DSL, and a hash-locked LSP-extensions spec that a test enforces stays in sync with source); it is a true 35-crate Cargo workspace plus an npm extension package; ~3,100 merged PRs in 18 months with a sampled median of 45 changed lines and half the sample in the 30-400 band with real descriptions; tests are plain cargo test/nextest with zero credentials; dual MIT/Apache-2.0 with ~42 substantive markdown docs. Docked one point because the codebase itself is giant (~573k LOC, slow compile-test cycles) and per-crate documentation is thin, with everything centralized in docs/book."
+    },
+    {
+      "repo": "open-telemetry/opentelemetry-collector",
+      "accessible": true,
+      "license": "Apache-2.0",
+      "monorepo": {
+        "verdict": true,
+        "evidence": "100 go.mod files (Go multi-module workspace): top-level modules component/, confmap/, consumer/, exporter/, receiver/, processor/, connector/, extension/, pdata/, service/, otelcol/, cmd/builder, cmd/mdatagen, plus nested submodules (e.g. exporter/exporterhelper, scraper/scraperhelper). Per-package docs exist: README.md in confmap/, receiver/otlpreceiver/, processor/batchprocessor/, exporter/debugexporter/, cmd/builder/, etc."
+      },
+      "docs": {
+        "md_file_count": 92,
+        "doc_dirs": [
+          "docs/ (13 files: coding-guidelines, internal-architecture, component-stability, observability, scraping-receivers, security-best-practices)",
+          "docs/rfcs/ (17 design RFCs)",
+          "per-package READMEs (confmap/, receiver/otlpreceiver/, processor/batchprocessor/, exporter/exporterhelper/, cmd/builder/)",
+          "root: CONTRIBUTING.md, VERSIONING.md, AGENTS.md/CLAUDE.md"
+        ],
+        "load_bearing": "strong",
+        "evidence": "docs/coding-guidelines.md (657 lines) carries MUST-level project conventions not derivable from source: lower_snake_case component-identifier rules with migration policy, New vs NewDefault constructor semantics, Config-vs-Settings struct naming, an explicit ban on embedded config structs with the mapstructure squash-tag escape hatch. confmap/README.md specifies the config-resolution algorithm (Provider/Converter/Resolver contract, ${configURI} embedding semantics, 100-URI limit, experimental confmap.enableMergeAppendOption merge-append gate) \u2014 pure prose/protocol knowledge. docs/internal-architecture.md documents startup order and the partial-receiver-reload semantics gated behind service.partialReload feature gates, including the 9-phase Graph.UpdateReceivers algorithm and when full reload is forced. docs/rfcs/ holds 17 accepted design rationales (env-vars, configuration-merging-strategy, component-interfaces). Caveat: end-user docs live on opentelemetry.io, but contributor conventions, architecture, and config semantics are squarely in-repo."
+      },
+      "pr_history": {
+        "merged_pr_estimate_18mo": 1775,
+        "suitability": "Excellent: 1775 squash-merged PRs with (#NNNN) suffixes since 2025-02-01, of which ~813 are substantive (non-dep-bump, non-[chore]) \u2014 about 45/month. Sampled diffs cluster in the 30-400 changed-line band (e.g. 4 files/151 lines, 10 files/174 lines, 5 files/104 lines) with clear scoped titles like '[pkg/config/configtls] Don't leak a goroutine for client CA reload (#15678)'. CI enforces PR-to-issue linkage (.github/workflows/check-pr-issue-link.yml) and changelog entries (.chloggen), so descriptions and linked issues are systematically present. ~288 renovate dep-bumps and ~675 [chore]-tagged commits need filtering when sampling tasks.",
+        "evidence": "git log --first-parent main --since=2025-02-01: 1775 commits, all bearing (#NNNN) squash suffixes; check-pr-issue-link.yml and changelog.yml workflows gate merges."
+      },
+      "tests": {
+        "present": true,
+        "runner": "go test via make gotest (Makefile.Common: go test -race -timeout 240s, iterated across all 100 modules; gotest-with-cover/junit variants)",
+        "cheap_to_run": "Yes \u2014 plain Go unit tests, no external services, no containers, no credentials: the only secret in .github/workflows/build-and-test.yml is CODECOV_TOKEN (coverage upload only), and no docker usage appears in the main test workflow. Only obstacle observed: this verification machine has no Go toolchain installed, so the suite was not executed here; running all 100 modules takes a while but each module can be tested independently with stock go test."
+      },
+      "size_fit": "92 curated markdown docs (123 total minus testdata/, .github templates, mdatagen sample fixtures, CHANGELOGs) \u2014 comfortably inside the 20-150 band. Repo checkout is 45MB / ~2800 files: substantial but far from kubernetes-scale, and clearly not a toy.",
+      "disqualifiers": [],
+      "score": 9,
+      "summary": "Verified fit on all five criteria. Load-bearing prose is genuine and dense: coding-guidelines.md, confmap/README.md, internal-architecture.md, component-stability.md and 17 RFCs encode conventions, config-resolution semantics, and feature-gate behavior an agent cannot recover from source. True 100-module Go monorepo with per-package READMEs. 1775 merged PRs in 18 months (~813 substantive) with enforced issue links and changelog entries, many in the 30-400 line band \u2014 strong replayable ground truth. Test suite is stock go test -race, credential-free. Apache-2.0, 92 curated docs, 45MB repo. Deductions: heavy renovate/[chore] noise requires filtering when mining PRs, and end-user documentation lives on opentelemetry.io so some domain knowledge is out-of-repo; the docs volume sits mid-band rather than dead-center. No hard disqualifiers found despite a skeptical pass."
+    },
+    {
+      "repo": "vitest-dev/vitest",
+      "accessible": true,
+      "license": "MIT (Copyright 2021-Present VoidZero Inc. and Vitest contributors)",
+      "monorepo": {
+        "verdict": true,
+        "evidence": "pnpm-workspace.yaml at root; 14 packages under packages/ (vitest, browser, browser-playwright, browser-preview, ui, expect, spy, snapshot, mocker, coverage-v8, coverage-istanbul, utils, pretty-format, web-worker) plus a multi-suite test/ tree (unit, browser, e2e, typescript, ui, workspaces...). Caveat: per-package docs are thin (mostly one README each; packages/ui has 3 md files) \u2014 the substantive docs are centralized in docs/."
+      },
+      "docs": {
+        "md_file_count": 236,
+        "doc_dirs": [
+          "docs/config (86 + 22 browser per-option reference pages)",
+          "docs/guide (31 + advanced/learn/mocking/browser/recipes subdirs)",
+          "docs/api (9 + advanced/browser subdirs)",
+          "root: CONTRIBUTING.md, AGENTS.md, SECURITY.md",
+          ".github (commit-convention.md, PULL_REQUEST_TEMPLATE.md, copilot-instructions.md)"
+        ],
+        "load_bearing": "strong",
+        "evidence": "docs/config/deps.md documents prose-only configuration semantics: deps.optimizer inherits and extends Vite's optimizeDeps, uses optimizer.client for jsdom/happy-dom but optimizer.ssr for node/edge environments, and bundled deps live in cacheDir (breaking node_modules debugging) \u2014 behavior scattered across resolution code, not recoverable from any one source file. docs/guide/lifecycle.md specifies the 7-phase test-run lifecycle including which process (main vs worker) each phase runs in and which phases re-run per file or on config change. AGENTS.md/CONTRIBUTING.md carry hard conventions: never mock in tests, use runInlineTests from test/test-utils for multi-file setups, never pass '--' to pnpm test filters (silently drops the filter), never import @vitest/utils main entry, regenerate cli-generated.md via 'pnpm -C docs run cli-table' when adding CLI options. All docs are in-repo (docs/ is the VitePress source of vitest.dev), versioned with the code."
+      },
+      "pr_history": {
+        "merged_pr_estimate_18mo": 1473,
+        "suitability": "Excellent: ~1221 non-chore PR commits since 2025-02-01, of which ~855 are fix/feat/refactor/perf and ~250 docs. Six sampled fix/feat PRs changed 30-115 lines each (e.g. #10839: 51 lines, #10589: 115, #10705: 102, #9381: 74) \u2014 squarely in the 30-400 band, each pairing a source change with a regression test. Conventional-commit titles frequently embed linked issues ('fix #9379'); CONTRIBUTING.md mandates detailed PR descriptions and issue links, so descriptions are real.",
+        "evidence": "git log --oneline --since=2025-02-01: 1602 commits, 1473 with (#NNNN) squash suffixes; sampled git show --stat on 6 fix/feat commits confirmed sizes and accompanying tests."
+      },
+      "tests": {
+        "present": true,
+        "runner": "Vitest itself (dogfooded), orchestrated via pnpm scripts: pnpm test:ci for the full suite, per-suite runs under test/<dir>, pnpm test:browser:playwright for browser mode",
+        "cheap_to_run": "Yes. CI (ci.yml) runs on plain ubuntu/macos/windows runners with zero secrets \u2014 only pnpm install + pnpm build + pnpm test:ci. No paid services or credentials anywhere. Obstacles: full build of ~14 packages required before testing, and browser suites need 'npx playwright install --with-deps' (free but a large download); the core test/unit suite runs without browsers."
+      },
+      "size_fit": "Above the 20-150 band: ~260 md files total, ~236 after excluding blog, snippets, and the one auto-generated file (cli-generated.md); no translations in-repo. The overage is driven by docs/config's 108 per-option reference pages, which are hand-written prose (avg ~50 lines) rather than API dumps, so they legitimately count. Repo itself is moderate: 76MB checkout, 36MB .git, 3079 files \u2014 nowhere near kubernetes-scale, and clearly not a toy.",
+      "disqualifiers": [
+        "Docs volume (~236 hand-written md files) exceeds the 150-file upper band \u2014 a soft flag, not a hard disqualifier, since ~108 are small per-option config reference pages",
+        "Per-package docs are weak: knowledge is centralized in docs/ rather than living beside each package (criterion 2's 'ideally with per-package docs' is only partially met)",
+        "Vitest is extremely prominent, so its docs are almost certainly well-represented in model training data \u2014 a confound worth noting for a documentation experiment, though outside the stated criteria",
+        "Repo policy auto-closes fully AI-generated PRs (AGENTS.md VITEST_AUTOMATED_PR marker) \u2014 irrelevant for offline replay but relevant if the experiment ever submits upstream"
+      ],
+      "score": 8,
+      "summary": "Strong fit. Load-bearing prose is genuinely present: config semantics (docs/config/deps.md's optimizer inheritance and environment-dependent defaults), architecture (docs/guide/lifecycle.md's process/phase model), and enforced conventions (AGENTS.md/CONTRIBUTING.md's no-mocking policy, pnpm filter trap, import rules) are not recoverable from source alone and live in-repo. Textbook pnpm monorepo with 14 packages, though docs are centralized rather than per-package. PR ground truth is exceptional: ~1200 non-chore merged PRs in 18 months with linked issues and sampled sizes of 30-115 changed lines, each with reference tests. Test suite is free and credential-less (plain pnpm on stock CI runners; Playwright browsers only for browser suites). MIT licensed. Deductions: ~236 hand-written doc files overshoots the 150 band, per-package docs are thin, and the project's fame means heavy training-data contamination risk for a docs experiment."
+    },
+    {
+      "repo": "PrefectHQ/prefect",
+      "accessible": true,
+      "license": "Apache-2.0",
+      "monorepo": {
+        "verdict": true,
+        "evidence": "21 Python packages in one repo: root pyproject.toml, client/pyproject.toml (prefect-client, a build-config subset of src/prefect/), and 19 independently versioned integration packages under src/integrations/ (prefect-aws, prefect-dbt, prefect-kubernetes, ...) each with its own pyproject.toml; plus two UI apps (ui/ Vue legacy, ui-v2/ React) with package.json. Per-package docs exist both as AGENTS.md files (src/integrations/AGENTS.md, ui-v2/AGENTS.md, tests/AGENTS.md) and per-integration prose under docs/integrations/<pkg>/."
+      },
+      "docs": {
+        "md_file_count": 190,
+        "doc_dirs": [
+          "docs/v3/concepts (26)",
+          "docs/v3/advanced (29)",
+          "docs/v3/how-to-guides (~60)",
+          "docs/contribute (7)",
+          "docs/integrations (prose pages per package)",
+          "root + per-dir AGENTS.md files (~15)",
+          "plans/"
+        ],
+        "load_bearing": "strong",
+        "evidence": "Root AGENTS.md carries architecture invariants not derivable from source: 'server is the source of truth for flow state transitions \u2014 the flow engine proposes states, the server accepts or rejects them; task state transitions are managed locally by design', the client/pyproject.toml parallel-update rule, and anti-patterns (never bypass the orchestration API even in tests). tests/AGENTS.md documents pure institutional contracts: server vs client fixture separation, @pytest.mark.clear_db semantics (DB is NOT cleared by default, 25-100% speedup at stake), AssertingEventsClient.reset() requirements, and pytest-timeout SIGALRM interference with Prefect's own flow-timeout mechanism. docs/v3/concepts/states.mdx explains state name-vs-type semantics ('types drive orchestration, names are visual bookkeeping') and a transition-diagnosis table. docs/contribute/dev-contribute.mdx encodes contribution/design principles and review criteria. Count note: 190 = prose .mdx in docs/ after excluding 735 api-ref (auto-generated via 'just generate-docs') and 28 release-notes pages; a further ~90 .md files exist repo-wide (AGENTS.md network, plans/, contributing)."
+      },
+      "pr_history": {
+        "merged_pr_estimate_18mo": 3342,
+        "suitability": "Excellent volume with a filtering caveat. 3,342 first-parent commits with '(#NNNN)' squash suffixes since 2025-02-01. ~543 are dependabot/auto-doc/AGENTS-sync chores, and 1,026 are authored by devin-ai-integration[bot] (many are real small fixes with descriptions, e.g. #22682 SlackWebhook subject fix, 54 lines). That still leaves >1,500 human PRs (nate nowack 517, Alex Streed 421, Chris White 73, ...). Sampled commits land squarely in the 30-400 changed-line band (heartbeat handling +52, postgres_listener Kerberos fix, ECS secrets merge). PR body conventions are enforced in AGENTS.md ('closes #1234', summary, details tag) and a GitHub spot check confirmed real descriptions and linked issues on human PRs. Replay experiments must filter out dependabot noise and decide whether Devin-authored PRs count as acceptable reference implementations.",
+        "evidence": "git log --since=2025-02-01 --first-parent main: 3,352 commits, 3,342 with (#NNNN) suffix; author histogram and shortstat sampling done locally; one GitHub pulls-page spot check confirmed description quality."
+      },
+      "tests": {
+        "present": true,
+        "runner": "pytest (uv run pytest; 466 test_*.py files under tests/ mirroring src/prefect/; pytest-xdist, pytest-timeout; Playwright for ui-v2/e2e)",
+        "cheap_to_run": "Yes for credentials \u2014 the suite defaults to SQLite with no external accounts or paid services; PostgreSQL 14/17 and redis are CI matrix legs via docker containers, and integration packages mock cloud services (AWS/GCP tested via moto-style mocks, k8s legs separate workflows). Caveat on cheapness: the full suite is large \u2014 CI splits it across many matrix jobs and pyproject.toml notes the suite is big enough to hit CI timeouts (90s per-test timeout configured). Targeted per-module runs (uv run pytest tests/module/ -n4) are fast and are the documented workflow."
+      },
+      "size_fit": "Prose docs (~190 mdx + ~90 repo .md) sit somewhat above the 20-150 band, though within reach after excluding docs/snippets, docs/v3/examples (auto-published from examples/), and cloud-only pages. The repo itself is heavyweight: 167MB checkout, ~5,300 files, 3,300+ PRs per 18 months \u2014 an order of magnitude below kubernetes but firmly at the large end of acceptable.",
+      "disqualifiers": [],
+      "score": 8,
+      "summary": "Strong fit with no hard disqualifiers. Load-bearing docs are the standout: an unusually rich in-repo AGENTS.md network plus docs/v3/concepts and docs/contribute carry architecture invariants (server-authoritative state transitions), test-suite contracts (clear_db, fixture separation, SIGALRM interference), and configuration semantics that cannot be recovered from source alone. Genuine multi-package monorepo (root + prefect-client + 19 integrations + 2 UI apps). PR ground truth is abundant (~3,300 merged in 18 months, many in the 30-400 line band with enforced descriptions), but experiments must filter heavy bot traffic \u2014 dependabot (~550) and Devin AI (~1,000) commits dominate recent volume. pytest suite runs locally on SQLite without credentials; the full suite is slow but targeted runs are cheap. Apache-2.0. Main deductions: docs volume runs slightly above the 150-file band, the repo is large and fast-moving, and AI-authored PRs blur reference-implementation provenance."
+    },
+    {
+      "repo": "astral-sh/uv",
+      "accessible": true,
+      "license": "MIT OR Apache-2.0 (dual, both LICENSE-MIT and LICENSE-APACHE at repo root)",
+      "monorepo": {
+        "verdict": true,
+        "evidence": "Cargo workspace with members = [\"crates/*\"]: 72 crates (uv, uv-resolver, uv-client, uv-workspace, uv-pep440, uv-build-backend, ...). Caveat: it is one product factored into internal crates, not independently shipped packages, and per-crate docs are thin \u2014 most crate READMEs are one-liners; only uv-pep440/uv-pep508 have substantive READMEs."
+      },
+      "docs": {
+        "md_file_count": 90,
+        "doc_dirs": [
+          "docs/concepts (incl. projects/, authentication/)",
+          "docs/guides (incl. integration/, migration/)",
+          "docs/reference (incl. internals/, policies/, troubleshooting/)",
+          "docs/pip",
+          "docs/getting-started",
+          "repo root (STYLE.md, CONTRIBUTING.md, AGENTS.md, BENCHMARKS.md, SECURITY.md)"
+        ],
+        "load_bearing": "strong",
+        "evidence": "docs/reference/internals/resolver.md documents the forking-resolver design: package prioritization order (URL > exact specifier > loose, then first-seen order for determinism), the conflict-driven fork/merge algorithm, and why resolution-markers are persisted to uv.lock to keep forks stable across runs \u2014 design rationale unrecoverable from source alone. STYLE.md fixes CLI/doc conventions: exact color semantics (cyan for hints/paths, green for commands), warn_user vs tracing-warning policy, terminology rules (lockfile not lock file), and the guides/concepts/reference taxonomy. docs/concepts/cache.md specifies the per-dependency-type cache-invalidation contract (HTTP headers for registries, commit hash for git, last-modified of pyproject.toml for local dirs, immutability assumption for flat indexes) \u2014 a behavioral contract that constrains code changes. 197 total md minus 11 changelogs and ~20 test-fixture/agents-prompt files leaves ~90 real docs (81 under docs/); generated reference dumps (settings/cli) are built from code at site build time and are not checked in."
+      },
+      "pr_history": {
+        "merged_pr_estimate_18mo": 4268,
+        "suitability": "Excellent. ~960 of the 4,268 are renovate/bot bumps, leaving ~3,300 human PRs. Squash-merge bodies preserve full PR descriptions with '## Summary' and '## Test Plan' sections (e.g. #20847, #20865, #20862). Sampled human PRs land squarely in the 30-400 changed-line band: #20145 (40 lines), #17972 (49), #14993 (135), #13379 (50), #14261 (211); trivial and giant PRs exist but the mid-band is abundant.",
+        "evidence": "git log --since=2025-02-01 shows 4,268 commits with '(#NNNN)' squash suffixes and 0 merge commits (pure squash workflow); top authors Zanie Blue (989), renovate[bot] (871), Charlie Marsh (710), konsti (446). Sampled commit bodies contain real multi-paragraph rationale, not bare titles."
+      },
+      "tests": {
+        "present": true,
+        "runner": "cargo nextest (+ insta snapshot testing via uv_snapshot! macro); CI in .github/workflows/ci.yml + test.yml runs plain 'cargo nextest run' on Linux/macOS/Windows",
+        "cheap_to_run": "No credentials or paid services \u2014 CI test jobs use no secrets. But not compute-cheap: requires compiling a 72-crate Rust workspace (long first build), multiple managed Python versions installed via 'cargo run python install' (free download), network access to PyPI for many integration tests, and Git LFS for a feature-gated subset (can be disabled by turning off the git/git-lfs features). Per-test filtering (-E 'test(name)') keeps replay-task verification tractable."
+      },
+      "size_fit": "Docs volume ~90 real markdown files \u2014 comfortably inside the 20-150 band. Repo itself is moderate: 1,599 files, 66 MB checkout, 29 MB git objects (blob-filtered). Not kubernetes-scale in files, but very high velocity (~240 merged PRs/month) and Rust build times are the practical costs.",
+      "disqualifiers": [
+        "None hard. Soft concerns: (1) monorepo criterion is only moderately met \u2014 a single-product crate workspace with minimal per-crate documentation, not per-package doc trees; (2) test suite is free but compute-heavy (full Rust workspace build) and integration tests need PyPI network access plus pre-installed managed Pythons; (3) uv is extremely high-profile and heavily represented in model training data, which could confound an experiment measuring dependence on in-repo docs; (4) very fast-moving main branch means replayed historical tasks sit on a base that has often been refactored since."
+      ],
+      "score": 8,
+      "summary": "astral-sh/uv fits well. Load-bearing prose is genuinely strong: in-repo docs carry the forking-resolver design (docs/reference/internals/resolver.md), binding CLI/doc conventions (STYLE.md), and the cache-invalidation contract (docs/concepts/cache.md) \u2014 none recoverable from source alone \u2014 at a comfortable ~90 md files. Ground truth is outstanding: ~3,300 human squash-merged PRs in 18 months whose commit bodies retain full Summary/Test Plan descriptions, with abundant 30-400-line examples. Tests run locally via cargo nextest with zero credentials, though they need a long Rust build, managed Python downloads, and PyPI network access. Dual MIT/Apache-2.0. The two soft weaknesses keeping it from 9-10: the 72-crate Cargo workspace is a single product with thin per-crate docs rather than a true multi-package monorepo with per-package doc trees, and uv's fame plus ~240-PRs/month velocity introduce training-data-contamination and moving-base risks for replayed tasks."
+    },
+    {
+      "repo": "changesets/changesets",
+      "accessible": true,
+      "license": "MIT",
+      "monorepo": {
+        "verdict": true,
+        "evidence": "pnpm-workspace.yaml declares packages/*, scripts/*, and site; 21 packages under packages/ (cli, config, apply-release-plan, assemble-release-plan, git, pre, changelog-github, ...), each with its own package.json and README.md"
+      },
+      "docs": {
+        "md_file_count": 66,
+        "doc_dirs": [
+          "docs/ (18 files, user/config docs, banner-marked outdated)",
+          "site/guide/ (16 files, canonical VitePress docs source, in-repo)",
+          "packages/*/README.md (~24, many thin)",
+          "wiki/ (1)"
+        ],
+        "load_bearing": "strong",
+        "evidence": "docs/decisions.md encodes semver policy not stated in source: changesets flatten to the highest bump, internal dependents get patch bumps, peerDependency changes force major, and a contract for when git failures are tolerated vs fatal. packages/cli/src/commands/publish/README.md is a prose spec of the TTY/bulk/2FA publish state machine (OTP reuse, when 2FA failures re-enter sequential mode, tagging on failed chunks). wiki/package-manager-info-behavior.md is an empirically measured exit-code/output matrix for npm/pnpm/yarn/bun `info` on prerelease-only and missing packages \u2014 unrecoverable from this repo's source. docs/config-file-options.md and site/guide/config.md carry config semantics (e.g. `ignore` is temporary-use-only with two publish-failure caveats). Caveat: docs/ files carry an 'outdated, see changesets.dev' banner; the canonical source lives in-repo at site/, but docs/site duplication with drift exists."
+      },
+      "pr_history": {
+        "merged_pr_estimate_18mo": 242,
+        "suitability": "Good: in a 40-commit sample of non-bot PR commits, 24 were in the 30-400 changed-lines band, with descriptive human-written subjects (publish-flow rework, config semantics fixes, CLI flags) rather than bot noise; ~30 release/dependency-bot commits were excluded from the estimate",
+        "evidence": "302 squash commits with (#NNNN) suffixes since 2025-02-01 in git log; 242 after excluding 'Version Packages' and dependency-bump commits. Examples: 'rework publish flow, start splitting out PM-specific logic (#2155)' (large), 'Fix publish git tag to default true (#2033)' (small), 'Update `@manypkg/get-packages` to v3 (#1655)' (~845 lines). Heavy 2025 churn (pnpm migration #1958, docs site #1979) means older PRs may replay against moved files."
+      },
+      "tests": {
+        "present": true,
+        "runner": "vitest (pnpm test / test:fast with slow-tag filter); 41 unit test files plus e2e tests for publish/pack in packages/cli",
+        "cheap_to_run": "Yes: CI runs `pnpm test` on Node 22/24/26 x ubuntu/windows with only a mock git user configured; e2e publish tests use a local test registry (@pnpm/pnpr), no credentials or paid services; the only CI secret is an optional Codecov upload token. Known Windows flakes are worked around in-repo, so Linux/macOS runs are the safe path."
+      },
+      "size_fit": "66 markdown docs excluding changelogs/.changeset files \u2014 comfortably in the 20-150 band. Repo is small (~426 checked-out files, 21 small packages), well clear of kubernetes-scale but substantive enough not to be a toy.",
+      "disqualifiers": [],
+      "score": 8,
+      "summary": "Strong fit. Genuinely load-bearing prose (semver/bump policy in docs/decisions.md, a publish-flow state-machine spec in packages/cli/src/commands/publish/README.md, an empirical package-manager behavior matrix in wiki/), a real 21-package pnpm monorepo, ~242 non-bot merged PRs in 18 months with ~60% in the 30-400 line band, a credential-free vitest suite with a local-registry e2e harness, MIT license, and 66 docs files. Docked two points for the docs/ vs site/ duplication (docs/ is banner-marked outdated, so an agent must know site/ is canonical), thin per-package READMEs, and heavy 2025 refactoring churn that may complicate replaying older PRs."
+    },
+    {
+      "repo": "backstage/backstage",
+      "accessible": true,
+      "license": "Apache-2.0",
+      "monorepo": {
+        "verdict": true,
+        "evidence": "Root package.json declares yarn workspaces ['packages/*', 'plugins/*']: 71 packages/ + 159 plugins/ = 230 workspace packages, plus a separate workspaces/ui tree. Nearly every plugin/package has its own README (560 non-changelog md in plugins/, 268 in packages/), so per-package docs are pervasive."
+      },
+      "docs": {
+        "md_file_count": 475,
+        "doc_dirs": [
+          "docs/ (architecture-decisions, backend-system, frontend-system, conf, auth, integrations, features, tooling, permissions)",
+          "beps/ (16 enhancement proposals)",
+          "contrib/",
+          "root STYLE.md/CONTRIBUTING.md",
+          "per-plugin and per-package READMEs"
+        ],
+        "load_bearing": "strong",
+        "evidence": "docs/architecture-decisions/adr011-plugin-package-structure.md prescribes the x/x-backend/x-react/x-node/x-common package naming and placement convention (plugins/ vs packages/ reservation) \u2014 pure policy, not recoverable from source. docs/conf/defining.md defines the configSchema semantics: JSON-Schema-superset stitching across all @backstage-namespace dependencies, config.d.ts Config-type entry points, and @visibility/@items.visibility annotations controlling frontend exposure \u2014 semantics that live only in this prose. STYLE.md carries binding conventions (no null, no I-prefix, errors via @backstage/errors name-comparison, private constructors + static factories) enforced by review, not tooling. The 475 figure is curated prose (docs/ excluding the 285 release notes, plus beps/, contrib/, root files); total md excluding node_modules is ~1,891."
+      },
+      "pr_history": {
+        "merged_pr_estimate_18mo": 3660,
+        "suitability": "Excellent volume and shape: of 30 sampled recent merges, well over a third land in the 30-400 changed-line band (e.g. #35020 139+/5-, #34618 114+/91-, #34996 273+/202-, #34873 306+/4-, #34816 71+/1-, #34904 63+/4-) with descriptive branch names, mandatory changeset summaries, and GitHub PR descriptions/linked issues; some renovate/dependabot noise to filter. Merge-commit bodies carry only PR titles, so descriptions must be fetched from GitHub per PR number.",
+        "evidence": "git log since 2025-02-01: 3,398 'Merge pull request #' merge commits + 262 '(#NNNN)' squash suffixes out of 12,771 total commits (~200 merged PRs/month)."
+      },
+      "tests": {
+        "present": true,
+        "runner": "Jest via 'backstage-cli repo test' (yarn test); Playwright for e2e",
+        "cheap_to_run": "Yes in money terms: no credentials or paid services; DB-backed tests fall back to in-memory/SQLite when BACKSTAGE_TEST_DATABASE_* connection strings are unset, CI sets BACKSTAGE_TEST_DISABLE_DOCKER=1, and services are mocked with MSW (ADR007). Obstacle is scale, not cost: a full 230-package suite run is hours of CPU and heavy RAM (CI uses --workerIdleMemoryLimit=1300M), though --since / per-workspace scoping makes single-task runs fast."
+      },
+      "size_fit": "Fails the 20-150 band by ~3x: ~427 curated md in docs/ alone (excluding 285 release notes), ~475 with beps/contrib/root, and ~1,300 more per-package READMEs; ~1,891 md total. Repo is 916MB on checkout with 12,771 commits in 18 months and 230 workspace packages \u2014 approaching kubernetes-scale activity, and yarn install alone is a substantial local footprint.",
+      "disqualifiers": [
+        "Docs volume ~3x above the 20-150 md band even after excluding release notes, changelogs, translations, and generated dumps (0 api-report.md dumps found, so the count is genuinely prose)",
+        "Giant-class repo: 916MB checkout, 230 workspace packages, ~12.7k commits/18mo \u2014 the brief says avoid kubernetes-scale giants, and Backstage's activity volume is in that class",
+        "Full test suite and dependency install are heavy in wall-clock/RAM terms, complicating cheap task replay at monorepo scope"
+      ],
+      "score": 6,
+      "summary": "Backstage is near-perfect on the top four criteria \u2014 genuinely load-bearing prose (ADRs, BEPs, config-schema semantics, STYLE.md conventions all unrecoverable from source), a textbook 230-package yarn monorepo with per-package docs, ~3,660 merged PRs in 18 months with many in the 30-400 line band, and a credential-free Jest suite with SQLite fallbacks \u2014 but it decisively fails the size criterion: ~475 curated docs (3x the band) inside a 916MB, giant-class repo the brief explicitly says to avoid, making it a strong but oversized candidate best used only with aggressive scoping to a subset of docs and packages."
+    }
+  ],
+  "all_candidates": [
+    {
+      "repo": "typescript-eslint/typescript-eslint",
+      "mentions": 3,
+      "why": "Very active yarn/nx monorepo of ~10 packages where contribution and rule-design conventions are load-bearing prose; abundant 30-400-line PRs with real descriptions and a fully local jest/vitest suite, though docs volume is at the upper end of the 20-150 range."
+    },
+    {
+      "repo": "vitest-dev/vitest",
+      "mentions": 2,
+      "why": "pnpm-workspace monorepo of many packages with in-repo docs whose config semantics are genuinely load-bearing, extremely active merged-PR history, and a self-hosted local test suite; larger than ideal but well under mega-project scale."
+    },
+    {
+      "repo": "PrefectHQ/prefect",
+      "mentions": 2,
+      "why": "Active Apache-2.0 monorepo (core plus dozens of integration packages in-tree) with rich PR descriptions and mostly-local pytest; on the larger side and docs may exceed the 150-file band."
+    },
+    {
+      "repo": "rust-lang/rust-analyzer",
+      "mentions": 2,
+      "why": "The canonical example of load-bearing in-repo architecture docs, with a large multi-crate workspace, dense merged-PR history with linked issues, and a cargo test suite that runs locally with no credentials."
+    },
+    {
+      "repo": "open-telemetry/opentelemetry-collector",
+      "mentions": 2,
+      "why": "Multi-module Go monorepo whose component-stability and coding-guideline docs genuinely govern PRs, with very active small-to-medium PRs and a local go test suite; docs size is moderate (~20-30 md)."
+    },
+    {
+      "repo": "astral-sh/uv",
+      "mentions": 2,
+      "why": "Extremely active Cargo workspace with configuration-semantics docs maintained in the repo and a rich stream of 30-400 line PRs with detailed descriptions; tests run locally, though the docs/ tree may exceed 150 files."
+    },
+    {
+      "repo": "backstage/backstage",
+      "mentions": 2,
+      "why": "Best-in-class ADR practice in a yarn-workspace monorepo with abundant well-described merged PRs and local jest tests, but it is on the large side (hundreds of md files), so include only if the size cap can flex."
+    },
+    {
+      "repo": "changesets/changesets",
+      "mentions": 1,
+      "why": "Medium-sized (12k stars), pnpm-workspace monorepo of ~10 packages whose config-file semantics and workflow conventions live entirely in repo markdown, with local jest tests and a steady but not overwhelming PR stream \u2014 arguably the best docs-to-size ratio in this class."
+    },
+    {
+      "repo": "webpro-nl/knip",
+      "mentions": 1,
+      "why": "Active, sized-down dev tool (11.9k stars) with 4 packages plus an in-repo docs package; configuration and plugin-authoring conventions are documented only in that prose, tests run locally with no services."
+    },
+    {
+      "repo": "stryker-mutator/stryker-js",
+      "mentions": 1,
+      "why": "Nx-class-but-smaller mutation-testing monorepo (3k stars, 5.3k commits, active CI) with many packages/, per-package READMEs, local test runs, and long merged-PR history with linked issues."
+    },
+    {
+      "repo": "trpc/trpc",
+      "mentions": 1,
+      "why": "Active pnpm monorepo (40.5k stars, 106 open PRs) whose API conventions are documented in in-repo prose and whose tests run locally; on the larger side, so use if a bigger ground-truth PR pool outweighs docs-size fit."
+    },
+    {
+      "repo": "vueuse/vueuse",
+      "mentions": 1,
+      "why": "Textbook per-package-docs monorepo (22.3k stars, active) where every utility ships its own markdown and new-function conventions live in prose; caveat: colocated md count likely exceeds 150 files even though each is small."
+    },
+    {
+      "repo": "facebook/docusaurus",
+      "mentions": 1,
+      "why": "Yarn-workspace monorepo of ~25 packages whose plugin and theming conventions exist only in its in-repo prose docs, with local jest tests and rich merged-PR history; popular but far from kubernetes-scale."
+    },
+    {
+      "repo": "pydantic/pydantic-ai",
+      "mentions": 1,
+      "why": "MIT uv-workspace monorepo of 4+ packages, extremely active merged-PR flow with descriptive PRs in the 30-400 line range, and a local test suite built around TestModel/FunctionModel that needs no API keys."
+    },
+    {
+      "repo": "pypa/hatch",
+      "mentions": 1,
+      "why": "Two packages (hatch CLI in src/, hatchling backend in backend/) in one MIT repo of moderate size, with config semantics that live entirely in the in-repo docs and a plain pytest suite."
+    },
+    {
+      "repo": "open-telemetry/opentelemetry-python",
+      "mentions": 1,
+      "why": "True multi-package monorepo (api, sdk, exporters, propagators, semantic-conventions) with tox-driven local tests, steady well-described merged PRs, and spec-driven docs; docs are Sphinx RST rather than markdown, the one caveat."
+    },
+    {
+      "repo": "sqlfluff/sqlfluff",
+      "mentions": 1,
+      "why": "Core package plus in-repo plugin packages, a dense history of small well-scoped dialect/rule PRs with linked issues, and a fully local pytest suite; docs are reST not markdown, otherwise a strong fit."
+    },
+    {
+      "repo": "gradio-app/gradio",
+      "mentions": 1,
+      "why": "Multi-package repo (gradio, gradio_client, custom-components tooling, js packages) with markdown guides that are genuinely load-bearing; large and JS-heavy, so tests beyond the Python suite need node."
+    },
+    {
+      "repo": "ibis-project/ibis",
+      "mentions": 1,
+      "why": "Single package but ~20 backend subsystems giving monorepo-like task diversity, excellent conventional-commit PR history, and a local duckdb-backed default test path; fails the strict multi-package bar."
+    },
+    {
+      "repo": "dagster-io/dagster",
+      "mentions": 1,
+      "why": "Archetypal Python monorepo with per-package docs and abundant well-described PRs, but at the top of the acceptable size range \u2014 docs volume likely exceeds 150 files, so treat as a fallback."
+    },
+    {
+      "repo": "textlint/textlint",
+      "mentions": 1,
+      "why": "Pluggable linter whose rule/filter/plugin contracts exist only as in-repo prose, in an active multi-package workspace with a plain vitest/mocha test suite."
+    },
+    {
+      "repo": "stylelint/stylelint",
+      "mentions": 1,
+      "why": "Plugin/rule architecture documented purely in prose developer guides, very active with well-described PRs and a cheap local jest test suite."
+    },
+    {
+      "repo": "fastify/fastify",
+      "mentions": 1,
+      "why": "Plugin-encapsulation framework whose plugin contract and hook semantics live in in-repo prose, with node-tap tests that run locally in seconds."
+    },
+    {
+      "repo": "vuejs/vitepress",
+      "mentions": 1,
+      "why": "Static site generator with extension/theming conventions documented in-repo, active PR history, and a local vitest/e2e suite."
+    },
+    {
+      "repo": "web-infra-dev/rsbuild",
+      "mentions": 1,
+      "why": "Plugin-driven build tool monorepo with prose plugin-API docs per package, though its doc count is at the upper edge of the target range."
+    },
+    {
+      "repo": "probot/probot",
+      "mentions": 1,
+      "why": "GitHub bot framework with extension conventions in in-repo prose and local jest tests, though activity is at the ~3-month boundary and it is single-package."
+    },
+    {
+      "repo": "mkdocs/mkdocs",
+      "mentions": 1,
+      "why": "Archetypal plugin-architecture SSG whose plugin/theme contracts are pure prose, ideal docs size, but recent-commit activity is staler than the other candidates."
+    },
+    {
+      "repo": "woodpecker-ci/woodpecker",
+      "mentions": 1,
+      "why": "A ~7.6k-star CI engine where the pipeline-config language and deployment semantics are defined in in-repo docs, with an active PR history and a plain go-test suite."
+    },
+    {
+      "repo": "moonrepo/moon",
+      "mentions": 1,
+      "why": "A build-orchestration tool for monorepos that is itself a Rust+TS monorepo whose extensive config-file semantics live in in-repo docs; 4k stars, actively developed, cargo/jest tests run locally."
+    },
+    {
+      "repo": "jdx/mise",
+      "mentions": 1,
+      "why": "Very active (31k stars, daily releases) dev-tool/config manager where TOML config behavior is specified in docs, tests are local cargo + e2e shell tests; multi-crate but lighter on per-package docs."
+    },
+    {
+      "repo": "evilmartians/lefthook",
+      "mentions": 1,
+      "why": "8.6k-star git-hooks manager whose entire value is config semantics documented in-repo, small-to-moderate docs size, trivial local go test suite, steady small merged PRs \u2014 weakest on true monorepo depth."
+    },
+    {
+      "repo": "dagger/dagger",
+      "mentions": 1,
+      "why": "16k-star CI/pipeline engine with a genuine per-package monorepo (engine + 8 SDKs, each with docs) and rich PR history; caveat: full engine tests need buildkit/containers, though unit tests are local."
+    },
+    {
+      "repo": "goreleaser/goreleaser",
+      "mentions": 1,
+      "why": "Arguably the best docs-load-bearing fit (config semantics exist only in in-repo docs, PRs routinely touch docs+code together, pure local go tests), but it is a single Go module, not a monorepo."
+    },
+    {
+      "repo": "goauthentik/authentik",
+      "mentions": 1,
+      "why": "Self-hosted identity server whose flow/blueprint configuration semantics live in in-repo docs with an active PR firehose; caveats: large docs tree, dual-licensed enterprise folder, tests need local Postgres/Redis via docker."
+    },
+    {
+      "repo": "bytecodealliance/wasmtime",
+      "mentions": 1,
+      "why": "Multi-crate Cargo workspace with strong in-repo architecture/contributing prose, steady well-scoped merged PRs with RFC/issue links, and cargo-based tests that run locally; near the upper end of the docs-size band."
+    },
+    {
+      "repo": "apache/opendal",
+      "mentions": 1,
+      "why": "Monorepo of a Rust core plus ~15 language bindings where design decisions live as in-repo RFCs, activity is high, and the memory/fs service tests run locally without any cloud credentials."
+    },
+    {
+      "repo": "remix-run/react-router",
+      "mentions": 1,
+      "why": "Mid-sized pnpm monorepo (packages/react-router, dev tooling) with genuine ADRs, very active merged-PR history with well-described PRs, and a local jest/vitest+playwright test suite."
+    },
+    {
+      "repo": "sveltejs/kit",
+      "mentions": 1,
+      "why": "pnpm monorepo (packages/kit, adapters, create-svelte) with active, well-described PRs and vitest/playwright tests that run locally."
+    },
+    {
+      "repo": "vitejs/vite",
+      "mentions": 1,
+      "why": "Active monorepo (packages/vite, plugins, create-vite) with a rich merged-PR history in the target size range and a fast local vitest suite; docs count near the upper end of moderate."
+    },
+    {
+      "repo": "payloadcms/payload",
+      "mentions": 1,
+      "why": "Large packages/ monorepo (db adapters, richtext, plugins) with very active PR history; tests run locally against in-memory/local MongoDB or Postgres \u2014 cheap but needs a local DB; docs count may exceed 150."
+    }
+  ]
+}
