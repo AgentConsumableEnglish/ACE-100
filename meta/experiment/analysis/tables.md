@@ -5,10 +5,10 @@ Seed 20260801; hierarchical bootstrap with 10000 replicates (percentile 95% CIs)
 ## Table 1. Arm-level summary (tasks weighted equally)
 | arm | runs | median task-median cost (USD) | completion | suite pass | ref-tests pass | judge correctness | judge completeness | judge convention |
 |---|---|---|---|---|---|---|---|---|
-| original | 24 | 1.837 | 100.0% | 100.0% | 75.0% | -- | -- | -- |
-| ace | 24 | 2.077 | 100.0% | 95.8% | 62.5% | -- | -- | -- |
-| naive | 24 | 2.143 | 100.0% | 100.0% | 75.0% | -- | -- | -- |
-| nodocs | 24 | 2.441 | 100.0% | 95.8% | 66.7% | -- | -- | -- |
+| original | 24 | 1.837 | 100.0% | 100.0% | 75.0% | 4.21 | 4.06 | 4.04 |
+| ace | 24 | 2.077 | 100.0% | 95.8% | 62.5% | 4.33 | 3.90 | 4.12 |
+| naive | 24 | 2.143 | 100.0% | 100.0% | 75.0% | 4.35 | 3.83 | 4.12 |
+| nodocs | 24 | 2.441 | 100.0% | 95.8% | 66.7% | 3.88 | 3.58 | 3.62 |
 
 ## Table 2. Pairwise arm comparisons (within-task)
 | comparison | metric | point | 95% CI | n tasks |
@@ -16,21 +16,21 @@ Seed 20260801; hierarchical bootstrap with 10000 replicates (percentile 95% CIs)
 | ace_vs_original | cost_ratio | 1.172 | [0.881, 1.487] | 6 |
 | ace_vs_original | suite_pass_delta | -4.2pp | [-16.7pp, +0.0pp] | 6 |
 | ace_vs_original | ref_tests_pass_delta | -12.5pp | [-41.7pp, +8.3pp] | 6 |
-| ace_vs_original | judge_correctness_delta | -- | -- | 0 |
-| ace_vs_original | judge_completeness_delta | -- | -- | 0 |
-| ace_vs_original | judge_convention_delta | -- | -- | 0 |
+| ace_vs_original | judge_correctness_delta | +0.12 | [-0.29, 0.54] | 6 |
+| ace_vs_original | judge_completeness_delta | -0.17 | [-0.79, 0.46] | 6 |
+| ace_vs_original | judge_convention_delta | +0.08 | [-0.35, 0.54] | 6 |
 | ace_vs_naive | cost_ratio | 1.159 | [0.962, 1.426] | 6 |
 | ace_vs_naive | suite_pass_delta | -4.2pp | [-16.7pp, +0.0pp] | 6 |
 | ace_vs_naive | ref_tests_pass_delta | -12.5pp | [-41.7pp, +12.5pp] | 6 |
-| ace_vs_naive | judge_correctness_delta | -- | -- | 0 |
-| ace_vs_naive | judge_completeness_delta | -- | -- | 0 |
-| ace_vs_naive | judge_convention_delta | -- | -- | 0 |
+| ace_vs_naive | judge_correctness_delta | -0.02 | [-0.50, 0.54] | 6 |
+| ace_vs_naive | judge_completeness_delta | +0.06 | [-0.52, 0.65] | 6 |
+| ace_vs_naive | judge_convention_delta | +0.00 | [-0.52, 0.67] | 6 |
 | naive_vs_original | cost_ratio | 1.071 | [0.726, 1.376] | 6 |
 | naive_vs_original | suite_pass_delta | +0.0pp | [+0.0pp, +0.0pp] | 6 |
 | naive_vs_original | ref_tests_pass_delta | +0.0pp | [-37.5pp, +37.5pp] | 6 |
-| naive_vs_original | judge_correctness_delta | -- | -- | 0 |
-| naive_vs_original | judge_completeness_delta | -- | -- | 0 |
-| naive_vs_original | judge_convention_delta | -- | -- | 0 |
+| naive_vs_original | judge_correctness_delta | +0.15 | [-0.56, 0.88] | 6 |
+| naive_vs_original | judge_completeness_delta | -0.23 | [-0.96, 0.50] | 6 |
+| naive_vs_original | judge_convention_delta | +0.08 | [-0.56, 0.65] | 6 |
 
 ## Table 3. Registered decision rules
 | rule | criterion | point | 95% CI | point verdict | CI verdict |
@@ -42,11 +42,11 @@ Quality non-inferiority components (ace - original; non-inferior when delta >= -
 |---|---|---|---|---|---|
 | suite_pass_delta | 5pp | -4.2pp | [-0.167, 0.000] | MET | not met |
 | ref_tests_pass_delta | 5pp | -12.5pp | [-0.417, 0.083] | not met | not met |
-| judge_correctness_delta | 0.5 | -- | -- | -- | -- |
-| judge_completeness_delta | 0.5 | -- | -- | -- | -- |
-| judge_convention_delta | 0.5 | -- | -- | -- | -- |
+| judge_correctness_delta | 0.5 | +0.12 | [-0.292, 0.542] | MET | MET |
+| judge_completeness_delta | 0.5 | -0.17 | [-0.792, 0.458] | MET | not met |
+| judge_convention_delta | 0.5 | +0.08 | [-0.354, 0.542] | MET | MET |
 
-Quality non-inferiority overall (point estimates, 2/5 components evaluable): NOT MET
+Quality non-inferiority overall (point estimates, 5/5 components evaluable): NOT MET
 
 ## Table 4. Break-even
 | migration cost (USD, standard prices) | harness-billed (USD) | per-run savings (USD, original - ace) | runs to break even | note |
@@ -66,30 +66,30 @@ nodocs events are all flagged absent-at-start: content under a doc path that did
 ## Table 6. Per task x arm detail
 | task | arm | n (analyzed/total) | completion | cost median (IQR) USD | suite pass | ref pass | judge correctness | judge completeness | judge convention | turns (med) | wall min (med) | docs tokens (med) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| pr-14461 | original | 4/4 | 100.0% | 1.278 (1.048-1.399) | 100.0% | 100.0% | -- | -- | -- | 47 | 3.7 | 590 |
-| pr-14461 | ace | 4/4 | 100.0% | 1.575 (1.468-1.884) | 100.0% | 100.0% | -- | -- | -- | 60 | 5.2 | 1222 |
-| pr-14461 | naive | 4/4 | 100.0% | 1.243 (1.210-1.286) | 100.0% | 100.0% | -- | -- | -- | 45 | 3.4 | 643 |
-| pr-14461 | nodocs | 4/4 | 100.0% | 1.019 (0.679-1.419) | 100.0% | 100.0% | -- | -- | -- | 43 | 3.2 | 0 |
-| pr-14690 | original | 4/4 | 100.0% | 1.081 (1.021-1.304) | 100.0% | 100.0% | -- | -- | -- | 33 | 3.6 | 376 |
-| pr-14690 | ace | 4/4 | 100.0% | 1.559 (1.449-1.786) | 100.0% | 100.0% | -- | -- | -- | 48 | 5.4 | 579 |
-| pr-14690 | naive | 4/4 | 100.0% | 1.485 (1.417-1.562) | 100.0% | 100.0% | -- | -- | -- | 40 | 5.7 | 330 |
-| pr-14690 | nodocs | 4/4 | 100.0% | 1.899 (1.743-1.932) | 100.0% | 100.0% | -- | -- | -- | 55 | 5.9 | 0 |
-| pr-14985 | original | 4/4 | 100.0% | 5.376 (4.236-6.393) | 100.0% | 100.0% | -- | -- | -- | 130 | 15.7 | 3951 |
-| pr-14985 | ace | 4/4 | 100.0% | 3.879 (3.662-4.243) | 75.0% | 25.0% | -- | -- | -- | 112 | 11.1 | 3668 |
-| pr-14985 | naive | 4/4 | 100.0% | 2.902 (2.528-3.273) | 100.0% | 25.0% | -- | -- | -- | 92 | 8.6 | 3042 |
-| pr-14985 | nodocs | 4/4 | 100.0% | 4.023 (3.617-4.397) | 75.0% | 50.0% | -- | -- | -- | 118 | 9.6 | 34 |
-| pr-15108 | original | 4/4 | 100.0% | 0.614 (0.579-0.634) | 100.0% | 100.0% | -- | -- | -- | 27 | 2.3 | 181 |
-| pr-15108 | ace | 4/4 | 100.0% | 0.821 (0.745-0.913) | 100.0% | 100.0% | -- | -- | -- | 34 | 2.6 | 18 |
-| pr-15108 | naive | 4/4 | 100.0% | 0.791 (0.668-0.908) | 100.0% | 100.0% | -- | -- | -- | 34 | 2.7 | 0 |
-| pr-15108 | nodocs | 4/4 | 100.0% | 0.999 (0.790-1.215) | 100.0% | 100.0% | -- | -- | -- | 42 | 3.0 | 0 |
-| pr-15307 | original | 4/4 | 100.0% | 2.396 (2.147-3.062) | 100.0% | 50.0% | -- | -- | -- | 72 | 7.6 | 2544 |
-| pr-15307 | ace | 4/4 | 100.0% | 2.580 (2.522-2.750) | 100.0% | 50.0% | -- | -- | -- | 74 | 9.0 | 2168 |
-| pr-15307 | naive | 4/4 | 100.0% | 2.801 (2.180-3.427) | 100.0% | 50.0% | -- | -- | -- | 72 | 10.1 | 3531 |
-| pr-15307 | nodocs | 4/4 | 100.0% | 2.982 (2.774-3.138) | 100.0% | 25.0% | -- | -- | -- | 86 | 9.0 | 296 |
-| pr-15495 | original | 4/4 | 100.0% | 3.735 (3.276-4.037) | 100.0% | 0.0% | -- | -- | -- | 74 | 12.3 | 182 |
-| pr-15495 | ace | 4/4 | 100.0% | 4.151 (3.887-4.472) | 100.0% | 0.0% | -- | -- | -- | 81 | 13.0 | 694 |
-| pr-15495 | naive | 4/4 | 100.0% | 3.209 (3.154-3.222) | 100.0% | 75.0% | -- | -- | -- | 66 | 10.2 | 659 |
-| pr-15495 | nodocs | 4/4 | 100.0% | 4.058 (2.556-6.897) | 100.0% | 25.0% | -- | -- | -- | 79 | 11.7 | 0 |
+| pr-14461 | original | 4/4 | 100.0% | 1.278 (1.048-1.399) | 100.0% | 100.0% | 4.50 | 3.62 | 4.25 | 47 | 3.7 | 590 |
+| pr-14461 | ace | 4/4 | 100.0% | 1.575 (1.468-1.884) | 100.0% | 100.0% | 4.75 | 4.38 | 4.38 | 60 | 5.2 | 1222 |
+| pr-14461 | naive | 4/4 | 100.0% | 1.243 (1.210-1.286) | 100.0% | 100.0% | 5.00 | 4.00 | 5.00 | 45 | 3.4 | 643 |
+| pr-14461 | nodocs | 4/4 | 100.0% | 1.019 (0.679-1.419) | 100.0% | 100.0% | 4.00 | 3.25 | 4.25 | 43 | 3.2 | 0 |
+| pr-14690 | original | 4/4 | 100.0% | 1.081 (1.021-1.304) | 100.0% | 100.0% | 4.25 | 4.25 | 4.00 | 33 | 3.6 | 376 |
+| pr-14690 | ace | 4/4 | 100.0% | 1.559 (1.449-1.786) | 100.0% | 100.0% | 4.00 | 3.00 | 4.00 | 48 | 5.4 | 579 |
+| pr-14690 | naive | 4/4 | 100.0% | 1.485 (1.417-1.562) | 100.0% | 100.0% | 3.75 | 3.00 | 3.75 | 40 | 5.7 | 330 |
+| pr-14690 | nodocs | 4/4 | 100.0% | 1.899 (1.743-1.932) | 100.0% | 100.0% | 4.00 | 3.25 | 3.75 | 55 | 5.9 | 0 |
+| pr-14985 | original | 4/4 | 100.0% | 5.376 (4.236-6.393) | 100.0% | 100.0% | 4.00 | 4.25 | 4.25 | 130 | 15.7 | 3951 |
+| pr-14985 | ace | 4/4 | 100.0% | 3.879 (3.662-4.243) | 75.0% | 25.0% | 4.00 | 3.50 | 4.12 | 112 | 11.1 | 3668 |
+| pr-14985 | naive | 4/4 | 100.0% | 2.902 (2.528-3.273) | 100.0% | 25.0% | 4.12 | 3.50 | 4.00 | 92 | 8.6 | 3042 |
+| pr-14985 | nodocs | 4/4 | 100.0% | 4.023 (3.617-4.397) | 75.0% | 50.0% | 3.50 | 3.25 | 3.25 | 118 | 9.6 | 34 |
+| pr-15108 | original | 4/4 | 100.0% | 0.614 (0.579-0.634) | 100.0% | 100.0% | 5.00 | 5.00 | 4.25 | 27 | 2.3 | 181 |
+| pr-15108 | ace | 4/4 | 100.0% | 0.821 (0.745-0.913) | 100.0% | 100.0% | 5.00 | 5.00 | 4.50 | 34 | 2.6 | 18 |
+| pr-15108 | naive | 4/4 | 100.0% | 0.791 (0.668-0.908) | 100.0% | 100.0% | 5.00 | 4.75 | 5.00 | 34 | 2.7 | 0 |
+| pr-15108 | nodocs | 4/4 | 100.0% | 0.999 (0.790-1.215) | 100.0% | 100.0% | 5.00 | 5.00 | 4.75 | 42 | 3.0 | 0 |
+| pr-15307 | original | 4/4 | 100.0% | 2.396 (2.147-3.062) | 100.0% | 50.0% | 4.50 | 4.25 | 4.00 | 72 | 7.6 | 2544 |
+| pr-15307 | ace | 4/4 | 100.0% | 2.580 (2.522-2.750) | 100.0% | 50.0% | 4.50 | 4.50 | 4.50 | 74 | 9.0 | 2168 |
+| pr-15307 | naive | 4/4 | 100.0% | 2.801 (2.180-3.427) | 100.0% | 50.0% | 3.75 | 3.75 | 3.38 | 72 | 10.1 | 3531 |
+| pr-15307 | nodocs | 4/4 | 100.0% | 2.982 (2.774-3.138) | 100.0% | 25.0% | 4.25 | 4.25 | 3.50 | 86 | 9.0 | 296 |
+| pr-15495 | original | 4/4 | 100.0% | 3.735 (3.276-4.037) | 100.0% | 0.0% | 3.00 | 3.00 | 3.50 | 74 | 12.3 | 182 |
+| pr-15495 | ace | 4/4 | 100.0% | 4.151 (3.887-4.472) | 100.0% | 0.0% | 3.75 | 3.00 | 3.25 | 81 | 13.0 | 694 |
+| pr-15495 | naive | 4/4 | 100.0% | 3.209 (3.154-3.222) | 100.0% | 75.0% | 4.50 | 4.00 | 3.62 | 66 | 10.2 | 659 |
+| pr-15495 | nodocs | 4/4 | 100.0% | 4.058 (2.556-6.897) | 100.0% | 25.0% | 2.50 | 2.50 | 2.25 | 79 | 11.7 | 0 |
 
 ## Table 7. Value retention vs the nodocs floor (descriptive; Amendment 4)
 
@@ -134,5 +134,4 @@ per-task docs_value = metric(original) - metric(nodocs); retention(arm) = (metri
 Registered (intention-to-treat) results remain the headline numbers in Tables 2-3.
 
 ## Missing data and caveats
-- judge scores missing: meta/experiment/data/judge/scores.jsonl (judge columns omitted)
-- 96/96 analyzed trial(s) lack judge scores; judge means computed over scored trials
+- none: all inputs present and well-formed

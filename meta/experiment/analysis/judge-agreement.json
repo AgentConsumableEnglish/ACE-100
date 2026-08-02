@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-08-02T06:24:06+00:00",
+  "n_runs_scored": 96,
+  "n_double_scored": 19,
+  "dimensions": {
+    "correctness": {
+      "exact_agreement": 0.947,
+      "within_1_agreement": 1.0
+    },
+    "completeness": {
+      "exact_agreement": 0.895,
+      "within_1_agreement": 1.0
+    },
+    "convention": {
+      "exact_agreement": 0.632,
+      "within_1_agreement": 0.947
+    }
+  }
+}
