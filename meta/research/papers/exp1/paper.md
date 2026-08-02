@@ -700,8 +700,8 @@ means naive-vs-original tests matched-size rewriting, not shortening.
 This study's sharpest limitation is its substrate: docs-value near zero on
 most tasks (§6.3). A separate study targeting tasks where documentation is
 load-bearing by construction is registered at
-`meta/research/experiments/exp2/PREREGISTRATION.md`; it is registered only,
-and reports its own results.
+`meta/research/experiments/exp2/PREREGISTRATION.md`. That study has not been
+run, and will report separately.
 
 Three questions this experiment raised but could not answer are worth
 stating as an agenda, because each is answerable by a study designed for it
@@ -742,11 +742,9 @@ more — not what to do with the tokens once they do.
 
 ## 10. Reproducibility and Artifacts
 
-The research tree ships in the kit repository under `meta/research/`, whose
-layout and step-by-step reproduction instructions are in
-`meta/research/REPLICATION.md`. This experiment's registration, config,
-manifest, audit trail, and analysis outputs are under
-`meta/research/experiments/exp1/`; this paper is
+The research tree ships in the kit repository under `meta/research/`. This
+experiment's registration, config, manifest, audit trail, and analysis
+outputs are under `meta/research/experiments/exp1/`; this paper is
 `meta/research/papers/exp1/paper.md`.
 
 The pipeline is `select_tasks`, `build_arms`, `run_cell`, `evaluate`,
@@ -809,12 +807,15 @@ fixed decision rules, adversarial verification layers, and full artifact
 release are the mitigations; the negative headline result is perhaps the
 strongest evidence they bound the incentives.
 
-## Appendix pointers (generated from `audit/`)
+## Appendix pointers
+
+Generated from `meta/research/experiments/exp1/audit/`; paths below are
+relative to it.
 
 - A. Preservation-gate rounds and residual flags (Amendment 3 closure).
 - B. Doc-read audit: misattributions and missed events, verbatim
-  (`audit/doc-read-audit.json`).
-- C. Network sweep, all 96 transcripts (`audit/network-sweep.json`).
-- D. Discarded task draw (`audit/manifest-discarded-2026-08-01.json`).
-- E. Harness environment (`audit/harness-environment.json`).
-- F. Migration ledger (`audit/arm-gates/migration-cost.json`).
+  (`doc-read-audit.json`).
+- C. Network sweep, all 96 transcripts (`network-sweep.json`).
+- D. Discarded task draw (`manifest-discarded-2026-08-01.json`).
+- E. Harness environment (`harness-environment.json`).
+- F. Migration ledger (`arm-gates/migration-cost.json`).
