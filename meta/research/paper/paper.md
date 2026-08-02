@@ -81,7 +81,7 @@ pre-registered the hypotheses, thresholds, repository-selection criteria,
 task-selection procedure, execution protocol, quality hierarchy, and analysis
 plan before selecting a repository, and recorded every subsequent change as a
 numbered amendment committed before the step it affects. The pre-registration
-and its five amendments ship with this paper's repository; the amendment
+and its six amendments ship with this paper's repository; the amendment
 story is told in full in §4, including the audit that overturned our own
 measurement instrument (Amendment 5).
 
@@ -237,10 +237,13 @@ one governs.
 
 ## 4. Amendments and Deviations, In Full
 
-Pre-registration only means anything if the changes are public. Five
-amendments were committed, each before the step it affects; two deviations
-were found after the fact by our own audit and are disclosed here rather
-than amended away.
+Pre-registration only means anything if the changes are public. Six
+amendments were committed. The five that touch the experiment were each
+committed before the step they affect; the sixth is post-hoc bookkeeping —
+it records a repository-layout change made after all analysis was complete
+and verified to leave every number identical. Two deviations were found
+after the fact by our own audit and are disclosed here rather than amended
+away.
 
 1. **Amendment 1** — repository choice recorded; training-data contamination
    added to the threats register.
@@ -271,6 +274,13 @@ than amended away.
    sweep ran**, and fixed the leakage-handling rule (intention-to-treat with
    an exploratory sensitivity analysis) **before the sweep results were
    known**.
+
+6. **Amendment 6** — the research tree was split into shared tooling
+   (`meta/research/lib`) and per-experiment data
+   (`meta/research/experiments/<id>`), and generated artifacts now record the
+   tooling commit that produced them (§10). Made after all analysis was
+   complete; re-running the analysis under the new layout reproduced every
+   artifact identically, so the change is inert with respect to results.
 
 **Deviations (disclosed, not amended).** (a) Network isolation was assumed
 from the sandbox and not verified; Bash-level outbound HTTP worked (§7).
@@ -497,7 +507,8 @@ registered, it is not an H1/H2 readout, and it was added after the registered
 analysis was complete; its hypotheses were generated after seeing the data.
 It is reported because the question it raises is worth posing, not because
 this experiment answers it. Tool, multiplicity accounting, and full output:
-`tools/classify_turns.py`, `analysis/turn-decomposition.json`.*
+`meta/research/lib/classify_turns.py`,
+`experiments/exp1/analysis/turn-decomposition.json`.*
 
 †The gate artifact `audit/arm-gates/measure.json`, generated ten minutes
 before the first run, records 289,596 tokens for ace; Amendment 3 recorded
@@ -685,7 +696,7 @@ means naive-vs-original tests matched-size rewriting, not shortening.
 
 Experiment 1's sharpest limitation is its substrate: docs-value near zero
 on most tasks (§6.3). Experiment 2 is registered separately
-(`meta/experiment2/PREREGISTRATION.md`) and targets tasks where
+(`meta/research/experiments/exp2/PREREGISTRATION.md`) and targets tasks where
 documentation is load-bearing by construction, sharing the value-retention
 readout of §6.4. Its candidate set is committed; no further work has begun.
 
@@ -730,17 +741,57 @@ more — not what to do with the tokens once they do.
 
 ## 10. Reproducibility and Artifacts
 
-The experiment tree ships in the kit repository under `meta/experiment/`:
-the pre-registration with all five amendments; the pipeline
-(`select_tasks`, `build_arms`, `run_cell`, `evaluate`, `docs_recount`,
-`extract_doc_reads`, `analyze`); the task manifest with the discarded
-draw; arm-construction gates (checker output, token measurements, all
-preservation rounds, the migration ledger); the doc-read audit; and the
-analysis outputs. Raw run data (96 transcripts, diffs, evaluation
-artifacts) is published as a release asset; the repository stores the
-pointers. Inference is nondeterministic at the API level; replication is
-procedural (pinned models, commits, prompts, seeds), statistical
-(distributions across trials), and data-level (every transcript published).
+The research tree ships in the kit repository under `meta/research/`:
+
+```
+meta/research/
+  lib/                      shared pipeline, used by every experiment
+  experiments/exp1/         this experiment: registration, config, manifest,
+                            audit trail, analysis outputs
+  experiments/exp2/         Experiment 2 (registered; not yet run)
+  paper/                    this paper
+  REPLICATION.md            step-by-step reproduction instructions
+```
+
+The pipeline is `select_tasks`, `build_arms`, `run_cell`, `evaluate`,
+`docs_recount`, `extract_doc_reads`, `analyze`, `classify_turns`, and
+`isolation_canary`. Tooling is shared across experiments and versioned
+independently of the data it operates on; per-experiment settings (target
+repository, seed, arms, corpus rule, caps, thresholds) live in
+`experiments/exp1/experiment.json` rather than inside the tools.
+
+**Every generated artifact names the tooling that produced it.** Each carries
+a `provenance` block recording `tooling_commit` — the commit that last
+modified `meta/research/lib` — plus the repository HEAD at run time and
+whether the tooling tree was dirty. `tooling_commit` is the hash to check out
+to reproduce that artifact; it is deliberately not HEAD, which moves whenever
+anything is committed, including the artifact itself. An artifact produced
+from an uncommitted tool change records `tooling_dirty: true` and is not
+reproducible from a hash alone.
+
+The Experiment 1 analysis reported here was produced at tooling commit
+**`0e199e20cd33`**. To reproduce:
+
+```sh
+git checkout 0e199e20cd33
+export ACE_EXPERIMENT_DIR="$PWD/meta/research/experiments/exp1"
+# restore the published raw data into $ACE_EXPERIMENT_DIR/data/
+python3 meta/research/lib/analyze.py
+python3 meta/research/lib/classify_turns.py
+```
+
+Analysis is deterministic — seeded bootstrap, sorted keys, no timestamps in
+the numbers — so `summary.json` and `turn-decomposition.json` reproduce byte
+for byte once the `provenance` block (which carries a fresh timestamp) is
+removed. Raw run data (96 transcripts, diffs, evaluation artifacts) is
+published as a release asset; the repository stores the pointers and hashes.
+
+Inference itself is nondeterministic at the API level. Replication is
+therefore procedural (pinned models, commits, prompts, seeds), statistical
+(distributions across trials rather than single runs), and data-level (every
+transcript published). See `meta/research/REPLICATION.md` for the full
+procedure, including the two environment variables that name the same clone
+but are read by different tools.
 
 ## Contributions and AI disclosure
 

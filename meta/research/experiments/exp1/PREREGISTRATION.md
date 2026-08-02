@@ -342,3 +342,42 @@ the break-even input reads the migration ledger's standard-priced total
 reported as "does not break even" rather than as missing data; the docs-usage
 manipulation check joins the revision-2 recount rather than the superseded
 collection-time counters.
+
+### Amendment 6 — research-tree layout; artifact provenance (2026-08-02)
+
+Made after Experiment 1's collection, evaluation, judging, and analysis were
+complete. **No result, threshold, procedure, or readout changes.** This
+amendment records a change to §9 (artifacts and layout) so the registered
+description matches the repository.
+
+**Layout.** §9 described a single `meta/experiment/` tree holding the
+registration, tools, manifest, analysis, and paper. The repository now holds
+more than one experiment and a replication is planned, so the tree is split
+into shared tooling and per-experiment data:
+
+| §9 path | now |
+|---|---|
+| `meta/experiment/` | `meta/research/experiments/exp1/` |
+| `meta/experiment/tools/` | `meta/research/lib/` (shared by all experiments) |
+| `meta/experiment/paper/` | `meta/research/paper/` (one paper, both experiments) |
+| `meta/experiment2/` | `meta/research/experiments/exp2/` |
+
+All moves preserve git history. Tools no longer derive their experiment root
+from their own file location; it is passed explicitly and has no default, so
+one experiment's run cannot write into another's tree. Per-experiment settings
+that were hardcoded constants inside tools now live in
+`experiments/<id>/experiment.json`.
+
+**Verification.** The analysis was re-run under the new layout before this
+amendment was written: `summary.json` and `turn-decomposition.json` are
+identical to the pre-restructure artifacts once the new provenance block is
+stripped, and `tables.md` differs only by an added provenance header. The
+restructure is inert with respect to every registered number.
+
+**Provenance.** Generated artifacts now record the commit that last modified
+`meta/research/lib` — the tooling revision needed to reproduce them — together
+with the repository HEAD at run time and whether the tooling tree was dirty.
+The paper cites this hash so a replicator can check out the exact tools. This
+adds an obligation the registration did not previously carry: an artifact
+produced from uncommitted tool changes is marked `tooling_dirty` and is not
+citable as reproducible.
