@@ -893,15 +893,45 @@ def build_sensitivity(runs, tests, judge, consumption, flags, reps):
                      "n_tasks": m["n_tasks"]}
             for metric, m in pair.items()
         }
+
+    # Amendment 5 requires EVERY registered readout re-reported with flagged
+    # runs removed. The Amendment-4 value-retention readout is included too:
+    # its docs-value denominator is derived from reference-test outcomes, and
+    # those are exactly what class-(c) exposure inflates.
+    value_retention = build_value_retention(cells, tasks)
+    manipulation = build_manipulation_check(cells, tasks, consumption)
+
+    # Task attrition: a task whose every run in one arm is flagged drops out
+    # of that pairwise comparison entirely, so the sensitivity estimate is
+    # computed over a DIFFERENT task set than the registered one. Reporting
+    # the change is mandatory -- otherwise a shift in the point estimate reads
+    # as a leakage effect when it is partly a change of denominator.
+    attrition = {}
+    for pair_name, pair in pairwise.items():
+        reg_n = None
+        for metric in ("cost_ratio",):
+            reg_n = pair[metric]["n_tasks"]
+        attrition[pair_name] = {
+            "n_tasks_sensitivity": reg_n,
+            "tasks_retained": sorted(pair["cost_ratio"]["per_task"].keys()),
+        }
+
     return {
         "label": "exploratory sensitivity analysis (Amendment 5): runs with "
                  "class-(c) reference-solution exposure removed; registered "
                  "results are the intention-to-treat ones",
+        "caveat": "Removing flagged runs also removes whole (task, arm) cells "
+                  "where every run was flagged, so some comparisons are made "
+                  "over fewer tasks than the registered analysis. Compare "
+                  "n_tasks before reading a shift as a leakage effect.",
         "n_flagged_runs": len(flags),
         "flagged_runs": sorted(f"{t}/{a}/trial-{tr}" for (t, a, tr) in flags),
         "n_runs_analyzed": len(kept),
+        "task_attrition": attrition,
         "pairwise": slim,
         "decision": decision,
+        "value_retention": value_retention,
+        "manipulation_check": manipulation,
     }
 
 

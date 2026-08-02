@@ -1153,6 +1153,7 @@
     }
   },
   "sensitivity_excluding_leakage": {
+    "caveat": "Removing flagged runs also removes whole (task, arm) cells where every run was flagged, so some comparisons are made over fewer tasks than the registered analysis. Compare n_tasks before reading a shift as a leakage effect.",
     "decision": {
       "cost_superiority": {
         "ci95": [
@@ -1255,6 +1256,52 @@
       "pr-15495/nodocs/trial-3"
     ],
     "label": "exploratory sensitivity analysis (Amendment 5): runs with class-(c) reference-solution exposure removed; registered results are the intention-to-treat ones",
+    "manipulation_check": {
+      "ace": {
+        "absent_at_start_events": 0,
+        "ambient_doc_tokens": 795,
+        "explicit_doc_tokens_mean": 1614.125,
+        "explicit_doc_tokens_median": 851.5,
+        "n_runs": 19,
+        "n_runs_recounted": 24,
+        "runs_with_contact": 21,
+        "superseded_collection_tokens_mean": 235.6315789473684,
+        "superseded_collection_tokens_median": 0.0
+      },
+      "naive": {
+        "absent_at_start_events": 0,
+        "ambient_doc_tokens": 739,
+        "explicit_doc_tokens_mean": 1712.875,
+        "explicit_doc_tokens_median": 659.0,
+        "n_runs": 18,
+        "n_runs_recounted": 24,
+        "runs_with_contact": 18,
+        "superseded_collection_tokens_mean": 566.3333333333334,
+        "superseded_collection_tokens_median": 0.0
+      },
+      "nodocs": {
+        "absent_at_start_events": 15,
+        "ambient_doc_tokens": 0,
+        "explicit_doc_tokens_mean": 101.25,
+        "explicit_doc_tokens_median": 0.0,
+        "n_runs": 16,
+        "n_runs_recounted": 24,
+        "runs_with_contact": 4,
+        "superseded_collection_tokens_mean": 0.0,
+        "superseded_collection_tokens_median": 0.0
+      },
+      "original": {
+        "absent_at_start_events": 0,
+        "ambient_doc_tokens": 645,
+        "explicit_doc_tokens_mean": 1720.25,
+        "explicit_doc_tokens_median": 534.0,
+        "n_runs": 15,
+        "n_runs_recounted": 24,
+        "runs_with_contact": 18,
+        "superseded_collection_tokens_mean": 261.8666666666667,
+        "superseded_collection_tokens_median": 0.0
+      }
+    },
     "n_flagged_runs": 28,
     "n_runs_analyzed": 68,
     "pairwise": {
@@ -1406,6 +1453,202 @@
           ],
           "n_tasks": 5,
           "point": 0.0
+        }
+      }
+    },
+    "task_attrition": {
+      "ace_vs_naive": {
+        "n_tasks_sensitivity": 6,
+        "tasks_retained": [
+          "pr-14461",
+          "pr-14690",
+          "pr-14985",
+          "pr-15108",
+          "pr-15307",
+          "pr-15495"
+        ]
+      },
+      "ace_vs_original": {
+        "n_tasks_sensitivity": 5,
+        "tasks_retained": [
+          "pr-14461",
+          "pr-14690",
+          "pr-15108",
+          "pr-15307",
+          "pr-15495"
+        ]
+      },
+      "naive_vs_original": {
+        "n_tasks_sensitivity": 5,
+        "tasks_retained": [
+          "pr-14461",
+          "pr-14690",
+          "pr-15108",
+          "pr-15307",
+          "pr-15495"
+        ]
+      }
+    },
+    "value_retention": {
+      "cost_medians_per_task": {
+        "pr-14461": {
+          "ace": 1.575106,
+          "naive": 1.242801,
+          "nodocs": 0.699779,
+          "original": 1.2776675
+        },
+        "pr-14690": {
+          "ace": 1.5593020000000002,
+          "naive": 1.458764,
+          "nodocs": 1.874635,
+          "original": 1.080917
+        },
+        "pr-14985": {
+          "ace": 4.039978,
+          "naive": 2.629375,
+          "nodocs": 2.660833,
+          "original": null
+        },
+        "pr-15108": {
+          "ace": 0.7342895,
+          "naive": 0.7073185,
+          "nodocs": 0.802218,
+          "original": 0.61463
+        },
+        "pr-15307": {
+          "ace": 2.8925725,
+          "naive": 3.0526619999999998,
+          "nodocs": 2.900563,
+          "original": 2.2809495
+        },
+        "pr-15495": {
+          "ace": 4.1509725,
+          "naive": 3.209145,
+          "nodocs": 5.024464,
+          "original": 3.734607
+        }
+      },
+      "definition": "per-task docs_value = metric(original) - metric(nodocs); retention(arm) = (metric(arm) - metric(nodocs)) / docs_value, reported only when |docs_value| > 0",
+      "metrics": {
+        "ref_tests_pass": {
+          "docs_value_mean": -0.06666666666666667,
+          "n_tasks_with_floor": 5,
+          "per_task": {
+            "pr-14461": {
+              "by_arm": {
+                "ace": 1.0,
+                "naive": 1.0,
+                "nodocs": 1.0,
+                "original": 1.0
+              },
+              "docs_value": 0.0
+            },
+            "pr-14690": {
+              "by_arm": {
+                "ace": 1.0,
+                "naive": 1.0,
+                "nodocs": 1.0,
+                "original": 1.0
+              },
+              "docs_value": 0.0
+            },
+            "pr-14985": {
+              "by_arm": {
+                "ace": 0.0,
+                "naive": 0.0,
+                "nodocs": 0.0,
+                "original": null
+              }
+            },
+            "pr-15108": {
+              "by_arm": {
+                "ace": 1.0,
+                "naive": 1.0,
+                "nodocs": 1.0,
+                "original": 1.0
+              },
+              "docs_value": 0.0
+            },
+            "pr-15307": {
+              "by_arm": {
+                "ace": 0.0,
+                "naive": 0.0,
+                "nodocs": 0.0,
+                "original": 0.0
+              },
+              "docs_value": 0.0
+            },
+            "pr-15495": {
+              "by_arm": {
+                "ace": 0.0,
+                "naive": 0.75,
+                "nodocs": 0.3333333333333333,
+                "original": 0.0
+              },
+              "docs_value": -0.3333333333333333,
+              "retention_ace": 1.0,
+              "retention_naive": -1.2500000000000002
+            }
+          }
+        },
+        "suite_pass": {
+          "docs_value_mean": 0.0,
+          "n_tasks_with_floor": 5,
+          "per_task": {
+            "pr-14461": {
+              "by_arm": {
+                "ace": 1.0,
+                "naive": 1.0,
+                "nodocs": 1.0,
+                "original": 1.0
+              },
+              "docs_value": 0.0
+            },
+            "pr-14690": {
+              "by_arm": {
+                "ace": 1.0,
+                "naive": 1.0,
+                "nodocs": 1.0,
+                "original": 1.0
+              },
+              "docs_value": 0.0
+            },
+            "pr-14985": {
+              "by_arm": {
+                "ace": 0.6666666666666666,
+                "naive": 1.0,
+                "nodocs": 0.0,
+                "original": null
+              }
+            },
+            "pr-15108": {
+              "by_arm": {
+                "ace": 1.0,
+                "naive": 1.0,
+                "nodocs": 1.0,
+                "original": 1.0
+              },
+              "docs_value": 0.0
+            },
+            "pr-15307": {
+              "by_arm": {
+                "ace": 1.0,
+                "naive": 1.0,
+                "nodocs": 1.0,
+                "original": 1.0
+              },
+              "docs_value": 0.0
+            },
+            "pr-15495": {
+              "by_arm": {
+                "ace": 1.0,
+                "naive": 1.0,
+                "nodocs": 1.0,
+                "original": 1.0
+              },
+              "docs_value": 0.0
+            }
+          }
         }
       }
     }

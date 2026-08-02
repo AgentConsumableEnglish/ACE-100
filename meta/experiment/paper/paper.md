@@ -36,12 +36,13 @@ migration *grew* the corpus 14% (253K → 290K tokens) and roughly doubled the
 file count, agents in every arm read only ~1.6–1.7K explicit documentation
 tokens per run through ad-hoc shell commands rather than the kit's intended
 navigation structure, and the no-docs ablation matched the documented arms on
-functional tests for four of six tasks — on this repository and task mix, the
-documentation is barely load-bearing, so there is nothing for a
-documentation-efficiency standard to save. Cost tracks *turns*, not corpus
-size — the largest corpus (naive) was the cheapest arm. A post-hoc turn
-analysis finds the ACE-100 arm running ~12 turns longer than the
-token-matched naive control on 6 of 6 tasks, but we report it as an open
+functional tests for four of six tasks — and once leakage-affected runs are
+removed, for every task. On this repository and task mix the documentation is
+barely load-bearing, so there is nothing for a documentation-efficiency
+standard to save. Corpus size does not cleanly predict cost either: ace costs
+1.159× the naive control on 5 of 6 tasks while carrying a 7.8% *smaller*
+corpus. A post-hoc turn analysis finds the ACE-100 arm running ~12 turns
+longer than that control on 6 of 6 tasks, but we report it as an open
 question rather than a result: it is one of 64 interval tests of which ~3
 false positives are expected, and no mechanism survives scrutiny. Migration
 cost $116.45 and, with negative per-run savings, never breaks even. We report two protocol
@@ -51,9 +52,10 @@ side-measurement was not conducted — and publish the full audit trail,
 including the instrument corrections the audit forced (Amendment 5). A
 complete, adversarially verified sweep found reference-solution exposure in
 28 of 96 runs (agents fetched the task PR's own diff, or reached the merged
-fix through the clone's git history); removing them *strengthens* the
-negative cost result (ratio 1.233, CI [1.062, 1.579]) and erases the
-apparent quality deficit, which concentrates in leakage-affected trials.
+fix through the clone's git history). The negative cost result survives their
+removal (ratio 1.233, CI [1.062, 1.579], over the five tasks that retain a
+clean baseline); the apparent quality deficit does not, and neither does the
+measured value of documentation itself.
 
 ---
 
@@ -89,14 +91,17 @@ task median, not ≥20% cheaper (H1). Quality was not non-inferior under the
 strict registered rule (H2), but the blinded judge found ace within margin of
 original on all three rubric dimensions and the single functional miss is
 leakage-confounded — the negative verdict is real but narrow. Three
-observations explain the cost result: (i) migration grew the corpus rather than shrinking it — governed
-front matter, indexes, and file splits added 14% in tokens and doubled the
-file count; (ii) agents consumed documentation in the ~1.6–1.7K-token range
+observations frame the cost result, none of them a demonstrated mechanism:
+(i) migration grew the corpus rather than shrinking it — governed front
+matter, indexes, and file splits added 14% in tokens and doubled the file
+count, though corpus size does not by itself track cost across the arms;
+(ii) agents consumed documentation in the ~1.6–1.7K-token range
 per run regardless of arm, mostly through `grep`/`cat`/`sed` over files they
 discovered ad hoc — the architecture's routing surface (indexes, CLAUDE.md
 imports) was largely bypassed; and (iii) a no-docs ablation held functional
-quality for most tasks, locating this repository's real knowledge in its
-source, tests, and the model's priors rather than its prose. A documentation
+quality for most tasks — and for every task once leakage-affected runs are
+removed — locating this repository's real knowledge in its source, tests, and
+the model's priors rather than its prose. A documentation
 standard cannot save tokens that were never being spent.
 
 **Contributions.** (1) A pre-registered, fully audited negative result on a
@@ -223,6 +228,13 @@ rubric points, CIs permitting. Runs with infrastructure failures would be
 excluded; there were none. All 96 runs enter the cost statistics
 (intention to treat).
 
+**Statistic discipline.** We add one convention after making the mistake it
+prevents (§6.2): every arm-level comparison is reported on the registered
+within-task statistic. Any other summary — arm means over runs, marginal
+medians — is labelled as such in the same sentence and carries no comparative
+claim on its own. Where the two disagree, both are shown and the registered
+one governs.
+
 ## 4. Amendments and Deviations, In Full
 
 Pre-registration only means anything if the changes are public. Five
@@ -241,7 +253,7 @@ than amended away.
    compression, of the original. H1 is unaffected (it measures per-run agent
    cost, for which the kit's mechanism is routing, not corpus totals); the
    design assumption is corrected in place and reported.
-4. **Amendment 4** — the nodocs ablation added after 43 of 72 registered
+4. **Amendment 4** — the nodocs ablation added after 43+ of the 72 registered
    cells had completed but before any evaluation or cross-arm analysis;
    descriptive only; H1/H2 unchanged. Also registered the all-channel
    docs-consumption recount superseding the collection-time counters.
@@ -302,7 +314,7 @@ into savings over one another.
 | suite pass | 5pp | −4.2pp | [−16.7, 0.0] | met | not met |
 | reference tests | 5pp | −12.5pp | [−41.7, +8.3] | not met | not met |
 | judge correctness | 0.5 | +0.12 | [−0.29, +0.54] | met | met |
-| judge completeness | 0.5 | −0.17 | [−0.79, +0.46] | met | met |
+| judge completeness | 0.5 | −0.17 | [−0.79, +0.46] | met | not met |
 | judge convention | 0.5 | +0.08 | [−0.35, +0.54] | met | met |
 
 Four of the five components meet their margin at the point estimate; the
@@ -312,8 +324,10 @@ almost nothing** on subjective quality: ace and original sit within 0.17
 rubric points on every dimension, and the CIs straddle zero. Delivered
 behavior — the reference PR's tests against the agent's implementation — is
 the one axis where the arms diverge: ace 62.5% vs original 75.0% mean
-per-task pass rate, concentrated in two tasks (pr-14985: ace 25% vs
-original 100%; pr-15495: both 0%, naive 75%). The registered rule requires
+per-task pass rate. The entire gap comes from one task — pr-14985, where ace
+scored 25% against original's 100%; on the other five tasks the ace-original
+reference-test delta is exactly zero (pr-15495 is 0% in both arms, so it
+contributes nothing to the gap despite naive reaching 75% there). The registered rule requires
 *every* component within margin, so the verdict is **not established** — but
 the shape matters: the standard did not degrade judged code quality, and its
 one measured functional deficit is exactly the component §7 shows is
@@ -352,8 +366,9 @@ at run start (regenerated by `mdatagen` build tooling mid-run, plus one
 audited solution-content exposure; §7).*
 
 Explicit documentation contact is ~1.6–1.7K tokens per run — under 0.1% of
-a typical run's multi-million-token cache-read footprint — and statistically
-indistinguishable across the documented arms. Agents overwhelmingly reached
+a typical run's multi-million-token cache-read footprint — and closely
+similar across the documented arms (we report no interval on this descriptive
+quantity, so "similar" is an observation, not a test). Agents overwhelmingly reached
 documentation through ad-hoc shell commands (`grep`/`sed`/`cat`, often below
 a `cd`, through `git diff`, even `xargs` sub-shells) rather than the kit's
 routing surface. The ace arm shows slightly *higher* contact frequency
@@ -379,13 +394,28 @@ went from 38,716 to 3,051 characters because it became a router, its body
 moving into `docs/coding-robustness.md`, `docs/coding-modules.md`, and
 siblings. Same prose, new addresses.
 
-**Corpus size, however, does not explain the cost result.** The naive arm
-settles it: at 312,116 tokens it is the *largest* corpus of the three — 7.8%
-larger than ace, inside the registered ±10% matching band — and it is the
-*cheapest* arm ($2.07/run vs ace $2.54, original $2.44). Corpus size and
-per-run cost are anti-correlated here. That follows from §6.1: agents pulled
-~1.6–1.7K explicit documentation tokens per run out of a ~300K-token corpus,
-so the corpus barely touches the context window and cannot move the bill.
+**Corpus size does not cleanly predict cost.** The registered statistic is the
+within-task cost *ratio* (§7 of the pre-registration), and under it the three
+pairwise comparisons do not line up with corpus size. ace costs 1.172×
+original with a 14% larger corpus, and naive costs 1.071× original with a 23%
+larger one — both consistent with size mattering. But **ace costs 1.159×
+naive (5 of 6 tasks) while carrying a corpus 7.8% *smaller***, which size
+cannot explain. Whatever separates ace from its matched control is not the
+number of tokens on disk. That is unsurprising given §6.1: agents pulled
+~1.6–1.7K explicit documentation tokens per run out of a 250–312K-token
+corpus, so the corpus barely touches the context window and cannot move the
+bill by itself.
+
+*A caution about statistics, since we tripped over it ourselves.* An earlier
+draft of this section argued the stronger claim that corpus size and cost are
+*anti-correlated*, on the basis that naive has the largest corpus and the
+lowest mean per-run cost ($2.07 against ace $2.54 and original $2.44). Those
+means are unweighted over 24 runs each and are not the registered statistic;
+they are dominated by pr-14985, the most expensive task, where all four
+original-arm runs are leakage-flagged (§7). Dropping that one task inverts the
+ordering. We report the within-task ratios above and flag the discrepancy
+rather than bury it: arm-level means and the registered within-task statistic
+disagree here, and only the latter is licensed.
 
 **Cost is turns.** Per-run cost is close to linear in turn count: dollars per
 turn are near-constant across conditions (original 0.0368, ace 0.0363, naive
@@ -426,8 +456,8 @@ mechanism. We therefore treat all three *category-level* exclusions as noise,
 including `test` in the ace-naive comparison. For the primary family of four
 total-turn comparisons, ace-vs-naive survives Bonferroni adjustment
 ([+1.42, +26.00] at the family-adjusted level, bootstrap mass at or below
-zero 0.25%, sign test on 6/6 tasks p = 0.031); it does not survive adjustment
-over all 64 tests ([−1.75, +31.67]). Which correction is appropriate is a
+zero 0.19%, sign test on 6/6 tasks p = 0.031); it does not survive adjustment
+over all 64 tests ([−1.38, +31.92]). Which correction is appropriate is a
 judgment call — the category tests are secondary to the primary family — and
 readers who prefer the conservative reading should treat the turn result as
 unresolved along with everything else.
@@ -489,40 +519,78 @@ nodocs):
 | pr-15307 | 50% | 50% | 50% | 25% | +25pp |
 | pr-15495 | 0% | 0% | 75% | 25% | −25pp |
 
-Deleting every documentation file cost functional quality on exactly two of
-six tasks (mean docs-value +8.3pp on reference tests, +4.2pp on the suite).
-For four tasks the knowledge the agent needed lived in source, tests, and
-model priors — the last being the registered training-data-contamination
-threat: this repository's documentation is plausibly in the subject model's
-pretraining corpus, diluting any in-repo docs manipulation.
+Read intention-to-treat, deleting every documentation file cost functional
+quality on exactly two of six tasks (mean docs-value +8.3pp on reference
+tests, +4.2pp on the suite). For four tasks the knowledge the agent needed
+lived in source, tests, and model priors — the last being the registered
+training-data-contamination threat: this repository's documentation is
+plausibly in the subject model's pretraining corpus, diluting any in-repo
+docs manipulation.
+
+**That positive signal does not survive the leakage sweep, and the honest
+reading is that it was never there.** Both tasks carrying non-zero docs value
+are exactly the tasks where reference-test passes came from
+reference-solution exposure: on pr-14985, **all 8** reference-test passes
+across all arms are in class-(c) flagged runs, and on pr-15307, **all 7** are.
+Neither task has a single clean pass in any arm. Removing flagged runs per
+Amendment 5 (§7.2) removes pr-14985 from the comparison entirely — every
+original-arm run there is flagged — and drives mean docs-value from **+8.3pp
+to −6.7pp**, with four of the five surviving tasks at exactly zero and
+pr-15495 at −33pp. On the clean subset, deleting the documentation did not
+measurably cost functional quality anywhere.
+
+This strengthens rather than weakens the section's conclusion: the
+documentation is *even less* load-bearing than the intention-to-treat numbers
+suggest. But it disqualifies the two examples we would otherwise have reached
+for, and it is why no causal account of pr-14985 appears below.
 
 The blinded judge tells the complementary half of this story. Where
 functional tests barely separated the documented arms from nodocs, the
 *judge* did: nodocs is the worst-scored arm on all three dimensions
-(correctness 3.88, completeness 3.58, convention 3.62) versus 4.0–4.4 for the
+(correctness 3.88, completeness 3.58, convention 3.62) versus 3.83–4.35 for the
 three documented arms, with the largest gap on convention adherence — exactly
 the MUST-level prose conventions (§3.2) that source code cannot convey.
 Documentation on this repository buys *judged* quality, especially
 convention-following, more reliably than it buys test-pass. That is a point
 in the standard's favor at the margin — but it accrues to *having*
-documentation, not to ACE-100 over the original or naive text: the three
-documented arms are statistically indistinguishable from one another on every
-judge dimension (ace-vs-naive deltas ≤ 0.06 points). Where docs
-carried real value (pr-14985), *both* rewritten arms destroyed most of it
-(100% → 25%) — a preservation failure that three repair rounds and
-disclosure (Amendment 3) flagged but did not fully prevent — and on
-pr-15495 the original docs were actively worse than nothing while the naive
-rewrite helped. Documentation value here is small, task-idiosyncratic, and
-sign-unstable — a hostile substrate for any documentation standard to show
-gains on, and the central external-validity caveat of this experiment
-(Experiment 2 targets a docs-load-bearing setting for exactly this reason).
+documentation, not to ACE-100 over the original or naive text: every
+ace-vs-naive judge delta is ≤ 0.06 points with a CI spanning zero, so the
+three documented arms are not separated on any dimension.
+
+Two cautions on that judge reading. It rests on the nodocs arm, which
+Amendment 4 registers as descriptive and exploratory, and on the judge, which
+§3.4 places second in the quality hierarchy and whose convention scoring is
+the noisiest dimension (0.63 exact agreement). We offer it as the more
+suggestive half of a weak signal, not as a finding.
+
+Earlier drafts of this section attributed pr-14985's ace-and-naive drop
+(100% → 25%) to condensation loss surviving the Amendment-3 repair rounds.
+That attribution is withdrawn: §7.2 shows the 100% original baseline is
+itself produced by solution fetching, so the contrast is not evidence about
+documentation quality at all. Documentation value here is small,
+task-idiosyncratic, sign-unstable, and — once leakage is removed —
+indistinguishable from zero. That is a hostile substrate for any
+documentation standard to show gains on, and the central external-validity
+caveat of this experiment (Experiment 2 targets a docs-load-bearing setting
+for exactly this reason).
 
 ### 6.4 Value retention (Amendment 4 readout)
 
 Where the floor is nonzero, retention(arm) = (arm − nodocs)/(original −
-nodocs): pr-14985 ace −0.5, naive −0.5 (both rewrites landed *below* the
-no-docs floor); pr-15307 ace 1.0, naive 1.0. Experiment 2 shares this
-readout; its slots are reserved in §9.
+nodocs). Intention-to-treat, three tasks qualify: pr-14985 ace −0.5, naive
+−0.5 (both rewrites landed *below* the no-docs floor); pr-15307 ace 1.0,
+naive 1.0; and pr-15495, whose docs value is *negative* (−25pp, so the
+original docs were worse than none) giving ace 1.0 and naive −2.0 — a
+retention ratio against a negative denominator, which is why we report it but
+draw nothing from it.
+
+**This readout does not survive the leakage sweep either.** Its denominator
+is the same docs-value quantity shown above to be leakage-composed: with
+flagged runs removed, pr-14985 leaves the comparison entirely and every
+remaining task except pr-15495 has a zero denominator, leaving retention
+undefined. Experiment 2 shares this readout and its slots are reserved in §9
+— but the readout needs a substrate where docs value is non-zero *and*
+clean, which is precisely what Experiment 1 failed to supply.
 
 ## 7. Protocol Deviation: Network Isolation and Solution Leakage
 
@@ -552,8 +620,8 @@ an adversarial verifier re-deriving every class-(c) claim and every
 all-clear from the raw tool results; `audit/network-sweep.json`) found:
 
 - **28 of 96 runs (29%) carry class-(c) reference-solution exposure**,
-  spread across five of six tasks and all four conditions (original 8, ace
-  5, naive 7, nodocs 8 runs). Event classes across all runs: 107
+  spread across all six tasks and all four conditions (original 9, ace
+  5, naive 6, nodocs 8 runs). Event classes across all runs: 107
   metadata lookups, 21 external-documentation retrievals, 124
   solution-exposure events, 128 other (mostly Go module-proxy downloads).
 - The exposure channels are blunt: agents `curl`ed the task PR's own
@@ -571,10 +639,14 @@ all-clear from the raw tool results; `audit/network-sweep.json`) found:
 
 With the 28 flagged runs removed (analysis Table 8):
 
-- **H1 is robust — indeed stronger.** The ace/original cost ratio moves
-  from 1.172 [0.881, 1.487] to **1.233 [1.062, 1.579]**: the CI now
-  excludes even parity. The negative cost verdict does not depend on any
-  leakage-affected run.
+- **H1 is robust.** The ace/original cost ratio moves from 1.172 [0.881,
+  1.487] to **1.233 [1.062, 1.579]**. The negative cost verdict does not
+  depend on any leakage-affected run. We do not read the higher point
+  estimate as leakage having *masked* a worse result, because the two
+  numbers are not computed over the same tasks: every original-arm run in
+  pr-14985 is flagged, so that task drops out and the sensitivity ratio is a
+  five-task comparison against the registered six-task one. The robustness
+  claim is that the verdict survives, not that the effect grows.
 - **The observed H2 point deficits do not survive.** Ace-vs-original
   quality deltas collapse to 0.0pp (suite and reference tests) on the five
   tasks with unflagged original-arm trials. The registered deficit
@@ -633,14 +705,18 @@ to resolve the noise. Cost follows turns almost exactly (§6.2), so turn count
 is the efficient thing to measure.
 
 **Is verbose, self-contained prose the actually efficient form?** The naive
-arm is the surprise of this experiment: the largest corpus (312,116 tokens),
-the fewest turns (57.6 against 66.5–70.3 for the other three), and quality
-statistically indistinguishable from ace on every judge dimension. It was
-built as a control for length, not as a candidate. If that pattern holds
-under a powered replication, the practical advice it implies — write
-thorough, self-contained documents where readers expect to find them, rather
-than compressing or splitting them — runs against the premise this standard
-was built on, and deserves a direct test.
+arm was built as a control for length, not as a candidate, and it
+outperformed the migrated arm on the two axes we can compare within-task:
+ace costs 1.159× naive (5 of 6 tasks) and runs ~12 turns longer (6 of 6),
+despite naive carrying a 7.8% larger corpus, with judge quality
+indistinguishable between them. We state this narrowly on purpose — arm-level
+*means* tell a stronger story that the registered within-task statistic does
+not support (§6.2), and the turn result does not survive full multiplicity
+correction. But the direction is consistent across both measures, and the
+practical advice it would imply — write thorough, self-contained documents
+where readers expect to find them, rather than compressing or splitting
+them — runs against the premise this standard was built on. It deserves a
+direct, powered test rather than the incidental one it received here.
 
 **How much do agents read documentation at all, and when?** Every arm here
 consumed ~1.6–1.7K explicit documentation tokens per run against corpora of
