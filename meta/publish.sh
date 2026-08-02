@@ -74,7 +74,17 @@ if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
 fi
 
 tools/check.sh >/dev/null 2>&1 || gate "tools/check.sh reports findings — run it for the list"
+# The linter sweep covers the comments of the kit tools and of adopt.sh too
+# (ACE 10.1). .ace-ignore keeps the rest of meta/ out.
 python3 tools/lint.py >/dev/null 2>&1 || gate "tools/lint.py reports findings — run it for the list"
+
+bash -n tools/describe.sh 2>/dev/null || gate "tools/describe.sh does not parse (bash -n)"
+# The reader tool and the canonical checker must list the same corpus. Without
+# that, the map a reader holds differs from the corpus the checker governs.
+d_rows=$(tools/describe.sh 2>/dev/null | wc -l | tr -d ' ')
+c_rows=$(tools/check.sh 2>/dev/null | sed -n 's/^ok — \([0-9]*\) file.*/\1/p')
+[ "$d_rows" = "$c_rows" ] \
+  || gate "tools/describe.sh lists $d_rows documents and tools/check.sh lists $c_rows"
 
 # Every kit path is scanned (the checker headers in tools/ ship too), and
 # inflections count: "drafts" and "drafted" are as unreleased as "draft".

@@ -7,6 +7,28 @@ isPartOf: docs/standard/README.md
 
 # Issue history
 
+## Issue 4 — 2026-08-03
+
+The standard governed code comments from Issue 1, and no checker ever read one. `check.sh` and `lint.py` swept markdown alone, so the ACE 17.2 table overstated its reach. In the field repository, comment prose runs to 324,000 words against 500,000 words of markdown. Two of every five words of prose in that repository had never met a checker.
+
+- ACE 10.7: a comment states what is true of its own file. A fact true across files lives in a document, and the comment cites it. ACE 9.4 and ACE 14.7 give the same rule for documents.
+- ACE 10.8: a comment that ends with terminal punctuation is a sentence, and layer L2 reaches it. Other comment text is a fragment. The Issue 3 note became a rule that a machine settles.
+- ACE 10.9: a source file has no front matter, so it declares a deviation in an `ace-exempt` comment. The declaration covers the file, and ACE 17.7 still demands the ledger row.
+- ACE 10.4 and ACE 10.6: the generated-file label has a source form, and a comment directive that a tool reads is verbatim.
+- ACE 14.9: the rule reaches a comment. A division moves the path and leaves the comment behind.
+- Section 19: a new section, and the first read-side rules of the standard. ACE 13.2 puts a description on every document and ACE 11.3 puts an index in every directory, and until now no rule said what either was for.
+- Section 18: ACE 18.8 phases a comment migration, L1 before L2. ACE 18.9 recommends a clean sweep, and leaves the path to the adopting repository.
+- ACE 17.8: comment coverage needs `python3`, and an extension outside the swept list is unchecked rather than compliant.
+- The checkers: `lint.py` extracts comments from four syntax families, and it tracks string literals. Layer L1 reaches every comment, and layer L2 reaches its sentences. `check.sh` states that it reads markdown alone.
+- The tools: [describe.sh](../../tools/README.md) is the first reader tool of the kit. It prints the path and the description of each governed document. `measure.py` reports the comment corpus beside the documents, and `tools/measurements/issue-4.txt` is the snapshot.
+- The briefs: [the reader brief](reader-brief.md) joins the agent brief. It serves an agent that consumes a corpus, and not one that writes it.
+
+The kit failed the new checker on the day it was written: four semicolons and ten long sentences in `check.sh`, and eleven more in the adopt command. The `.ace-ignore` file stopped excluding the whole development tree, because one file in it ships. Published means governed.
+
+Three placement questions stayed open, and no rule closed them. Does collocated prose beat a cited document? Does the ACE 6.1 limit transfer to comment prose? Does an identifier citation need to resolve?
+
+Each question is recorded as a claim, with the measurement that settles it. None of them is answered here.
+
 ## Issue 3 — 2026-08-01
 
 A second field report from the same monorepo drove this issue. The corpus passed the Issue 2 checkers on day one. The report still found 99 gone parents, 159 dropped genres, and 101 stale backticked paths. Every rotted rule was `(M)` with no checker, and every checked rule was at zero findings. The architecture rules got the enforcement that the language rules got in Issue 2.

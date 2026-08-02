@@ -15,6 +15,7 @@ and from the release (`meta/publish.sh`).
 | `experiments/<id>/` | One directory per experiment: `PREREGISTRATION.md`, `experiment.json`, `manifest.json`, committed `audit/` and `analysis/`, gitignored `data/`, `arms/`, `repo/`. |
 | `papers/<id>/` | One paper per experiment. Front matter names the experiments it draws on, its status, and its citation tag. |
 | `REPLICATION.md` | Step-by-step reproduction, and how artifact provenance works. |
+| `OPEN-QUESTIONS.md` | The register of unsettled claims, `OQ-N`. A preregistration cites the question it answers. |
 
 Experiments and papers are separate trees on purpose. An experiment's artifacts
 are provenance-stamped outputs a replicator re-derives; a paper is argued prose

@@ -38,6 +38,15 @@ Read this once, then write. Open the full sections only when a rule needs its de
 - State each fact one time in a document. Merge items that repeat it (ACE 9.4).
 - Write "that" after report verbs: "Make sure that the test passes."
 
+## Comments (Section 10)
+
+- A comment is governed prose. Layer L1 reaches every comment (ACE 10.1).
+- A comment that ends with a period is a sentence, and layer L2 reaches it too (ACE 10.8).
+- A comment states what is true of its own file. A fact true across files lives in a document, and the comment cites it (ACE 10.7).
+- A backticked path in a comment must resolve (ACE 14.9).
+- A directive that a tool reads is verbatim (ACE 10.6). A generated file needs the label (ACE 10.4).
+- A source file has no front matter. It declares a deviation with `// ace-exempt: ACE 6.1 — the reason`, and the ledger row still applies (ACE 10.9).
+
 ## Safety (Section 7)
 
 - `**WARNING:**` = permanent or externally visible harm. `**CAUTION:**` = damage a team can repair.
@@ -76,8 +85,10 @@ Read this once, then write. Open the full sections only when a rule needs its de
 Run the checkers before you report success:
 
 ```bash
-tools/check.sh <files>   # canonical, zero dependencies
-tools/lint.py <files>    # extended pattern checks
+tools/check.sh <files>   # canonical, zero dependencies, markdown alone
+tools/lint.py <files>    # extended pattern checks, and source comments
 ```
+
+To read a corpus rather than write one, [the reader brief](reader-brief.md) gives the read side.
 
 A clean run is necessary, not sufficient. Vocabulary choice, voice, meaning, and division need your read.

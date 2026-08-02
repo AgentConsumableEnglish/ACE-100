@@ -26,4 +26,6 @@ isPartOf: docs/standard/architecture/README.md
 
 **ACE 14.9 (M)** — A backticked span that contains `/` names a repository path. The path must resolve from the repository root or from the document. A backticked path is an identifier and a pointer at the same time. ACE 1.5 exempts it from the word rules only, never from resolution.
 
+The rule reaches a comment too (ACE 10.1). A division moves the path and leaves the comment behind, and no other check reads it.
+
 Two shapes are outside this rule: a placeholder in angle brackets, and a span with spaces. When an example must show a path that has no file, declare the exemption (ACE 13.7). Field data: four conforming divisions left 101 stale backticked paths, and no check saw one of them.

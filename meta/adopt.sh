@@ -12,18 +12,20 @@
 #   -h, --help  print this help
 #
 # Environment (tests and air-gapped use):
-#   ACE_ADOPT_KIT_TARBALL    path to a local kit tarball; skips the download
+#   ACE_ADOPT_KIT_TARBALL    path to a local kit tarball, which skips the download
 #   ACE_ADOPT_SKILL_TARBALL  path to a local skill tarball
 #   ACE_ADOPT_REPO_SLUG      override the GitHub repository (owner/name)
 #
 # POSIX sh. Needs curl and tar. git and python3 widen the checks when present.
-# The kit's manifest (tools/kit-manifest.txt) drives every write:
-#   kit  paths are the standard's own files — overwritten on an upgrade
-#   seed paths are extended by the adopter — copied once, never touched again
-# Every manifest path (from the tarball AND from the target's old manifest) is
-# validated before use: it must live under docs/ or tools/, with no absolute
-# form and no ".." component, so no manifest line can ever read or delete
-# outside those two trees.
+# The kit manifest (tools/kit-manifest.txt) drives every write:
+#
+#   kit  paths are the files of the standard, and an upgrade overwrites them
+#   seed paths belong to the adopter, and a copy runs one time alone
+#
+# Two manifests reach this script. One arrives in the tarball, and one sits in
+# the target already. Each path is validated before use. It must live under
+# docs/ or tools/, with no absolute form and no ".." component. So no manifest
+# line can ever read or delete outside those two trees.
 
 set -u
 
@@ -45,10 +47,11 @@ earlier adoption. Run it from the repository root.
 EOF
 }
 
-# A manifest path may only name a file under docs/ or tools/. Rejects
-# absolute paths, ".." and "." components, and anything outside those trees
-# (.git/ included) — for the new manifest and the old one alike. This is a
-# lexical check: it reads the string, not the filesystem.
+# A manifest path names a file under docs/ or tools/, and nothing else. This
+# rejects absolute paths, ".." and "." components, and anything outside those
+# two trees. The .git/ tree is outside them. The rule holds for the new
+# manifest and for the old one alike. The check is lexical, and it reads the
+# string, not the filesystem.
 valid_path() {
   case "$1" in
     docs/?*|tools/?*) : ;;
@@ -60,11 +63,11 @@ valid_path() {
   return 0
 }
 
-# valid_path clears the string, but cp and rm act on the filesystem, where a
-# symlinked path component (a real `docs/x` that points outside the repo)
-# would let a lexically clean `docs/x/file` escape. This rejects a path whose
-# leaf or any existing ancestor directory is a symlink, so no write or delete
-# can ever follow a link out of the two trees.
+# valid_path clears the string, but cp and rm act on the filesystem. A path
+# component can be a symlink that points outside the repository. A lexically
+# clean path under it then escapes. This rejects a path whose leaf, or whose
+# existing ancestor directory, is a symlink. No write and no delete can follow
+# a link out of the two trees.
 physical_safe() {
   _pp=$1
   [ -L "$_pp" ] && return 1
@@ -76,8 +79,8 @@ physical_safe() {
   return 0
 }
 
-# Appends one line to a file, healing a missing final newline first so the
-# new line can never fuse with the file's last line.
+# Appends one line to a file. A missing final newline is repaired first. The
+# new line can then never fuse with the last line of the file.
 append_line() {
   if [ -s "$1" ] && [ -n "$(tail -c 1 "$1")" ]; then
     printf '\n' >> "$1" || die "cannot write $1"
@@ -167,8 +170,8 @@ mode=fresh old_issue='' old_invalid=0
 if [ -f tools/kit-manifest.txt ]; then
   mode=upgrade
   old_issue=$(sed -n '1s/.*— //p' tools/kit-manifest.txt)
-  # The old manifest sits in the target repo, so it gets the same validation
-  # as the new one: an invalid line is dropped, never fed to rm.
+  # The old manifest sits in the target repository. It gets the same
+  # validation as the new one. An invalid line drops, and rm never reads it.
   grep '^kit ' tools/kit-manifest.txt | cut -d' ' -f2- | {
     while IFS= read -r p; do
       if valid_path "$p"; then printf '%s\n' "$p"; else echo x >> "$work/old_invalid"; fi
@@ -192,8 +195,8 @@ if [ "$mode" = "fresh" ]; then
   fi
 fi
 
-# Nothing is written yet. Refuse the whole run if any target sits under a
-# symlinked component, so a planted link can never redirect a copy outside
+# Nothing is written yet. The whole run stops when a target sits under a
+# symlinked component. A planted link can then never redirect a copy outside
 # the repository. This guards every mode, the official tarball included.
 unsafe=$(while IFS= read -r p; do
   physical_safe "$p" || printf '  %s\n' "$p"
@@ -318,8 +321,8 @@ if [ "$MIGRATE" -eq 1 ]; then
 fi
 
 # --- check the result ----------------------------------------------------
-# The kit self-check covers kit files only: seed files belong to the adopter
-# after the first copy, so their findings are never the kit's fault.
+# The kit self-check covers kit files alone. A seed file belongs to the
+# adopter after the first copy, and its findings are never a kit defect.
 kit_ok=unknown sweep=skipped surface=0
 if [ -x tools/check.sh ] && command -v bash >/dev/null 2>&1; then
   kit_md=$(grep '\.md$' "$work/new_kit")

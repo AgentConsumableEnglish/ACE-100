@@ -1,2 +1,12 @@
 # Development files are not governed documents. See meta/RELEASING.md.
-^meta/
+#
+# The patterns name the development trees one by one, rather than the whole of
+# meta/. One file under meta/ ships to an adopter: adopt.sh is a release asset,
+# and an adopter reads it before the adopter runs it. Published means governed
+# (ACE 10.1), so adopt.sh stays in the sweep.
+^meta/RELEASING\.md$
+^meta/publish\.sh$
+^meta/dist/
+^meta/reports/
+^meta/research/
+^meta/skill/

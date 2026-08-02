@@ -6,7 +6,7 @@ description: This kit contains ACE-100, a controlled language for monorepo docum
 
 # ACE-100 kit
 
-ACE-100 is Agent-Consumable English. It is a controlled language and a document architecture for monorepos. This kit is Issue 3. The kit obeys its own rules. This file is the root index of the kit.
+ACE-100 is Agent-Consumable English. It is a controlled language and a document architecture for monorepos. This kit is Issue 4. The kit obeys its own rules. This file is the root index of the kit.
 
 ## Contents
 
@@ -30,7 +30,7 @@ The command copies the `docs/` and `tools/` trees, links your root `README.md` t
 After the command:
 
 1. Write the technical terms of your repository in [technical-terms.md](docs/dictionary/technical-terms.md).
-2. Give each writer [the agent brief](docs/standard/agent-brief.md).
+2. Give each writer [the agent brief](docs/standard/agent-brief.md), and each reader [the reader brief](docs/standard/reader-brief.md).
 3. Run `tools/check.sh` from the first document (ACE 18.1).
 4. For a rewrite of an existing repository, read [Migration](docs/standard/migration.md) first.
 

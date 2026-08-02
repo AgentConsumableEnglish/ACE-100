@@ -31,3 +31,5 @@ Run `tools/check.sh` and `tools/lint.py` first. Then do these checks in the give
 20. Parts: make sure that each part keeps the properties of its source (ACE 15.2).
 21. Index: make sure that the index of the directory lists the document (ACE 11.6).
 22. Exemptions: make sure that each deviation has `exempt` and a ledger row (ACE 17.7).
+23. Comments: apply steps 1 to 13 to each comment that the change touched (ACE 10.1).
+24. Comment scope: a cross-file fact goes to a document, and the comment cites it (ACE 10.7).

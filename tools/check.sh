@@ -1,29 +1,38 @@
 #!/usr/bin/env bash
-# ACE-100 canonical checker (Issue 3). Settles the mechanical rules a shell can:
-# front matter and its mandatory properties (ACE 13.2), the parent index that
-# `isPartOf` names (ACE 13.2, 11.3), the H1 (ACE 13.6), the 120-line size limit
-# (ACE 15.1), American spelling in prose (ACE 1.12), link resolution (ACE 14.5),
-# backticked repository paths (ACE 14.9), and one README.md index per
-# directory (ACE 11.3).
+# ACE-100 canonical checker (Issue 4). It settles the mechanical rules that a
+# shell can settle:
 #
-# It does NOT check: vocabulary layers, voice, tense, modality, sentence limits,
-# meaning, or topic division. A clean run is necessary and not sufficient.
-# `tools/lint.py` covers the pattern rules; a reader covers the rest.
+#   front matter and its mandatory properties (ACE 13.2)
+#   the parent index that `isPartOf` names (ACE 13.2, ACE 11.3)
+#   the H1 (ACE 13.6)
+#   the 120-line size limit (ACE 15.1)
+#   American spelling in prose (ACE 1.12)
+#   link resolution (ACE 14.5)
+#   backticked repository paths (ACE 14.9)
+#   one README.md index in each directory (ACE 11.3)
+#
+# It does not check vocabulary layers, voice, tense, modality, or meaning.
+# It does not check sentence limits or topic division. A clean run is
+# necessary and not sufficient. A reader covers the rest.
+#
+# This checker reads markdown alone. `tools/lint.py` covers the pattern rules,
+# and it covers the comments of source files (ACE 10.1).
 #
 # Adapted from the checker of the first field migration, with thanks.
 #
 #   tools/check.sh <path>...   # check the given files
-#   tools/check.sh             # check every governed file (git-tracked + untracked)
+#   tools/check.sh             # check every governed file
 #
-# Optional: a .ace-ignore file at the repository root, one grep pattern per
-# line, excludes paths from the full sweep.
+# A .ace-ignore file at the repository root excludes paths from the full
+# sweep. It holds one grep pattern for each line.
 #
-# Exits non-zero when any check fails. Failures name the file and the ACE rule.
+# The exit is non-zero when a check fails. A failure names the file and the
+# ACE rule.
 
 set -uo pipefail
-# The repository root: the git toplevel, or the current directory without
-# git. adopt.sh resolves the root the same way; lint.py reads the current
-# directory.
+# The repository root is the git toplevel. Without git, it is the current
+# directory. The adopt command resolves the root the same way, and the linter
+# reads the current directory.
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 2
 
 files=()
@@ -32,13 +41,13 @@ if [ "$#" -gt 0 ]; then
   files=("$@")
 else
   sweep=1
-  # The find fallback strips its "./" prefix so that .ace-ignore patterns
-  # anchored with "^" match the same paths in the two modes.
+  # The find fallback strips its "./" prefix. A .ace-ignore pattern anchored
+  # with "^" then matches the same path in the two modes.
   list=$(git ls-files --cached --others --exclude-standard '*.md' 2>/dev/null || find . -name '*.md' | sed 's|^\./||')
   if [ -f .ace-ignore ]; then
     # Strip blank lines and `#` comments first. An empty pattern matches every
-    # line, so a single blank line here excludes the whole corpus and the sweep
-    # reports a clean run over nothing — the failure ACE 17.3 warns about.
+    # line. A single blank line here excludes the whole corpus. The sweep then
+    # reports a clean run over nothing, and ACE 17.3 warns about that failure.
     patterns=$(grep -v -e '^[[:space:]]*$' -e '^[[:space:]]*#' .ace-ignore)
     if [ -n "$patterns" ]; then
       list=$(printf '%s\n' "$list" | grep -v -f <(printf '%s\n' "$patterns"))
@@ -59,9 +68,9 @@ if [ "${#files[@]}" -eq 0 ]; then
 fi
 
 fail=0
-# A finding names its rule ("ACE 13.6: ..."). When the document's `exempt`
-# property carries that identifier (ACE 13.7), the finding is not an error,
-# so the filter sits here, in one place, for every check alike.
+# A finding names its rule, for example "ACE 13.6". The `exempt` property of
+# the document can carry that identifier (ACE 13.7). The finding is then not
+# an error. The filter sits here, in one place, for every check alike.
 note() {
   id=$(printf '%s' "$1" | sed -n 's/.*ACE \([0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -1)
   if [ -n "$id" ]; then
@@ -98,10 +107,10 @@ for f in "${files[@]}"; do
   done
 
   # --- the parent index resolves, and is a file (ACE 13.2, 11.3, 15.2) ---------
-  # `isPartOf` names the parent index from the repository root. A division that
-  # turns `topic.md` into `topic/README.md` plus parts leaves every part with a
-  # parent that is gone. Nothing else reads the property, so the break is silent.
-  # A `<placeholder>` belongs to a template and names no real file.
+  # `isPartOf` names the parent index, from the repository root. A division
+  # replaces one document with an index and its parts. Each part then names a
+  # parent that is gone. Nothing else reads the property, so the break is
+  # silent. A `<placeholder>` belongs to a template, and it names no real file.
   parent=$(awk -v c="$close" 'NR>1 && NR<c && index($0,"isPartOf: ")==1 {sub(/^isPartOf: */,""); print; exit}' "$f")
   parent=${parent%\"}; parent=${parent#\"}; parent=${parent%\'}; parent=${parent#\'}
   case "$parent" in
@@ -135,8 +144,8 @@ for f in "${files[@]}"; do
 
   # --- American English in prose (ACE 1.12) ------------------------------------
   # Backticked text, code blocks, link targets, and path-shaped tokens are
-  # identifiers or quoted text; the rule does not reach inside them.
-  # A dictionary table names words in order to ban them; a mention is not a use.
+  # identifiers or quoted text. The rule does not reach inside them.
+  # A dictionary table names words to ban them, and a mention is not a use.
   indict=0
   case "$f" in docs/dictionary/*) indict=1 ;; esac
   case "$exempt" in *"1.12"*) : ;; *)
@@ -174,10 +183,12 @@ for f in "${files[@]}"; do
 
   # --- backticked repository paths resolve (ACE 14.9) ---------------------------
   # A backticked span with a slash is an identifier and a pointer at the same
-  # time. ACE 1.5 exempts it from the word rules, so no other check reads it,
-  # and a division strands it silently. Placeholders in angle brackets, globs,
-  # spans with spaces, and URLs are not paths. The path resolves from the
-  # repository root or from the document, and an anchor or a final slash drops.
+  # time. ACE 1.5 exempts it from the word rules. No other check reads it, and
+  # a division strands it silently.
+  #
+  # Placeholders in angle brackets, globs, spans with spaces, and URLs are not
+  # paths. The path resolves from the repository root or from the document.
+  # An anchor or a final slash drops.
   while IFS= read -r span; do
     [ -n "$span" ] || continue
     case "$span" in

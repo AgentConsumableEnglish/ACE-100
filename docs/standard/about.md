@@ -19,9 +19,11 @@ The model for ACE-100 is ASD-STE100 Simplified Technical English, Issue 9 (Janua
 
 Issue 3 has a third source: a review of [caveman](https://github.com/JuliusBrussee/caveman), a compression project for agent replies. ACE-100 keeps its own grammar, and [changes.md](changes.md) records what the review changed.
 
+Issue 4 has one source: the comment corpus of the same monorepo. The standard governed comments from the first issue, and no checker read one until this issue.
+
 ## Issue control
 
-This is Issue 3, the last released issue. A change to a rule makes a new issue, and a change to the dictionary does not. Each rule has a stable identifier, for example ACE 5.1. [Enforcement](enforcement.md) gives the identifier format, and [changes.md](changes.md) records the changes between issues.
+This is Issue 4, the last released issue. A change to a rule makes a new issue, and a change to the dictionary does not. Each rule has a stable identifier, for example ACE 5.1. [Enforcement](enforcement.md) gives the identifier format, and [changes.md](changes.md) records the changes between issues.
 
 ## Self-compliance
 

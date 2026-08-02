@@ -23,3 +23,7 @@ A live repository is not a blank page. Its documents are infrastructure: tests r
 **ACE 18.6** — Divide with the canonical shape (ACE 15.2), and only after the whole batch is known. Repair cross-batch links in one later pass, when every division is final.
 
 **ACE 18.7** — Record every deviation in [deviations.md](deviations.md) as you find it, not at the end.
+
+**ACE 18.8** — Migrate the comments in two phases. Phase one is layer L1: words, verbs, and punctuation. Phase two is layer L2: the sentence and paragraph limits. Phase one is cheap, and each finding has a one-word repair.
+
+**ACE 18.9** — The end state that this standard recommends is a clean sweep. How a repository reaches it is a decision of that repository. A baseline of existing findings and a check of changed files alone are two other paths. Each one weakens ACE 17.3: after it, a clean run means the findings that the repository already had.

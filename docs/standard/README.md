@@ -1,7 +1,7 @@
 ---
 "@type": CollectionPage
 name: The ACE-100 standard
-description: This index routes readers to the rule documents of ACE-100 Issue 3.
+description: This index routes readers to the rule documents of ACE-100 Issue 4.
 isPartOf: docs/README.md
 ---
 
@@ -13,6 +13,7 @@ ACE-100 is Agent-Consumable English, a controlled language for monorepo document
 
 - [About ACE-100](about.md). Purpose, sources, and issue control.
 - [The agent brief](agent-brief.md). The whole standard in one file, for a writer.
+- [The reader brief](reader-brief.md). The read side in one file, for an agent that consumes the corpus.
 - [Issue history](changes.md). What changed between issues, and why.
 - [Coverage and layers](coverage.md). The prose that the standard governs. Section 10.
 
@@ -29,5 +30,6 @@ ACE-100 is Agent-Consumable English, a controlled language for monorepo document
 - [Git prose](git-prose.md). Rules for commit messages and PR text. Section 16.
 - [Enforcement](enforcement.md). Rule identifiers, checkers, and exemptions. Section 17.
 - [Migration](migration.md). Rules for a rewrite of an existing repository. Section 18.
+- [Reading](reading.md). Rules for a reader of a governed corpus. Section 19.
 - [The deviations ledger](deviations.md). The declared exemptions of this repository.
 - [The checklist](checklist.md). The full check sequence for authors and reviewers.

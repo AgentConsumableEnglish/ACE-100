@@ -12,8 +12,8 @@ isPartOf: docs/standard/README.md
 
 **ACE 17.2** — The mark `(M)` means that a machine can settle the rule. The mark is a claim about the rule, not about the kit. The table below gives the checker that settles each such rule. The kit ships the two checkers in [tools](../../tools/README.md):
 
-- `check.sh` is canonical. It has zero dependencies.
-- `lint.py` extends it with the pattern rules.
+- `check.sh` is canonical. It has zero dependencies. It reads markdown alone.
+- `lint.py` extends it with the pattern rules, and it reads the comments of source files (ACE 10.1).
 - A rule with "none" in its checker column is a known hole. The kit does not settle it. Plan a reader or a local check there.
 - A row with "part" settles the named part alone. The rest of that rule needs a reader.
 
@@ -33,7 +33,9 @@ isPartOf: docs/standard/README.md
 | ACE 8.1 | `lint.py` | Semicolons in prose |
 | ACE 8.4 | `lint.py` | Latin abbreviations |
 | ACE 9.4 | none | A repeated fact needs a reader |
-| ACE 10.4 | none | The generated-file label is not checked |
+| ACE 10.4 | `lint.py` (part) | The label exempts a source file. A missing label is not checked |
+| ACE 10.8 | `lint.py` | The terminal punctuation that divides a sentence from a fragment |
+| ACE 10.9 | `lint.py` | The `ace-exempt` comment, and the ledger must exist |
 | ACE 11.3 | `check.sh` | One `README.md` index in each governed directory |
 | ACE 12.1 | `lint.py` | The `@type` value is one of the five |
 | ACE 12.2 | none | A checker cannot tell that a document is a record. ACE 15.2 step 5 keeps the genre |
@@ -46,10 +48,14 @@ isPartOf: docs/standard/README.md
 | ACE 14.2 | `check.sh` | Through the index check (ACE 11.3) |
 | ACE 14.3 | `lint.py` | Heading depth H1 to H3 |
 | ACE 14.5 | `check.sh` | Each link resolves, and points at a file |
-| ACE 14.9 | `check.sh` | Each backticked repository path resolves |
+| ACE 14.9 | the two | Each backticked repository path resolves, in a document and in a comment |
 | ACE 15.1 | the two | The 120-line body count |
 | ACE 16.1 | none | The checkers do not read git |
 | ACE 17.7 | the two | The `exempt` property, and the ledger must exist |
+| ACE 19.1 | none | A checker cannot see how an agent read a document |
+| ACE 19.5 | none | The same hole |
+
+**ACE 17.8** — Comment coverage needs `python3`. `check.sh` reads markdown alone, so a repository without `python3` gets no comment check at all. The rules still hold, and the sweep does not report them. [The tools index](../../tools/README.md) names the file extensions that the sweep reads. An extension that is absent from that list is unchecked, and it is not compliant.
 
 **ACE 17.3** — Each checker states what it does not check. A clean run is necessary and not sufficient. Vocabulary choice, voice, meaning, and topic division need a reader.
 
