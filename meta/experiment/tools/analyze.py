@@ -7,7 +7,9 @@ Reads (all paths relative to EXPERIMENT_DIR, default meta/experiment/):
     data/eval/<task_id>/<arm>/trial-<n>/tests.json   -- test outcomes per trial
     data/judge/scores.jsonl                          -- LLM-judge rubric scores
     data/judge/blinding.json                         -- blinded_id -> (task, arm, trial) map
-    arms/gates/migration-cost.json                   -- one-time ACE migration cost
+    data/docs-consumption.jsonl                      -- Amendment-5 revision-2 recount
+    audit/arm-gates/migration-cost.json              -- one-time ACE migration cost
+    audit/network-sweep.json                         -- Amendment-5 sweep (leakage flags)
 
 Writes (under --out, default <EXPERIMENT_DIR>/analysis/):
     summary.json      -- every number the paper needs, machine-readable
@@ -61,8 +63,14 @@ SEED = 20260801  # registered seed for all local randomness
 # wherever the tool is invoked from). Override with --experiment-dir.
 DEFAULT_EXPERIMENT_DIR = Path("meta/experiment")
 
-# CONFIG: the three registered arms, in canonical display order.
+# CONFIG: the three registered arms, in canonical display order. H1/H2 and
+# every pairwise comparison are defined over these three only.
 ARMS = ["original", "ace", "naive"]
+
+# CONFIG: all conditions including the Amendment-4 nodocs ablation, which is
+# descriptive/exploratory only (arm summaries, manipulation check, value
+# retention) and never enters the registered decision rules.
+ALL_ARMS = ["original", "ace", "naive", "nodocs"]
 
 # CONFIG: registered pairwise comparisons, each (numerator_arm, denominator_arm).
 # Cost ratio = numerator / denominator; quality delta = numerator - denominator.
@@ -172,7 +180,7 @@ def load_runs(runs_path, missing_notes):
             task = rec.get("task_id")
             arm = rec.get("arm")
             trial = normalize_trial(rec.get("trial"))
-            if task is None or arm not in ARMS or trial is None:
+            if task is None or arm not in ALL_ARMS or trial is None:
                 n_bad += 1
                 continue
             key = (task, arm, trial)
@@ -197,7 +205,7 @@ def load_tests(eval_dir, missing_notes):
         task = path.parent.parent.parent.name
         arm = path.parent.parent.name
         trial = normalize_trial(path.parent.name)
-        if arm not in ARMS or trial is None:
+        if arm not in ALL_ARMS or trial is None:
             missing_notes.append(f"eval: unrecognized path layout, skipped: {path}")
             continue
         try:
@@ -238,7 +246,7 @@ def load_blinding(blinding_path, missing_notes):
         task = rec.get("task_id")
         arm = rec.get("arm")
         trial = normalize_trial(rec.get("trial"))
-        if task is not None and arm in ARMS and trial is not None:
+        if task is not None and arm in ALL_ARMS and trial is not None:
             mapping[bid] = (task, arm, trial)
     return mapping
 
@@ -271,7 +279,7 @@ def load_judge(scores_path, blinding_path, missing_notes):
             task = rec.get("task_id")
             arm = rec.get("arm")
             trial = normalize_trial(rec.get("trial"))
-            if task is None or arm not in ARMS or trial is None:
+            if task is None or arm not in ALL_ARMS or trial is None:
                 # fall back to the blinding map
                 key = blinding.get(rec.get("blinded_id"))
                 if key is None:
@@ -298,50 +306,130 @@ def load_judge(scores_path, blinding_path, missing_notes):
 
 
 def load_migration_cost(path, missing_notes):
-    """Read arms/gates/migration-cost.json; return a float USD cost or None.
+    """Read the migration ledger; return (standard_usd, harness_usd).
 
-    The file may be a bare number or an object; we accept the first matching
-    key from a small candidate list so minor upstream naming drift does not
-    break break-even reporting.
+    The committed ledger (audit/arm-gates/migration-cost.json) carries
+    per-session records plus a totals object. Registered analyses use the
+    standard-priced total (the pre-registration fixes standard published
+    prices); the harness-billed total is reported alongside. Accepts a bare
+    number, top-level keys, or the nested totals object.
     """
     if not path.is_file():
         missing_notes.append(f"migration cost missing: {path} (break-even omitted)")
-        return None
+        return None, None
     try:
         with open(path, "r", encoding="utf-8") as fh:
             raw = json.load(fh)
     except (json.JSONDecodeError, OSError) as exc:
         missing_notes.append(f"migration cost unreadable ({exc}); break-even omitted")
-        return None
+        return None, None
     if isinstance(raw, (int, float)):
-        return float(raw)
+        return float(raw), None
     if isinstance(raw, dict):
-        # CONFIG: candidate key names for the migration cost, most-specific first.
-        for key in ("total_cost_usd_standard", "cost_usd_standard", "total_cost_usd",
-                    "migration_cost_usd", "cost_usd", "total_usd"):
-            value = raw.get(key)
-            if isinstance(value, (int, float)):
-                return float(value)
+        scopes = [raw]
+        if isinstance(raw.get("totals"), dict):
+            scopes.append(raw["totals"])
+        standard = harness = None
+        for scope in scopes:
+            for key in ("total_cost_usd_standard", "cost_usd_standard"):
+                value = scope.get(key)
+                if standard is None and isinstance(value, (int, float)):
+                    standard = float(value)
+            value = scope.get("total_cost_usd_harness")
+            if harness is None and isinstance(value, (int, float)):
+                harness = float(value)
+        if standard is None and isinstance(raw.get("sessions"), list):
+            parts = [s.get("cost_usd_standard") for s in raw["sessions"]
+                     if isinstance(s, dict)]
+            if parts and all(isinstance(p, (int, float)) for p in parts):
+                standard = float(sum(parts))
+        if standard is not None or harness is not None:
+            return standard, harness
     missing_notes.append("migration cost file has no recognized cost field; break-even omitted")
-    return None
+    return None, None
+
+
+def load_consumption(path, missing_notes):
+    """Load data/docs-consumption.jsonl (Amendment-5 revision-2 recount).
+
+    Returns {(task, arm, trial): record}. The recount supersedes the
+    collection-time per-run counters (Amendment 4), which are retained in
+    runs.jsonl for comparison.
+    """
+    out = {}
+    if not path.is_file():
+        missing_notes.append(
+            f"docs-consumption recount missing: {path}; manipulation check "
+            "falls back to superseded collection-time counters")
+        return out
+    with open(path, "r", encoding="utf-8") as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            task = rec.get("task_id")
+            arm = rec.get("arm")
+            trial = normalize_trial(rec.get("trial"))
+            if task is None or arm not in ALL_ARMS or trial is None:
+                continue
+            out[(task, arm, trial)] = rec
+    return out
+
+
+def load_leakage_flags(path, missing_notes):
+    """Class-(c) reference-solution-exposure flags from the Amendment-5 sweep.
+
+    Reads audit/network-sweep.json; returns {(task, arm, trial), ...}. The
+    registered analyses keep flagged runs (intention to treat); the flags
+    drive the exploratory sensitivity re-analysis only.
+    """
+    if not path.is_file():
+        missing_notes.append(
+            f"network sweep missing: {path}; leakage sensitivity analysis omitted")
+        return set()
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            sweep = json.load(fh)
+    except (json.JSONDecodeError, OSError) as exc:
+        missing_notes.append(f"network sweep unreadable ({exc}); sensitivity omitted")
+        return set()
+    flags = set()
+    for cell in sweep.get("cells", []):
+        task = cell.get("task_id")
+        arm = cell.get("arm")
+        for trial_rec in cell.get("trials", []):
+            trial = normalize_trial(trial_rec.get("trial"))
+            if task is None or arm not in ALL_ARMS or trial is None:
+                continue
+            for ev in trial_rec.get("events", []):
+                if ev.get("classification") == "c":
+                    flags.add((task, arm, trial))
+                    break
+    return flags
 
 
 # ---------------------------------------------------------------------------
 # Per (task x arm) aggregation
 # ---------------------------------------------------------------------------
 
-def aggregate(runs, tests, judge):
+def aggregate(runs, tests, judge, consumption=None):
     """Build per-(task, arm) aggregates from the joined trial records.
 
     Returns (cells, tasks) where cells maps (task, arm) -> dict of raw lists
     and counts, and tasks is the sorted task list.
     """
+    consumption = consumption or {}
     cells = {}
     for (task, arm, trial), rec in runs.items():
         cell = cells.setdefault((task, arm), {
             "n_total": 0, "n_infra": 0, "n_completed": 0,
             "costs": [], "turns": [], "walls": [],
             "docs_files": [], "docs_tokens": [],
+            "explicit_doc_tokens": [], "total_doc_tokens": [],
             "suite": [], "ref": [],           # 0/1 per trial with a boolean result
             "n_with_tests": 0,
             "judge": {dim: [] for dim in JUDGE_DIMS},
@@ -361,6 +449,13 @@ def aggregate(runs, tests, judge):
             value = rec.get(field)
             if isinstance(value, (int, float)):
                 cell[dest].append(float(value))
+        cons = consumption.get((task, arm, trial))
+        if cons:
+            for field, dest in (("explicit_doc_tokens", "explicit_doc_tokens"),
+                                ("total_doc_tokens", "total_doc_tokens")):
+                value = cons.get(field)
+                if isinstance(value, (int, float)):
+                    cell[dest].append(float(value))
         t = tests.get((task, arm, trial))
         if t is not None:
             got_any = False
@@ -404,6 +499,8 @@ def cell_stats(cell):
         "wall_seconds_median": median(cell["walls"]),
         "docs_files_read_median": median(cell["docs_files"]),
         "docs_tokens_read_median": median(cell["docs_tokens"]),
+        "explicit_doc_tokens_median": median(cell["explicit_doc_tokens"]),
+        "total_doc_tokens_median": median(cell["total_doc_tokens"]),
     }
 
 
@@ -615,11 +712,13 @@ def build_decision(pairwise):
     return {"cost_superiority": cost_out, "quality_noninferiority": quality_out}
 
 
-def build_break_even(cells, tasks, migration_cost):
+def build_break_even(cells, tasks, migration_cost_standard, migration_cost_harness):
     """Break-even: migration cost / per-run savings (original - ace medians).
 
     per_run_savings = median over tasks of (per-task original median cost -
-    per-task ace median cost), over tasks with cost data in both arms.
+    per-task ace median cost), over tasks with cost data in both arms. The
+    registered basis is the standard-priced migration total; the
+    harness-billed total is reported alongside.
     """
     savings_per_task = {}
     for t in tasks:
@@ -628,17 +727,19 @@ def build_break_even(cells, tasks, migration_cost):
         if orig and ace and orig["costs"] and ace["costs"]:
             savings_per_task[t] = median(orig["costs"]) - median(ace["costs"])
     savings = median([savings_per_task[t] for t in sorted(savings_per_task)]) if savings_per_task else None
-    if migration_cost is None or savings is None:
+    if migration_cost_standard is None or savings is None:
         runs_to_break_even = None
         note = "insufficient data (missing migration cost or paired cost data)"
     elif savings <= 0:
         runs_to_break_even = None
-        note = "ace is not cheaper per run at the task-median level; never breaks even"
+        note = ("does not break even: ace is not cheaper per run at the "
+                "task-median level (negative per-run savings)")
     else:
-        runs_to_break_even = migration_cost / savings
+        runs_to_break_even = migration_cost_standard / savings
         note = "runs_to_break_even = migration_cost_usd / per_run_savings_usd"
     return {
-        "migration_cost_usd": migration_cost,
+        "migration_cost_usd": migration_cost_standard,
+        "migration_cost_usd_harness_billed": migration_cost_harness,
         "per_run_savings_usd": savings,
         "per_task_savings_usd": savings_per_task,
         "runs_to_break_even": runs_to_break_even,
@@ -646,32 +747,99 @@ def build_break_even(cells, tasks, migration_cost):
     }
 
 
-def build_manipulation_check(cells, tasks):
-    """Docs files/tokens read per arm, pooled over all analyzed runs."""
+def build_manipulation_check(cells, tasks, consumption):
+    """Docs consumption per arm from the Amendment-5 revision-2 recount.
+
+    The collection-time counters (docs_files_read / docs_tokens_read_estimate
+    in runs.jsonl) are superseded by Amendment 4 but reported alongside for
+    comparison.
+    """
+    by_arm_cons = defaultdict(list)
+    for (task, arm, trial), rec in consumption.items():
+        by_arm_cons[arm].append(rec)
     out = {}
-    for arm in ARMS:
-        files, tokens, n = [], [], 0
+    for arm in ALL_ARMS:
+        legacy_tokens, n = [], 0
         for t in tasks:
             cell = cells.get((t, arm))
             if not cell:
                 continue
-            files.extend(cell["docs_files"])
-            tokens.extend(cell["docs_tokens"])
+            legacy_tokens.extend(cell["docs_tokens"])
             n += cell["n_total"] - cell["n_infra"]
+        cons = by_arm_cons.get(arm, [])
+        explicit = [r.get("explicit_doc_tokens", 0) for r in cons]
+        ambient = [r.get("ambient_doc_tokens", 0) for r in cons]
+        absent = [r.get("absent_at_start_calls", 0) for r in cons]
         out[arm] = {
             "n_runs": n,
-            "docs_files_read_mean": mean(files),
-            "docs_files_read_median": median(files),
-            "docs_tokens_read_mean": mean(tokens),
-            "docs_tokens_read_median": median(tokens),
+            "n_runs_recounted": len(cons),
+            "explicit_doc_tokens_mean": mean(explicit),
+            "explicit_doc_tokens_median": median(explicit),
+            "runs_with_contact": sum(1 for x in explicit if x > 0),
+            "ambient_doc_tokens": (ambient[0] if ambient else None),
+            "absent_at_start_events": sum(absent),
+            "superseded_collection_tokens_mean": mean(legacy_tokens),
+            "superseded_collection_tokens_median": median(legacy_tokens),
         }
     return out
 
 
+def build_value_retention(cells, tasks):
+    """Amendment-4 descriptive readout: per-task docs value and retention.
+
+    docs_value = quality(original) - quality(nodocs) per task (the value the
+    documentation adds over the no-docs floor); retention(arm) =
+    (quality(arm) - quality(nodocs)) / docs_value where defined. Exploratory
+    only; never enters the registered decision rules.
+    """
+    out = {"definition": ("per-task docs_value = metric(original) - "
+                          "metric(nodocs); retention(arm) = (metric(arm) - "
+                          "metric(nodocs)) / docs_value, reported only when "
+                          "|docs_value| > 0"),
+           "metrics": {}}
+    for metric, field in (("suite_pass", "suite"), ("ref_tests_pass", "ref")):
+        per_task = {}
+        for t in tasks:
+            row = {}
+            vals = {}
+            for arm in ALL_ARMS:
+                cell = cells.get((t, arm))
+                vals[arm] = mean(cell[field]) if cell and cell[field] else None
+            row["by_arm"] = vals
+            if vals.get("original") is not None and vals.get("nodocs") is not None:
+                dv = vals["original"] - vals["nodocs"]
+                row["docs_value"] = dv
+                if abs(dv) > 0:
+                    for arm in ("ace", "naive"):
+                        if vals.get(arm) is not None:
+                            row[f"retention_{arm}"] = (vals[arm] - vals["nodocs"]) / dv
+            per_task[t] = row
+        docs_values = [r["docs_value"] for r in per_task.values()
+                       if r.get("docs_value") is not None]
+        out["metrics"][metric] = {
+            "per_task": per_task,
+            "docs_value_mean": mean(docs_values),
+            "n_tasks_with_floor": len(docs_values),
+        }
+    # Cost floor: nodocs vs original per-task median cost, descriptive.
+    cost_rows = {}
+    for t in tasks:
+        row = {}
+        for arm in ALL_ARMS:
+            cell = cells.get((t, arm))
+            row[arm] = median(cell["costs"]) if cell and cell["costs"] else None
+        cost_rows[t] = row
+    out["cost_medians_per_task"] = cost_rows
+    return out
+
+
 def build_arm_summary(cells, tasks):
-    """Cross-task roll-up per arm (each task weighted equally)."""
+    """Cross-task roll-up per arm (each task weighted equally).
+
+    Includes the nodocs ablation (descriptive only; Amendment 4).
+    """
     out = {}
-    for arm in ARMS:
+    for arm in ALL_ARMS:
         task_cost_medians, completion, suite, ref = [], [], [], []
         judge_means = {dim: [] for dim in JUDGE_DIMS}
         n_runs = 0
@@ -702,6 +870,38 @@ def build_arm_summary(cells, tasks):
             "mean_task_judge_means": {dim: mean(judge_means[dim]) for dim in JUDGE_DIMS},
         }
     return out
+
+
+def build_sensitivity(runs, tests, judge, consumption, flags, reps):
+    """Amendment-5 exploratory sensitivity: registered readouts with
+    class-(c) reference-solution-exposure runs removed.
+
+    The registered analyses keep every run (intention to treat); this block
+    exists to show whether the leakage could have moved the readouts.
+    """
+    if not flags:
+        return None
+    kept = {k: v for k, v in runs.items() if k not in flags}
+    cells, tasks = aggregate(kept, tests, judge, consumption)
+    pairwise, _store = build_pairwise(cells, tasks, reps)
+    decision = build_decision(pairwise)
+    slim = {}
+    for pair_name, pair in pairwise.items():
+        slim[pair_name] = {
+            metric: {"point": m["point"], "ci95": m["ci95"],
+                     "n_tasks": m["n_tasks"]}
+            for metric, m in pair.items()
+        }
+    return {
+        "label": "exploratory sensitivity analysis (Amendment 5): runs with "
+                 "class-(c) reference-solution exposure removed; registered "
+                 "results are the intention-to-treat ones",
+        "n_flagged_runs": len(flags),
+        "flagged_runs": sorted(f"{t}/{a}/trial-{tr}" for (t, a, tr) in flags),
+        "n_runs_analyzed": len(kept),
+        "pairwise": slim,
+        "decision": decision,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -736,19 +936,23 @@ def md_table(headers, rows):
 
 
 def write_tables(out_dir, tasks, per_task_arm, arm_summary, pairwise,
-                 decision, break_even, manipulation, missing_notes, args_reps):
+                 decision, break_even, manipulation, value_retention,
+                 sensitivity, missing_notes, args_reps):
     parts = []
     parts.append("# ACE-100 experiment: analysis tables")
     parts.append("")
     parts.append(f"Seed {SEED}; hierarchical bootstrap with {args_reps} replicates "
                  f"(percentile 95% CIs). Infra-failed runs excluded throughout; "
-                 f"cost statistics are intention-to-treat over non-infra runs.")
+                 f"cost statistics are intention-to-treat over non-infra runs. "
+                 f"The nodocs condition (Amendment 4) is descriptive only: H1/H2 "
+                 f"and all pairwise comparisons are defined over the three "
+                 f"registered arms.")
     parts.append("")
 
     # Table 1: arm-level summary
     parts.append("## Table 1. Arm-level summary (tasks weighted equally)")
     rows = []
-    for arm in ARMS:
+    for arm in ALL_ARMS:
         s = arm_summary[arm]
         jm = s["mean_task_judge_means"]
         rows.append([
@@ -830,34 +1034,45 @@ def write_tables(out_dir, tasks, per_task_arm, arm_summary, pairwise,
     # Table 4: break-even
     parts.append("## Table 4. Break-even")
     parts.append(md_table(
-        ["migration cost (USD)", "per-run savings (USD, original - ace)",
-         "runs to break even", "note"],
+        ["migration cost (USD, standard prices)", "harness-billed (USD)",
+         "per-run savings (USD, original - ace)", "runs to break even", "note"],
         [[fmt(break_even["migration_cost_usd"], 2),
+          fmt(break_even["migration_cost_usd_harness_billed"], 2),
           fmt(break_even["per_run_savings_usd"], 4),
           fmt(break_even["runs_to_break_even"], 1),
           break_even["note"]]]))
     parts.append("")
 
-    # Table 5: manipulation check
-    parts.append("## Table 5. Manipulation check: docs reading per arm")
+    # Table 5: manipulation check (Amendment-5 revision-2 recount)
+    parts.append("## Table 5. Manipulation check: docs consumption per arm "
+                 "(revision-2 recount)")
     rows = []
-    for arm in ARMS:
+    for arm in ALL_ARMS:
         m = manipulation[arm]
         rows.append([arm, m["n_runs"],
-                     fmt(m["docs_files_read_mean"], 1),
-                     fmt(m["docs_files_read_median"], 1),
-                     fmt(m["docs_tokens_read_mean"], 0),
-                     fmt(m["docs_tokens_read_median"], 0)])
+                     fmt(m["explicit_doc_tokens_mean"], 0),
+                     fmt(m["explicit_doc_tokens_median"], 0),
+                     f"{m['runs_with_contact']}/{m['n_runs_recounted']}",
+                     fmt(m["ambient_doc_tokens"], 0),
+                     m["absent_at_start_events"],
+                     fmt(m["superseded_collection_tokens_mean"], 0)])
     parts.append(md_table(
-        ["arm", "runs", "files read (mean)", "files read (median)",
-         "docs tokens (mean)", "docs tokens (median)"], rows))
+        ["arm", "runs", "explicit doc tokens (mean)",
+         "explicit doc tokens (median)", "runs w/ contact",
+         "ambient tokens", "absent-at-start events",
+         "superseded collection-time mean"], rows))
+    parts.append("")
+    parts.append("nodocs events are all flagged absent-at-start: content under "
+                 "a doc path that did not exist when the run began (regenerated "
+                 "by build tooling during the run, or audited solution-content "
+                 "exposure).")
     parts.append("")
 
     # Table 6: full per (task x arm) detail
     parts.append("## Table 6. Per task x arm detail")
     rows = []
     for task in tasks:
-        for arm in ARMS:
+        for arm in ALL_ARMS:
             s = per_task_arm.get(task, {}).get(arm)
             if s is None:
                 continue
@@ -873,7 +1088,7 @@ def write_tables(out_dir, tasks, per_task_arm, arm_summary, pairwise,
                 fmt_pct(s["suite_pass_rate"]), fmt_pct(s["ref_tests_pass_rate"]),
                 *(fmt(jm[dim], 2) for dim in JUDGE_DIMS),
                 fmt(s["turns_median"], 0), fmt(wall_min, 1),
-                fmt(s["docs_tokens_read_median"], 0),
+                fmt(s["explicit_doc_tokens_median"], 0),
             ])
     parts.append(md_table(
         ["task", "arm", "n (analyzed/total)", "completion",
@@ -881,6 +1096,63 @@ def write_tables(out_dir, tasks, per_task_arm, arm_summary, pairwise,
          *[f"judge {d}" for d in JUDGE_DIMS],
          "turns (med)", "wall min (med)", "docs tokens (med)"], rows))
     parts.append("")
+
+    # Table 7: value retention vs the nodocs floor (Amendment 4, descriptive)
+    parts.append("## Table 7. Value retention vs the nodocs floor "
+                 "(descriptive; Amendment 4)")
+    parts.append("")
+    parts.append(value_retention["definition"])
+    parts.append("")
+    for metric, block in value_retention["metrics"].items():
+        rows = []
+        for t in tasks:
+            row = block["per_task"].get(t, {})
+            vals = row.get("by_arm", {})
+            rows.append([
+                t,
+                *(fmt_pct(vals.get(arm)) for arm in ALL_ARMS),
+                (f"{100 * row['docs_value']:+.1f}pp"
+                 if row.get("docs_value") is not None else "--"),
+                fmt(row.get("retention_ace"), 2),
+                fmt(row.get("retention_naive"), 2),
+            ])
+        parts.append(f"### {metric}")
+        parts.append(md_table(
+            ["task", *ALL_ARMS, "docs value (orig-nodocs)",
+             "retention ace", "retention naive"], rows))
+        parts.append("")
+
+    # Table 8: leakage sensitivity (Amendment 5, exploratory)
+    if sensitivity is not None:
+        parts.append("## Table 8. Sensitivity: class-(c) solution-exposure "
+                     "runs removed (exploratory; Amendment 5)")
+        parts.append("")
+        parts.append(f"{sensitivity['n_flagged_runs']} flagged run(s): "
+                     + ", ".join(sensitivity["flagged_runs"]))
+        parts.append("")
+        rows = []
+        for pair_name, pair in sensitivity["pairwise"].items():
+            for metric in ("cost_ratio", "suite_pass_delta",
+                           "ref_tests_pass_delta"):
+                m = pair.get(metric)
+                if not m or m["point"] is None:
+                    continue
+                if metric == "cost_ratio":
+                    point_s = fmt(m["point"], 3)
+                    ci_s = fmt_ci(m["ci95"], 3)
+                else:
+                    point_s = f"{100 * m['point']:+.1f}pp"
+                    ci = m["ci95"]
+                    ci_s = (f"[{100*ci[0]:+.1f}pp, {100*ci[1]:+.1f}pp]"
+                            if ci and ci[0] is not None else "--")
+                rows.append([pair_name, metric, point_s, ci_s, m["n_tasks"]])
+        parts.append(md_table(
+            ["comparison", "metric", "point (flagged removed)", "95% CI",
+             "n tasks"], rows))
+        parts.append("")
+        parts.append("Registered (intention-to-treat) results remain the "
+                     "headline numbers in Tables 2-3.")
+        parts.append("")
 
     # Missing-data appendix
     parts.append("## Missing data and caveats")
@@ -1032,7 +1304,12 @@ def main(argv=None):
     eval_dir = exp / "data" / "eval"
     scores_path = exp / "data" / "judge" / "scores.jsonl"
     blinding_path = exp / "data" / "judge" / "blinding.json"
-    migration_path = exp / "arms" / "gates" / "migration-cost.json"
+    consumption_path = exp / "data" / "docs-consumption.jsonl"
+    sweep_path = exp / "audit" / "network-sweep.json"
+    # The committed ledger; the gitignored arms/gates copy is the fallback.
+    migration_path = exp / "audit" / "arm-gates" / "migration-cost.json"
+    if not migration_path.is_file():
+        migration_path = exp / "arms" / "gates" / "migration-cost.json"
 
     if not runs_path.is_file():
         print(f"error: {runs_path} not found; nothing to analyze", file=sys.stderr)
@@ -1048,6 +1325,8 @@ def main(argv=None):
         return 1
     tests = load_tests(eval_dir, missing_notes)
     judge = load_judge(scores_path, blinding_path, missing_notes)
+    consumption = load_consumption(consumption_path, missing_notes)
+    leakage_flags = load_leakage_flags(sweep_path, missing_notes)
 
     # Orphan artifacts (tests/judge for trials absent from runs.jsonl) are
     # excluded from analysis but noted for auditing.
@@ -1074,15 +1353,15 @@ def main(argv=None):
             "judge means computed over scored trials")
 
     # --- aggregate
-    cells, tasks = aggregate(runs, tests, judge)
+    cells, tasks = aggregate(runs, tests, judge, consumption)
     per_task_arm = {}
     for task in tasks:
         per_task_arm[task] = {}
-        for arm in ARMS:
+        for arm in ALL_ARMS:
             cell = cells.get((task, arm))
             if cell is not None:
                 per_task_arm[task][arm] = cell_stats(cell)
-        missing_arms = [arm for arm in ARMS if (task, arm) not in cells]
+        missing_arms = [arm for arm in ALL_ARMS if (task, arm) not in cells]
         if missing_arms:
             missing_notes.append(f"task {task}: no runs at all for arm(s) {missing_arms}")
 
@@ -1091,11 +1370,14 @@ def main(argv=None):
     # --- pairwise comparisons + bootstrap
     pairwise, replicate_store = build_pairwise(cells, tasks, args.bootstrap)
 
-    # --- decision rules, break-even, manipulation check
+    # --- decision rules, break-even, manipulation check, amendments 4/5
     decision = build_decision(pairwise)
-    migration_cost = load_migration_cost(migration_path, missing_notes)
-    break_even = build_break_even(cells, tasks, migration_cost)
-    manipulation = build_manipulation_check(cells, tasks)
+    migration_std, migration_har = load_migration_cost(migration_path, missing_notes)
+    break_even = build_break_even(cells, tasks, migration_std, migration_har)
+    manipulation = build_manipulation_check(cells, tasks, consumption)
+    value_retention = build_value_retention(cells, tasks)
+    sensitivity = build_sensitivity(runs, tests, judge, consumption,
+                                    leakage_flags, args.bootstrap)
 
     # --- figures (before summary so figure-skip notes land in the outputs)
     make_figures(out_dir, cells, tasks, arm_summary, replicate_store, missing_notes)
@@ -1106,6 +1388,7 @@ def main(argv=None):
             "seed": SEED,
             "bootstrap_replicates": args.bootstrap,
             "arms": ARMS,
+            "all_arms": ALL_ARMS,
             "pairs": [f"{a}_vs_{b}" for a, b in PAIRS],
             "judge_dimensions": JUDGE_DIMS,
             "thresholds": {
@@ -1131,6 +1414,8 @@ def main(argv=None):
         "decision": decision,
         "break_even": break_even,
         "manipulation_check": manipulation,
+        "value_retention": value_retention,
+        "sensitivity_excluding_leakage": sensitivity,
         "missing": missing_notes,
     }
     with open(out_dir / "summary.json", "w", encoding="utf-8") as fh:
@@ -1139,7 +1424,8 @@ def main(argv=None):
 
     # --- tables.md
     write_tables(out_dir, tasks, per_task_arm, arm_summary, pairwise,
-                 decision, break_even, manipulation, missing_notes, args.bootstrap)
+                 decision, break_even, manipulation, value_retention,
+                 sensitivity, missing_notes, args.bootstrap)
 
     # --- console recap
     print(f"analyzed {len(analyzed_keys)} runs ({len(runs) - len(analyzed_keys)} infra-excluded) "
@@ -1160,6 +1446,10 @@ def main(argv=None):
               f"savings ${break_even['per_run_savings_usd']:.4f} per run)")
     else:
         print(f"break-even: not computable ({break_even['note']})")
+    if sensitivity is not None:
+        sens_cost = sensitivity["pairwise"].get("ace_vs_original", {}).get("cost_ratio", {})
+        print(f"leakage sensitivity ({sensitivity['n_flagged_runs']} run(s) removed): "
+              f"ace/original cost ratio point={fmt(sens_cost.get('point'), 3)}")
     if missing_notes:
         print(f"{len(missing_notes)} missing-data note(s); see tables.md / summary.json")
     print(f"wrote {out_dir / 'summary.json'}, {out_dir / 'tables.md'}, "
