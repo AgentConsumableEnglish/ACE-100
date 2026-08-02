@@ -262,3 +262,83 @@ docs-consumption instrument: at analysis time, docs reads are recomputed uniform
 from transcripts across all channels (Read, Bash reader commands, Grep, subagent
 sidechains) for every run; the per-run counters recorded during collection are
 superseded and retained for comparison.
+
+### Amendment 5 — instrument revision; network-isolation deviation; leakage rule (2026-08-02)
+
+Made after data collection and test evaluation, **before judging, the transcript
+sweep, the instrument re-run, and final analysis** — every procedure this
+amendment fixes runs only after this commit. Triggered by the per-run doc-read
+audit committed at 5161f7d (`data/doc-reads.json`, key `agent_audit`), which
+examined all 96 transcripts and found the Amendment-4 consumption instrument
+undercounting and misattributing, and found the registered network-off claim
+violated in practice.
+
+**1. Consumption instrument, revision 2.** Applied identically to every run;
+the collection-time counters and the revision-1 outputs remain archived.
+
+- *Arm-relative matching.* Revision 1 matched read paths against the original
+  corpus manifest (103 files). Each arm's documentation set is its own snapshot
+  (`arms/<arm>-docs`; the enumeration rule of the manifest reproduces it: 103
+  files for original and naive, 205 for ace). A read now counts when its path
+  resolves to a file in that arm's snapshot. The nodocs arm ships no docs; its
+  reads are matched against the union of all arms' doc paths and every match is
+  flagged `absent_at_start` (the file did not exist when the run began — content
+  under such a path was created during the run, or the event is a false match).
+- *Relative-path resolution.* A path token resolves by exact membership or by
+  unambiguous suffix match of at least two path components (audited misses came
+  from reads issued below a `cd`).
+- *Attribution corrections*, each generalizing an audited false positive: the
+  harness empty-output placeholder counts 0 chars; output that is only an error
+  message counts 0 chars; output of grep over multiple file operands is
+  attributed per line-prefix (no doc-path prefix, no doc chars); compound-command
+  output is split at echoed separator literals where the command echoes them,
+  otherwise the mixed-command no-attribution rule stands; a doc named only as a
+  find/ls pattern argument is not a read of that doc.
+- *Channel additions*, each from an audited miss: `git show`, `git diff`,
+  `diff`, and `od` invocations naming arm doc files (attributed only when every
+  named file operand is an arm doc).
+- *Audited supplement.* Events the audit hand-verified but no path-based
+  extractor can see (doc content laundered through temp-file copies, xargs
+  sub-shells, python heredocs) are merged into the event file with
+  `source: "agent_audit"` and the audit's char estimates, and are tabulated
+  separately from automatically extracted events.
+
+**2. Network-isolation deviation — disclosure and sweep.** §5 registered
+"Network off (no web search/fetch)". As implemented, the harness's WebFetch and
+WebSearch tools were disabled (`--disallowed-tools`), but the sandbox assumed to
+enforce full network isolation did not block Bash-level outbound HTTP: audited
+runs contain working `curl` and `gh api` calls. The paper corrects the protocol
+claim (in-repo docs were not the sole documentation channel) and reports it as a
+deviation. A complete sweep of all 96 transcripts enumerates every outbound
+network access on every channel (tools, Bash, sidechains), archived under
+`audit/network-sweep.json`, each access classified under rules fixed here:
+
+- **(a) task-metadata lookup** — issue/PR metadata with no solution content;
+- **(b) external documentation retrieval** — documentation not in the arm's
+  snapshot (e.g. contrib-repo READMEs, hosted opentelemetry.io pages);
+- **(c) reference-solution exposure** — content revealing the repository's
+  actual post-base resolution of the task: the task PR's own diff or merge
+  commit, or any upstream PR/commit that resolves the task's linked issue
+  (diff hunks, fix-describing commit messages or PR bodies);
+- **(d) other.**
+
+The same sweep covers the equivalent local channel: workspace clones carry full
+git history including post-base commits, so `git show`/`git log`/`git diff`
+access to the task's reference merge commit or to descendants resolving the
+task's issue is recorded and classified (c) on the same terms.
+
+**3. Leakage-handling rule, fixed before the sweep results are known.** No run
+is excluded from any registered analysis (the intention-to-treat convention
+stands). Runs with class-(c) access are flagged in all outputs; every registered
+readout is additionally reported with flagged runs removed, as a clearly-labeled
+exploratory sensitivity analysis. Judging proceeds blind to the flags.
+
+**4. Analysis wiring corrections** (defects, not design changes, listed for
+completeness): `analyze.py` ingests the 24 nodocs records it previously
+rejected as malformed (Amendment 4 already governs their descriptive-only use);
+the break-even input reads the migration ledger's standard-priced total
+($116.45; the harness-billed $129.15 is reported alongside) from the committed
+`audit/arm-gates/migration-cost.json`, and a non-positive per-run saving is
+reported as "does not break even" rather than as missing data; the docs-usage
+manipulation check joins the revision-2 recount rather than the superseded
+collection-time counters.
