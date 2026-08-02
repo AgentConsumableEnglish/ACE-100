@@ -30,15 +30,20 @@ and one-sided**: the blinded Opus-5 judge scored ace within the 0.5-point
 margin of original on all three rubric dimensions (correctness +0.12,
 completeness −0.17, convention +0.08), and suite-pass met its margin at point;
 only reference-tests (Δ −12.5pp) missed — and §7 shows that component is
-confounded by differential access to the reference solution. The mechanism data explain the cost result:
+confounded by differential access to the reference solution. The mechanism
+data explain the cost result:
 migration *grew* the corpus 14% (253K → 290K tokens) and roughly doubled the
 file count, agents in every arm read only ~1.6–1.7K explicit documentation
 tokens per run through ad-hoc shell commands rather than the kit's intended
 navigation structure, and the no-docs ablation matched the documented arms on
 functional tests for four of six tasks — on this repository and task mix, the
 documentation is barely load-bearing, so there is nothing for a
-documentation-efficiency standard to save. Migration cost $116.45 and, with
-negative per-run savings, never breaks even. We report two protocol
+documentation-efficiency standard to save. Cost tracks *turns*, not corpus
+size — the largest corpus (naive) was the cheapest arm — and against that
+token-matched control the ACE-100 architecture costs ~12 extra turns per run
+on 6 of 6 tasks (95% CI [+3.6, +23.0]), the one place its distinctive
+component shows a measurable price. Migration cost $116.45 and, with negative
+per-run savings, never breaks even. We report two protocol
 deviations found by our own audit — Bash-level outbound network access
 survived the registered "network off" claim, and a registered strong-model
 side-measurement was not conducted — and publish the full audit trail,
@@ -131,8 +136,8 @@ One repository, identical code, four documentation states:
 | Condition | Construction |
 |---|---|
 | **original** | Repository at the pinned commit, docs untouched (103 files, 253,161 tokens). |
-| **ace** | Docs migrated by the kit's own advertised path, performed once by Claude Opus 5 (205 files, 289,575 tokens). |
-| **naive** | Original docs rewritten in place by Claude Opus 5 to token-match the ace arm; original file boundaries kept; no indexes, front matter, or ACE vocabulary. |
+| **ace** | Docs migrated by the kit's own advertised path, performed once by Claude Opus 5 (205 files, 289,596 tokens; see §6.2†). |
+| **naive** | Original docs rewritten in place by Claude Opus 5 to token-match the ace arm (103 files, 312,116 tokens; ratio to ace 1.078, inside the registered ±10% band); original file boundaries kept; no indexes, front matter, or ACE vocabulary. |
 | **nodocs** | The documentation corpus deleted from the workspace (Amendment 4; descriptive/exploratory only). |
 
 naive-vs-original measures rewriting at matched length; ace-vs-naive measures
@@ -282,9 +287,9 @@ registered pairs: ace/naive 1.159 [0.962, 1.426]; naive/original 1.071
 [0.726, 1.376]. Rewriting at matched length was roughly cost-neutral;
 the ACE-100 bundle on top of it was not.
 
-Turn counts move with cost: the ace arm took more turns than original on
-five of six tasks (e.g. pr-14690: 48 vs 33 median turns; pr-14461: 60 vs
-47). The nodocs condition — descriptively — was the *most* expensive
+Turn counts move with cost: by per-task *median*, the ace arm took more turns
+than original on five of six tasks (e.g. pr-14690: 48 vs 33; pr-14461: 60 vs
+47) — though §6.2 shows that difference does not survive interval estimation. The nodocs condition — descriptively — was the *most* expensive
 (2.441), consistent with documentation having some navigational value that
 deletion forfeits, while none of the documented arms converted that value
 into savings over one another.
@@ -355,12 +360,88 @@ routing surface. The ace arm shows slightly *higher* contact frequency
 larger) — the architecture succeeded in being found, and still had no
 lever: there was almost no reading for it to make cheaper.
 
-### 6.2 The corpus grew
+### 6.2 The corpus grew — but corpus size is not what cost money
 
-Migration's governed front matter, indexes, and splits took 253,161 tokens
-in 103 files to 289,575 tokens in 205 files (+14%). The premise "compression
-reduces what agents read" inverted at the corpus level; only routing could
-have delivered savings, and §6.1 shows routing had nothing to route around.
+**What grew, and why.** Migration took 253,161 tokens in 103 files to
+289,596 tokens in 205 files (+14%).† The composition is not what the design
+assumed. Of the 103 files present in both arms, ace's prose is 72% of the
+original's by character count and shrank in 73 of them; the governed YAML
+front matter on those files adds 25,063 characters — 3.6% of their original
+bytes, averaging 288 characters across the 87 that carry one. **Shared files
+are 25% smaller even carrying their headers**, so front matter is not what
+inverted the compression premise. (Across the whole migrated corpus, front
+matter totals 47,922 characters in 189 of 205 files: 6.8% of the original
+corpus, still far short of the growth.) The growth comes from 102 *new*
+files (262,297 characters): the splits and indexes. And much of the apparent
+shrinkage is relocation rather than compression — `docs/coding-guidelines.md`
+went from 38,716 to 3,051 characters because it became a router, its body
+moving into `docs/coding-robustness.md`, `docs/coding-modules.md`, and
+siblings. Same prose, new addresses.
+
+**Corpus size, however, does not explain the cost result.** The naive arm
+settles it: at 312,116 tokens it is the *largest* corpus of the three — 7.8%
+larger than ace, inside the registered ±10% matching band — and it is the
+*cheapest* arm ($2.07/run vs ace $2.54, original $2.44). Corpus size and
+per-run cost are anti-correlated here. That follows from §6.1: agents pulled
+~1.6–1.7K explicit documentation tokens per run out of a ~300K-token corpus,
+so the corpus barely touches the context window and cannot move the bill.
+
+**Cost is turns.** Per-run cost is close to linear in turn count: dollars per
+turn are near-constant across conditions (original 0.0368, ace 0.0363, naive
+0.0359, nodocs 0.0383), correlation between turns and cost across all 96 runs
+is 0.878, and cache-read — re-sending the accumulated conversation each turn —
+is 67–70% of every arm's bill. "Why did an arm cost more" therefore reduces
+to "why did it take more turns."
+
+**One architecture effect survives estimation.** Turn differences,
+within-task paired with the registered seed and hierarchical bootstrap
+(post-hoc; see below):
+
+| comparison | Δ mean turns | 95% CI | tasks with Δ>0 |
+|---|---|---|---|
+| ace − original | +3.42 | [−11.12, +15.50] | 4 of 6 |
+| **ace − naive** | **+12.25** | **[+3.58, +23.04]** | **6 of 6** |
+| naive − original | −8.83 | [−27.29, +4.46] | 3 of 6 |
+| nodocs − original | +3.83 | [−11.58, +18.54] | 4 of 6 |
+
+(Deltas are of per-task *mean* turns; §5.1's "five of six" counts per-task
+*medians*. That the sign count moves with the choice of statistic is itself a
+measure of how little separates these two arms.)
+
+The headline comparison against original does **not** resolve — we cannot
+claim ACE-100 runs take more turns than original-docs runs. What does resolve
+is ace against naive: **~12 more turns per run, positive on every task, at
+matched corpus size.** Because naive is rewritten prose at ace's token count
+with no front matter, indexes, or splits, this pair isolates the *document
+architecture* from corpus size and from mere rewriting. It is the one place
+in this experiment where the kit's distinctive component has a measurable
+cost of its own.
+
+**What the decomposition cannot say.** We classified every one of the 96
+runs' tool-use rounds into fifteen activity categories (turn accounting is
+exact: `num_turns` = tool-use blocks + 1 on all 96 runs, with zero parallel
+tool-use messages). The ace-vs-naive gap does not localize. Every one of the
+14 categories with a non-zero difference points the same way — the ace arm
+does *more* of all of them — and only `test` (+1.42, [+0.08, +2.96]) has a CI
+excluding zero. Crucially, the extra turns are not concentrated in
+documentation navigation: doc-reads contribute +0.29 of the +12.25. The
+architecture appears to lengthen the entire run rather than levy a navigation
+tax, but six tasks cannot establish why, and we do not claim a mechanism. One
+hypothesis is flagged for Experiment 2 without being claimed here: todo-list
+bookkeeping (`plan`) is the most sign-consistent category (+2.00, positive on
+all five tasks where it differs), though its CI spans zero and 8.5 of its
+12.0 total comes from a single task.
+
+*This subsection's turn analysis is **post-hoc and exploratory**. It was not
+registered, it is not an H1/H2 readout, and it was added after the registered
+analysis was complete. Tool and full output:
+`tools/classify_turns.py`, `analysis/turn-decomposition.json`.*
+
+†The gate artifact `audit/arm-gates/measure.json`, generated ten minutes
+before the first run, records 289,596 tokens for ace; Amendment 3 recorded
+289,575, measured before the final preservation-repair pass. The 21-token
+difference (0.007%) is left uncorrected in the registered text and noted
+here.
 
 ### 6.3 The no-docs floor: this repository's docs are barely load-bearing
 
