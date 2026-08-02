@@ -1,0 +1,1532 @@
+{
+  "arm_summary": {
+    "ace": {
+      "mean_completion_rate": 1.0,
+      "mean_task_judge_means": {
+        "completeness": null,
+        "convention": null,
+        "correctness": null
+      },
+      "mean_task_ref_tests_pass_rate": 0.625,
+      "mean_task_suite_pass_rate": 0.9583333333333334,
+      "median_of_task_median_costs": 2.0773655,
+      "n_runs_analyzed": 24,
+      "n_tasks_with_cost": 6
+    },
+    "naive": {
+      "mean_completion_rate": 1.0,
+      "mean_task_judge_means": {
+        "completeness": null,
+        "convention": null,
+        "correctness": null
+      },
+      "mean_task_ref_tests_pass_rate": 0.75,
+      "mean_task_suite_pass_rate": 1.0,
+      "median_of_task_median_costs": 2.14303075,
+      "n_runs_analyzed": 24,
+      "n_tasks_with_cost": 6
+    },
+    "nodocs": {
+      "mean_completion_rate": 1.0,
+      "mean_task_judge_means": {
+        "completeness": null,
+        "convention": null,
+        "correctness": null
+      },
+      "mean_task_ref_tests_pass_rate": 0.6666666666666666,
+      "mean_task_suite_pass_rate": 0.9583333333333334,
+      "median_of_task_median_costs": 2.44054625,
+      "n_runs_analyzed": 24,
+      "n_tasks_with_cost": 6
+    },
+    "original": {
+      "mean_completion_rate": 1.0,
+      "mean_task_judge_means": {
+        "completeness": null,
+        "convention": null,
+        "correctness": null
+      },
+      "mean_task_ref_tests_pass_rate": 0.75,
+      "mean_task_suite_pass_rate": 1.0,
+      "median_of_task_median_costs": 1.8366884999999997,
+      "n_runs_analyzed": 24,
+      "n_tasks_with_cost": 6
+    }
+  },
+  "break_even": {
+    "migration_cost_usd": 116.453171,
+    "migration_cost_usd_harness_billed": 129.14795,
+    "note": "does not break even: ace is not cheaper per run at the task-median level (negative per-run savings)",
+    "per_run_savings_usd": -0.25173249999999997,
+    "per_task_savings_usd": {
+      "pr-14461": -0.29743849999999994,
+      "pr-14690": -0.4783850000000003,
+      "pr-14985": 1.4967295000000007,
+      "pr-15108": -0.2060265,
+      "pr-15307": -0.18391550000000034,
+      "pr-15495": -0.41636549999999994
+    },
+    "runs_to_break_even": null
+  },
+  "config": {
+    "all_arms": [
+      "original",
+      "ace",
+      "naive",
+      "nodocs"
+    ],
+    "arms": [
+      "original",
+      "ace",
+      "naive"
+    ],
+    "bootstrap_replicates": 10000,
+    "conventions": {
+      "bootstrap": "tasks resampled with replacement, then trials resampled within each sampled task, per arm; percentile 95% CIs",
+      "completion_rate": "completed / non-infra runs",
+      "cost_stats": "intention-to-treat over non-infra runs",
+      "infra_runs": "excluded from all statistics"
+    },
+    "experiment_dir": "meta/experiment",
+    "judge_dimensions": [
+      "correctness",
+      "completeness",
+      "convention"
+    ],
+    "pairs": [
+      "ace_vs_original",
+      "ace_vs_naive",
+      "naive_vs_original"
+    ],
+    "seed": 20260801,
+    "thresholds": {
+      "cost_ratio": 0.8,
+      "rubric_noninferiority_margin": 0.5,
+      "testpass_noninferiority_margin": 0.05
+    }
+  },
+  "decision": {
+    "cost_superiority": {
+      "ci95": [
+        0.8813585005480922,
+        1.4866054292291102
+      ],
+      "ci_upper_meets": false,
+      "criterion": "ace/original task-median cost ratio <= 0.8",
+      "point_estimate": 1.1721432428723397,
+      "point_meets": false
+    },
+    "quality_noninferiority": {
+      "ci_meets_all": false,
+      "components": {
+        "judge_completeness_delta": {
+          "ci95": [
+            null,
+            null
+          ],
+          "ci_lower_meets": false,
+          "margin": 0.5,
+          "point": null,
+          "point_meets": false
+        },
+        "judge_convention_delta": {
+          "ci95": [
+            null,
+            null
+          ],
+          "ci_lower_meets": false,
+          "margin": 0.5,
+          "point": null,
+          "point_meets": false
+        },
+        "judge_correctness_delta": {
+          "ci95": [
+            null,
+            null
+          ],
+          "ci_lower_meets": false,
+          "margin": 0.5,
+          "point": null,
+          "point_meets": false
+        },
+        "ref_tests_pass_delta": {
+          "ci95": [
+            -0.4166666666666667,
+            0.08333333333333333
+          ],
+          "ci_lower_meets": false,
+          "margin": 0.05,
+          "point": -0.125,
+          "point_meets": false
+        },
+        "suite_pass_delta": {
+          "ci95": [
+            -0.16666666666666666,
+            0.0
+          ],
+          "ci_lower_meets": false,
+          "margin": 0.05,
+          "point": -0.041666666666666664,
+          "point_meets": true
+        }
+      },
+      "criterion": "ace vs original within 5pp test-pass and 0.5 rubric points",
+      "n_components_evaluable": 2,
+      "n_components_total": 5,
+      "point_meets_all": false
+    }
+  },
+  "manipulation_check": {
+    "ace": {
+      "absent_at_start_events": 0,
+      "ambient_doc_tokens": 795,
+      "explicit_doc_tokens_mean": 1614.125,
+      "explicit_doc_tokens_median": 851.5,
+      "n_runs": 24,
+      "n_runs_recounted": 24,
+      "runs_with_contact": 21,
+      "superseded_collection_tokens_mean": 235.33333333333334,
+      "superseded_collection_tokens_median": 0.0
+    },
+    "naive": {
+      "absent_at_start_events": 0,
+      "ambient_doc_tokens": 739,
+      "explicit_doc_tokens_mean": 1712.875,
+      "explicit_doc_tokens_median": 659.0,
+      "n_runs": 24,
+      "n_runs_recounted": 24,
+      "runs_with_contact": 18,
+      "superseded_collection_tokens_mean": 495.9166666666667,
+      "superseded_collection_tokens_median": 0.0
+    },
+    "nodocs": {
+      "absent_at_start_events": 15,
+      "ambient_doc_tokens": 0,
+      "explicit_doc_tokens_mean": 101.25,
+      "explicit_doc_tokens_median": 0.0,
+      "n_runs": 24,
+      "n_runs_recounted": 24,
+      "runs_with_contact": 4,
+      "superseded_collection_tokens_mean": 24.666666666666668,
+      "superseded_collection_tokens_median": 0.0
+    },
+    "original": {
+      "absent_at_start_events": 0,
+      "ambient_doc_tokens": 645,
+      "explicit_doc_tokens_mean": 1720.25,
+      "explicit_doc_tokens_median": 534.0,
+      "n_runs": 24,
+      "n_runs_recounted": 24,
+      "runs_with_contact": 18,
+      "superseded_collection_tokens_mean": 528.0833333333334,
+      "superseded_collection_tokens_median": 0.0
+    }
+  },
+  "missing": [
+    "judge scores missing: meta/experiment/data/judge/scores.jsonl (judge columns omitted)",
+    "96/96 analyzed trial(s) lack judge scores; judge means computed over scored trials"
+  ],
+  "n_tasks": 6,
+  "pairwise": {
+    "ace_vs_naive": {
+      "cost_ratio": {
+        "ci95": [
+          0.9619011252622909,
+          1.425861061773568
+        ],
+        "definition": "median over tasks of (per-task median cost ace) / (per-task median cost naive)",
+        "n_tasks": 6,
+        "per_task": {
+          "pr-14461": 1.2673839174574206,
+          "pr-14690": 1.050327835504309,
+          "pr-14985": 1.3366806438028835,
+          "pr-15108": 1.036957277271205,
+          "pr-15307": 0.9208094091845529,
+          "pr-15495": 1.2934823761469176
+        },
+        "point": 1.1588558764808647
+      },
+      "judge_completeness_delta": {
+        "ci95": [
+          null,
+          null
+        ],
+        "definition": "mean over tasks of (mean completeness ace - mean completeness naive)",
+        "n_tasks": 0,
+        "per_task": {},
+        "point": null
+      },
+      "judge_convention_delta": {
+        "ci95": [
+          null,
+          null
+        ],
+        "definition": "mean over tasks of (mean convention ace - mean convention naive)",
+        "n_tasks": 0,
+        "per_task": {},
+        "point": null
+      },
+      "judge_correctness_delta": {
+        "ci95": [
+          null,
+          null
+        ],
+        "definition": "mean over tasks of (mean correctness ace - mean correctness naive)",
+        "n_tasks": 0,
+        "per_task": {},
+        "point": null
+      },
+      "ref_tests_pass_delta": {
+        "ci95": [
+          -0.4166666666666667,
+          0.125
+        ],
+        "definition": "mean over tasks of (pass rate ace - pass rate naive)",
+        "n_tasks": 6,
+        "per_task": {
+          "pr-14461": 0.0,
+          "pr-14690": 0.0,
+          "pr-14985": 0.0,
+          "pr-15108": 0.0,
+          "pr-15307": 0.0,
+          "pr-15495": -0.75
+        },
+        "point": -0.125
+      },
+      "suite_pass_delta": {
+        "ci95": [
+          -0.16666666666666666,
+          0.0
+        ],
+        "definition": "mean over tasks of (pass rate ace - pass rate naive)",
+        "n_tasks": 6,
+        "per_task": {
+          "pr-14461": 0.0,
+          "pr-14690": 0.0,
+          "pr-14985": -0.25,
+          "pr-15108": 0.0,
+          "pr-15307": 0.0,
+          "pr-15495": 0.0
+        },
+        "point": -0.041666666666666664
+      }
+    },
+    "ace_vs_original": {
+      "cost_ratio": {
+        "ci95": [
+          0.8813585005480922,
+          1.4866054292291102
+        ],
+        "definition": "median over tasks of (per-task median cost ace) / (per-task median cost original)",
+        "n_tasks": 6,
+        "per_task": {
+          "pr-14461": 1.2327980480054475,
+          "pr-14690": 1.442573296562086,
+          "pr-14985": 0.7215707623624367,
+          "pr-15108": 1.335285114360644,
+          "pr-15307": 1.0767686983751579,
+          "pr-15495": 1.111488437739232
+        },
+        "point": 1.1721432428723397
+      },
+      "judge_completeness_delta": {
+        "ci95": [
+          null,
+          null
+        ],
+        "definition": "mean over tasks of (mean completeness ace - mean completeness original)",
+        "n_tasks": 0,
+        "per_task": {},
+        "point": null
+      },
+      "judge_convention_delta": {
+        "ci95": [
+          null,
+          null
+        ],
+        "definition": "mean over tasks of (mean convention ace - mean convention original)",
+        "n_tasks": 0,
+        "per_task": {},
+        "point": null
+      },
+      "judge_correctness_delta": {
+        "ci95": [
+          null,
+          null
+        ],
+        "definition": "mean over tasks of (mean correctness ace - mean correctness original)",
+        "n_tasks": 0,
+        "per_task": {},
+        "point": null
+      },
+      "ref_tests_pass_delta": {
+        "ci95": [
+          -0.4166666666666667,
+          0.08333333333333333
+        ],
+        "definition": "mean over tasks of (pass rate ace - pass rate original)",
+        "n_tasks": 6,
+        "per_task": {
+          "pr-14461": 0.0,
+          "pr-14690": 0.0,
+          "pr-14985": -0.75,
+          "pr-15108": 0.0,
+          "pr-15307": 0.0,
+          "pr-15495": 0.0
+        },
+        "point": -0.125
+      },
+      "suite_pass_delta": {
+        "ci95": [
+          -0.16666666666666666,
+          0.0
+        ],
+        "definition": "mean over tasks of (pass rate ace - pass rate original)",
+        "n_tasks": 6,
+        "per_task": {
+          "pr-14461": 0.0,
+          "pr-14690": 0.0,
+          "pr-14985": -0.25,
+          "pr-15108": 0.0,
+          "pr-15307": 0.0,
+          "pr-15495": 0.0
+        },
+        "point": -0.041666666666666664
+      }
+    },
+    "naive_vs_original": {
+      "cost_ratio": {
+        "ci95": [
+          0.726214767696927,
+          1.376410472674087
+        ],
+        "definition": "median over tasks of (per-task median cost naive) / (per-task median cost original)",
+        "n_tasks": 6,
+        "per_task": {
+          "pr-14461": 0.972710818738052,
+          "pr-14690": 1.3734505054504649,
+          "pr-14985": 0.5398228557492635,
+          "pr-15108": 1.2876953984782291,
+          "pr-15307": 1.1693719543208392,
+          "pr-15495": 0.8592992515678356
+        },
+        "point": 1.0710413865294455
+      },
+      "judge_completeness_delta": {
+        "ci95": [
+          null,
+          null
+        ],
+        "definition": "mean over tasks of (mean completeness naive - mean completeness original)",
+        "n_tasks": 0,
+        "per_task": {},
+        "point": null
+      },
+      "judge_convention_delta": {
+        "ci95": [
+          null,
+          null
+        ],
+        "definition": "mean over tasks of (mean convention naive - mean convention original)",
+        "n_tasks": 0,
+        "per_task": {},
+        "point": null
+      },
+      "judge_correctness_delta": {
+        "ci95": [
+          null,
+          null
+        ],
+        "definition": "mean over tasks of (mean correctness naive - mean correctness original)",
+        "n_tasks": 0,
+        "per_task": {},
+        "point": null
+      },
+      "ref_tests_pass_delta": {
+        "ci95": [
+          -0.375,
+          0.375
+        ],
+        "definition": "mean over tasks of (pass rate naive - pass rate original)",
+        "n_tasks": 6,
+        "per_task": {
+          "pr-14461": 0.0,
+          "pr-14690": 0.0,
+          "pr-14985": -0.75,
+          "pr-15108": 0.0,
+          "pr-15307": 0.0,
+          "pr-15495": 0.75
+        },
+        "point": 0.0
+      },
+      "suite_pass_delta": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "definition": "mean over tasks of (pass rate naive - pass rate original)",
+        "n_tasks": 6,
+        "per_task": {
+          "pr-14461": 0.0,
+          "pr-14690": 0.0,
+          "pr-14985": 0.0,
+          "pr-15108": 0.0,
+          "pr-15307": 0.0,
+          "pr-15495": 0.0
+        },
+        "point": 0.0
+      }
+    }
+  },
+  "per_task_arm": {
+    "pr-14461": {
+      "ace": {
+        "completion_rate": 1.0,
+        "cost_median": 1.575106,
+        "cost_q25": 1.467884,
+        "cost_q75": 1.88392875,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 1222.0,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 1.0,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 2017.0,
+        "turns_median": 59.5,
+        "wall_seconds_median": 309.9
+      },
+      "naive": {
+        "completion_rate": 1.0,
+        "cost_median": 1.242801,
+        "cost_q25": 1.2099325,
+        "cost_q75": 1.28552625,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 643.0,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 1.0,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 1382.0,
+        "turns_median": 45.0,
+        "wall_seconds_median": 202.05
+      },
+      "nodocs": {
+        "completion_rate": 1.0,
+        "cost_median": 1.0194495000000001,
+        "cost_q25": 0.6788145000000001,
+        "cost_q75": 1.41880325,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 0.0,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 1.0,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 0.0,
+        "turns_median": 43.0,
+        "wall_seconds_median": 193.5
+      },
+      "original": {
+        "completion_rate": 1.0,
+        "cost_median": 1.2776675,
+        "cost_q25": 1.04821575,
+        "cost_q75": 1.39886175,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 589.5,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 1.0,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 1234.5,
+        "turns_median": 47.0,
+        "wall_seconds_median": 221.3
+      }
+    },
+    "pr-14690": {
+      "ace": {
+        "completion_rate": 1.0,
+        "cost_median": 1.5593020000000002,
+        "cost_q25": 1.44892925,
+        "cost_q75": 1.78588075,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 579.0,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 1.0,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 1374.0,
+        "turns_median": 48.0,
+        "wall_seconds_median": 322.15
+      },
+      "naive": {
+        "completion_rate": 1.0,
+        "cost_median": 1.484586,
+        "cost_q25": 1.4174194999999998,
+        "cost_q75": 1.562167,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 329.5,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 1.0,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 1068.5,
+        "turns_median": 40.0,
+        "wall_seconds_median": 342.79999999999995
+      },
+      "nodocs": {
+        "completion_rate": 1.0,
+        "cost_median": 1.8991065,
+        "cost_q25": 1.74292525,
+        "cost_q75": 1.93177625,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 0.0,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 1.0,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 0.0,
+        "turns_median": 55.0,
+        "wall_seconds_median": 356.70000000000005
+      },
+      "original": {
+        "completion_rate": 1.0,
+        "cost_median": 1.080917,
+        "cost_q25": 1.0214335,
+        "cost_q75": 1.3044015,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 376.0,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 1.0,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 1021.0,
+        "turns_median": 33.0,
+        "wall_seconds_median": 218.95
+      }
+    },
+    "pr-14985": {
+      "ace": {
+        "completion_rate": 1.0,
+        "cost_median": 3.8788894999999997,
+        "cost_q25": 3.662471,
+        "cost_q75": 4.243183999999999,
+        "docs_files_read_median": 2.0,
+        "docs_tokens_read_median": 992.0,
+        "explicit_doc_tokens_median": 3668.5,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 0.25,
+        "suite_pass_rate": 0.75,
+        "total_doc_tokens_median": 4463.5,
+        "turns_median": 111.5,
+        "wall_seconds_median": 668.35
+      },
+      "naive": {
+        "completion_rate": 1.0,
+        "cost_median": 2.901882,
+        "cost_q25": 2.527505,
+        "cost_q75": 3.27267425,
+        "docs_files_read_median": 1.0,
+        "docs_tokens_read_median": 427.0,
+        "explicit_doc_tokens_median": 3042.5,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 0.25,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 3781.5,
+        "turns_median": 92.0,
+        "wall_seconds_median": 516.05
+      },
+      "nodocs": {
+        "completion_rate": 1.0,
+        "cost_median": 4.0227960000000005,
+        "cost_q25": 3.6169255,
+        "cost_q75": 4.39713175,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 33.5,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 0.5,
+        "suite_pass_rate": 0.75,
+        "total_doc_tokens_median": 33.5,
+        "turns_median": 118.0,
+        "wall_seconds_median": 578.75
+      },
+      "original": {
+        "completion_rate": 1.0,
+        "cost_median": 5.375619,
+        "cost_q25": 4.23586625,
+        "cost_q75": 6.39289125,
+        "docs_files_read_median": 1.5,
+        "docs_tokens_read_median": 1709.5,
+        "explicit_doc_tokens_median": 3951.0,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 1.0,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 4596.0,
+        "turns_median": 130.5,
+        "wall_seconds_median": 943.7
+      }
+    },
+    "pr-15108": {
+      "ace": {
+        "completion_rate": 1.0,
+        "cost_median": 0.820508,
+        "cost_q25": 0.74509275,
+        "cost_q75": 0.9125525,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 18.5,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 1.0,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 813.5,
+        "turns_median": 34.0,
+        "wall_seconds_median": 155.10000000000002
+      },
+      "naive": {
+        "completion_rate": 1.0,
+        "cost_median": 0.791265,
+        "cost_q25": 0.66793575,
+        "cost_q75": 0.9084424999999999,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 0.0,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 1.0,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 739.0,
+        "turns_median": 34.0,
+        "wall_seconds_median": 159.05
+      },
+      "nodocs": {
+        "completion_rate": 1.0,
+        "cost_median": 0.999482,
+        "cost_q25": 0.7895417499999999,
+        "cost_q75": 1.21492,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 0.0,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 1.0,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 0.0,
+        "turns_median": 42.5,
+        "wall_seconds_median": 182.8
+      },
+      "original": {
+        "completion_rate": 1.0,
+        "cost_median": 0.6144815,
+        "cost_q25": 0.57906475,
+        "cost_q75": 0.6344657499999999,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 181.0,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 1.0,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 826.0,
+        "turns_median": 27.0,
+        "wall_seconds_median": 139.8
+      }
+    },
+    "pr-15307": {
+      "ace": {
+        "completion_rate": 1.0,
+        "cost_median": 2.579625,
+        "cost_q25": 2.5223455,
+        "cost_q75": 2.75015675,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 2168.5,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 0.5,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 2963.5,
+        "turns_median": 73.5,
+        "wall_seconds_median": 539.0
+      },
+      "naive": {
+        "completion_rate": 1.0,
+        "cost_median": 2.8014755,
+        "cost_q25": 2.1804222500000003,
+        "cost_q75": 3.42725525,
+        "docs_files_read_median": 1.5,
+        "docs_tokens_read_median": 640.5,
+        "explicit_doc_tokens_median": 3531.0,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 0.5,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 4270.0,
+        "turns_median": 71.5,
+        "wall_seconds_median": 608.25
+      },
+      "nodocs": {
+        "completion_rate": 1.0,
+        "cost_median": 2.981986,
+        "cost_q25": 2.773644,
+        "cost_q75": 3.1378735,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 296.0,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 0.25,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 296.0,
+        "turns_median": 86.0,
+        "wall_seconds_median": 542.5
+      },
+      "original": {
+        "completion_rate": 1.0,
+        "cost_median": 2.3957094999999997,
+        "cost_q25": 2.146735,
+        "cost_q75": 3.062455,
+        "docs_files_read_median": 1.0,
+        "docs_tokens_read_median": 541.0,
+        "explicit_doc_tokens_median": 2544.0,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 0.5,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 3189.0,
+        "turns_median": 71.5,
+        "wall_seconds_median": 454.95
+      }
+    },
+    "pr-15495": {
+      "ace": {
+        "completion_rate": 1.0,
+        "cost_median": 4.1509725,
+        "cost_q25": 3.88705575,
+        "cost_q75": 4.4715715,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 693.5,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 0.0,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 1488.5,
+        "turns_median": 81.0,
+        "wall_seconds_median": 781.4000000000001
+      },
+      "naive": {
+        "completion_rate": 1.0,
+        "cost_median": 3.209145,
+        "cost_q25": 3.15422325,
+        "cost_q75": 3.22201,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 659.0,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 0.75,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 1398.0,
+        "turns_median": 66.0,
+        "wall_seconds_median": 611.3
+      },
+      "nodocs": {
+        "completion_rate": 1.0,
+        "cost_median": 4.058097,
+        "cost_q25": 2.5558412500000003,
+        "cost_q75": 6.89658775,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 0.0,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 0.25,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 0.0,
+        "turns_median": 79.0,
+        "wall_seconds_median": 699.1
+      },
+      "original": {
+        "completion_rate": 1.0,
+        "cost_median": 3.734607,
+        "cost_q25": 3.2763572499999998,
+        "cost_q75": 4.0365365,
+        "docs_files_read_median": 0.0,
+        "docs_tokens_read_median": 0.0,
+        "explicit_doc_tokens_median": 181.5,
+        "judge_means": {
+          "completeness": null,
+          "convention": null,
+          "correctness": null
+        },
+        "n_analyzed": 4,
+        "n_completed": 4,
+        "n_infra": 0,
+        "n_total": 4,
+        "n_with_judge": 0,
+        "n_with_tests": 4,
+        "ref_tests_pass_rate": 0.0,
+        "suite_pass_rate": 1.0,
+        "total_doc_tokens_median": 826.5,
+        "turns_median": 73.5,
+        "wall_seconds_median": 735.2
+      }
+    }
+  },
+  "sensitivity_excluding_leakage": {
+    "decision": {
+      "cost_superiority": {
+        "ci95": [
+          1.062199471174182,
+          1.578612606394752
+        ],
+        "ci_upper_meets": false,
+        "criterion": "ace/original task-median cost ratio <= 0.8",
+        "point_estimate": 1.2327980480054475,
+        "point_meets": false
+      },
+      "quality_noninferiority": {
+        "ci_meets_all": true,
+        "components": {
+          "judge_completeness_delta": {
+            "ci95": [
+              null,
+              null
+            ],
+            "ci_lower_meets": false,
+            "margin": 0.5,
+            "point": null,
+            "point_meets": false
+          },
+          "judge_convention_delta": {
+            "ci95": [
+              null,
+              null
+            ],
+            "ci_lower_meets": false,
+            "margin": 0.5,
+            "point": null,
+            "point_meets": false
+          },
+          "judge_correctness_delta": {
+            "ci95": [
+              null,
+              null
+            ],
+            "ci_lower_meets": false,
+            "margin": 0.5,
+            "point": null,
+            "point_meets": false
+          },
+          "ref_tests_pass_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "ci_lower_meets": true,
+            "margin": 0.05,
+            "point": 0.0,
+            "point_meets": true
+          },
+          "suite_pass_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "ci_lower_meets": true,
+            "margin": 0.05,
+            "point": 0.0,
+            "point_meets": true
+          }
+        },
+        "criterion": "ace vs original within 5pp test-pass and 0.5 rubric points",
+        "n_components_evaluable": 2,
+        "n_components_total": 5,
+        "point_meets_all": true
+      }
+    },
+    "flagged_runs": [
+      "pr-14461/nodocs/trial-3",
+      "pr-14690/naive/trial-4",
+      "pr-14690/nodocs/trial-2",
+      "pr-14690/original/trial-3",
+      "pr-14690/original/trial-4",
+      "pr-14985/ace/trial-1",
+      "pr-14985/naive/trial-4",
+      "pr-14985/nodocs/trial-1",
+      "pr-14985/nodocs/trial-3",
+      "pr-14985/nodocs/trial-4",
+      "pr-14985/original/trial-1",
+      "pr-14985/original/trial-2",
+      "pr-14985/original/trial-3",
+      "pr-14985/original/trial-4",
+      "pr-15108/ace/trial-1",
+      "pr-15108/ace/trial-2",
+      "pr-15108/naive/trial-1",
+      "pr-15108/naive/trial-3",
+      "pr-15108/nodocs/trial-3",
+      "pr-15108/original/trial-1",
+      "pr-15307/ace/trial-3",
+      "pr-15307/ace/trial-4",
+      "pr-15307/naive/trial-1",
+      "pr-15307/naive/trial-3",
+      "pr-15307/nodocs/trial-3",
+      "pr-15307/original/trial-1",
+      "pr-15307/original/trial-3",
+      "pr-15495/nodocs/trial-3"
+    ],
+    "label": "exploratory sensitivity analysis (Amendment 5): runs with class-(c) reference-solution exposure removed; registered results are the intention-to-treat ones",
+    "n_flagged_runs": 28,
+    "n_runs_analyzed": 68,
+    "pairwise": {
+      "ace_vs_naive": {
+        "cost_ratio": {
+          "ci95": [
+            0.9802713535233234,
+            1.4906378428562246
+          ],
+          "n_tasks": 6,
+          "point": 1.1681519536285023
+        },
+        "judge_completeness_delta": {
+          "ci95": [
+            null,
+            null
+          ],
+          "n_tasks": 0,
+          "point": null
+        },
+        "judge_convention_delta": {
+          "ci95": [
+            null,
+            null
+          ],
+          "n_tasks": 0,
+          "point": null
+        },
+        "judge_correctness_delta": {
+          "ci95": [
+            null,
+            null
+          ],
+          "n_tasks": 0,
+          "point": null
+        },
+        "ref_tests_pass_delta": {
+          "ci95": [
+            -0.4166666666666667,
+            0.0
+          ],
+          "n_tasks": 6,
+          "point": -0.125
+        },
+        "suite_pass_delta": {
+          "ci95": [
+            -0.22222222222222224,
+            0.0
+          ],
+          "n_tasks": 6,
+          "point": -0.05555555555555556
+        }
+      },
+      "ace_vs_original": {
+        "cost_ratio": {
+          "ci95": [
+            1.062199471174182,
+            1.578612606394752
+          ],
+          "n_tasks": 5,
+          "point": 1.2327980480054475
+        },
+        "judge_completeness_delta": {
+          "ci95": [
+            null,
+            null
+          ],
+          "n_tasks": 0,
+          "point": null
+        },
+        "judge_convention_delta": {
+          "ci95": [
+            null,
+            null
+          ],
+          "n_tasks": 0,
+          "point": null
+        },
+        "judge_correctness_delta": {
+          "ci95": [
+            null,
+            null
+          ],
+          "n_tasks": 0,
+          "point": null
+        },
+        "ref_tests_pass_delta": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "n_tasks": 5,
+          "point": 0.0
+        },
+        "suite_pass_delta": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "n_tasks": 5,
+          "point": 0.0
+        }
+      },
+      "naive_vs_original": {
+        "cost_ratio": {
+          "ci95": [
+            0.864127336557769,
+            1.422729116926486
+          ],
+          "n_tasks": 5,
+          "point": 1.1508037355807559
+        },
+        "judge_completeness_delta": {
+          "ci95": [
+            null,
+            null
+          ],
+          "n_tasks": 0,
+          "point": null
+        },
+        "judge_convention_delta": {
+          "ci95": [
+            null,
+            null
+          ],
+          "n_tasks": 0,
+          "point": null
+        },
+        "judge_correctness_delta": {
+          "ci95": [
+            null,
+            null
+          ],
+          "n_tasks": 0,
+          "point": null
+        },
+        "ref_tests_pass_delta": {
+          "ci95": [
+            0.0,
+            0.5
+          ],
+          "n_tasks": 5,
+          "point": 0.15
+        },
+        "suite_pass_delta": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "n_tasks": 5,
+          "point": 0.0
+        }
+      }
+    }
+  },
+  "tasks": [
+    "pr-14461",
+    "pr-14690",
+    "pr-14985",
+    "pr-15108",
+    "pr-15307",
+    "pr-15495"
+  ],
+  "value_retention": {
+    "cost_medians_per_task": {
+      "pr-14461": {
+        "ace": 1.575106,
+        "naive": 1.242801,
+        "nodocs": 1.0194495000000001,
+        "original": 1.2776675
+      },
+      "pr-14690": {
+        "ace": 1.5593020000000002,
+        "naive": 1.484586,
+        "nodocs": 1.8991065,
+        "original": 1.080917
+      },
+      "pr-14985": {
+        "ace": 3.8788894999999997,
+        "naive": 2.901882,
+        "nodocs": 4.0227960000000005,
+        "original": 5.375619
+      },
+      "pr-15108": {
+        "ace": 0.820508,
+        "naive": 0.791265,
+        "nodocs": 0.999482,
+        "original": 0.6144815
+      },
+      "pr-15307": {
+        "ace": 2.579625,
+        "naive": 2.8014755,
+        "nodocs": 2.981986,
+        "original": 2.3957094999999997
+      },
+      "pr-15495": {
+        "ace": 4.1509725,
+        "naive": 3.209145,
+        "nodocs": 4.058097,
+        "original": 3.734607
+      }
+    },
+    "definition": "per-task docs_value = metric(original) - metric(nodocs); retention(arm) = (metric(arm) - metric(nodocs)) / docs_value, reported only when |docs_value| > 0",
+    "metrics": {
+      "ref_tests_pass": {
+        "docs_value_mean": 0.08333333333333333,
+        "n_tasks_with_floor": 6,
+        "per_task": {
+          "pr-14461": {
+            "by_arm": {
+              "ace": 1.0,
+              "naive": 1.0,
+              "nodocs": 1.0,
+              "original": 1.0
+            },
+            "docs_value": 0.0
+          },
+          "pr-14690": {
+            "by_arm": {
+              "ace": 1.0,
+              "naive": 1.0,
+              "nodocs": 1.0,
+              "original": 1.0
+            },
+            "docs_value": 0.0
+          },
+          "pr-14985": {
+            "by_arm": {
+              "ace": 0.25,
+              "naive": 0.25,
+              "nodocs": 0.5,
+              "original": 1.0
+            },
+            "docs_value": 0.5,
+            "retention_ace": -0.5,
+            "retention_naive": -0.5
+          },
+          "pr-15108": {
+            "by_arm": {
+              "ace": 1.0,
+              "naive": 1.0,
+              "nodocs": 1.0,
+              "original": 1.0
+            },
+            "docs_value": 0.0
+          },
+          "pr-15307": {
+            "by_arm": {
+              "ace": 0.5,
+              "naive": 0.5,
+              "nodocs": 0.25,
+              "original": 0.5
+            },
+            "docs_value": 0.25,
+            "retention_ace": 1.0,
+            "retention_naive": 1.0
+          },
+          "pr-15495": {
+            "by_arm": {
+              "ace": 0.0,
+              "naive": 0.75,
+              "nodocs": 0.25,
+              "original": 0.0
+            },
+            "docs_value": -0.25,
+            "retention_ace": 1.0,
+            "retention_naive": -2.0
+          }
+        }
+      },
+      "suite_pass": {
+        "docs_value_mean": 0.041666666666666664,
+        "n_tasks_with_floor": 6,
+        "per_task": {
+          "pr-14461": {
+            "by_arm": {
+              "ace": 1.0,
+              "naive": 1.0,
+              "nodocs": 1.0,
+              "original": 1.0
+            },
+            "docs_value": 0.0
+          },
+          "pr-14690": {
+            "by_arm": {
+              "ace": 1.0,
+              "naive": 1.0,
+              "nodocs": 1.0,
+              "original": 1.0
+            },
+            "docs_value": 0.0
+          },
+          "pr-14985": {
+            "by_arm": {
+              "ace": 0.75,
+              "naive": 1.0,
+              "nodocs": 0.75,
+              "original": 1.0
+            },
+            "docs_value": 0.25,
+            "retention_ace": 0.0,
+            "retention_naive": 1.0
+          },
+          "pr-15108": {
+            "by_arm": {
+              "ace": 1.0,
+              "naive": 1.0,
+              "nodocs": 1.0,
+              "original": 1.0
+            },
+            "docs_value": 0.0
+          },
+          "pr-15307": {
+            "by_arm": {
+              "ace": 1.0,
+              "naive": 1.0,
+              "nodocs": 1.0,
+              "original": 1.0
+            },
+            "docs_value": 0.0
+          },
+          "pr-15495": {
+            "by_arm": {
+              "ace": 1.0,
+              "naive": 1.0,
+              "nodocs": 1.0,
+              "original": 1.0
+            },
+            "docs_value": 0.0
+          }
+        }
+      }
+    }
+  }
+}
