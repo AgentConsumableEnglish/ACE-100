@@ -39,11 +39,12 @@ navigation structure, and the no-docs ablation matched the documented arms on
 functional tests for four of six tasks — on this repository and task mix, the
 documentation is barely load-bearing, so there is nothing for a
 documentation-efficiency standard to save. Cost tracks *turns*, not corpus
-size — the largest corpus (naive) was the cheapest arm — and against that
-token-matched control the ACE-100 architecture costs ~12 extra turns per run
-on 6 of 6 tasks (95% CI [+3.6, +23.0]), the one place its distinctive
-component shows a measurable price. Migration cost $116.45 and, with negative
-per-run savings, never breaks even. We report two protocol
+size — the largest corpus (naive) was the cheapest arm. A post-hoc turn
+analysis finds the ACE-100 arm running ~12 turns longer than the
+token-matched naive control on 6 of 6 tasks, but we report it as an open
+question rather than a result: it is one of 64 interval tests of which ~3
+false positives are expected, and no mechanism survives scrutiny. Migration
+cost $116.45 and, with negative per-run savings, never breaks even. We report two protocol
 deviations found by our own audit — Bash-level outbound network access
 survived the registered "network off" claim, and a registered strong-model
 side-measurement was not conducted — and publish the full audit trail,
@@ -393,9 +394,9 @@ is 0.878, and cache-read — re-sending the accumulated conversation each turn �
 is 67–70% of every arm's bill. "Why did an arm cost more" therefore reduces
 to "why did it take more turns."
 
-**One architecture effect survives estimation.** Turn differences,
+**One turn difference is suggestive; none is conclusive.** Turn differences,
 within-task paired with the registered seed and hierarchical bootstrap
-(post-hoc; see below):
+(post-hoc; see the multiplicity caveat below):
 
 | comparison | Δ mean turns | 95% CI | tasks with Δ>0 |
 |---|---|---|---|
@@ -409,32 +410,63 @@ within-task paired with the registered seed and hierarchical bootstrap
 measure of how little separates these two arms.)
 
 The headline comparison against original does **not** resolve — we cannot
-claim ACE-100 runs take more turns than original-docs runs. What does resolve
-is ace against naive: **~12 more turns per run, positive on every task, at
-matched corpus size.** Because naive is rewritten prose at ace's token count
-with no front matter, indexes, or splits, this pair isolates the *document
-architecture* from corpus size and from mere rewriting. It is the one place
-in this experiment where the kit's distinctive component has a measurable
-cost of its own.
+claim ACE-100 runs take more turns than original-docs runs. The ace-vs-naive
+difference does, at ~12 turns per run and positive on every task. Because
+naive is rewritten prose at ace's token count with no front matter, indexes,
+or splits, that pair would isolate the *document architecture* from corpus
+size and from mere rewriting. We report it as suggestive rather than
+established, for two reasons.
 
-**What the decomposition cannot say.** We classified every one of the 96
-runs' tool-use rounds into fifteen activity categories (turn accounting is
-exact: `num_turns` = tool-use blocks + 1 on all 96 runs, with zero parallel
-tool-use messages). The ace-vs-naive gap does not localize. Every one of the
-14 categories with a non-zero difference points the same way — the ace arm
-does *more* of all of them — and only `test` (+1.42, [+0.08, +2.96]) has a CI
-excluding zero. Crucially, the extra turns are not concentrated in
-documentation navigation: doc-reads contribute +0.29 of the +12.25. The
-architecture appears to lengthen the entire run rather than levy a navigation
-tax, but six tasks cannot establish why, and we do not claim a mechanism. One
-hypothesis is flagged for Experiment 2 without being claimed here: todo-list
-bookkeeping (`plan`) is the most sign-consistent category (+2.00, positive on
-all five tasks where it differs), though its CI spans zero and 8.5 of its
-12.0 total comes from a single task.
+**Multiplicity.** This decomposition runs 64 interval tests (four pairwise
+comparisons × one total plus fifteen categories). Four excluded zero;
+**3.2 are expected by chance at α = 0.05.** The hit count is the same order
+as the false-positive rate, and the hits are scattered incoherently across
+unrelated pairs and categories — the signature of multiplicity rather than
+mechanism. We therefore treat all three *category-level* exclusions as noise,
+including `test` in the ace-naive comparison. For the primary family of four
+total-turn comparisons, ace-vs-naive survives Bonferroni adjustment
+([+1.42, +26.00] at the family-adjusted level, bootstrap mass at or below
+zero 0.25%, sign test on 6/6 tasks p = 0.031); it does not survive adjustment
+over all 64 tests ([−1.75, +31.67]). Which correction is appropriate is a
+judgment call — the category tests are secondary to the primary family — and
+readers who prefer the conservative reading should treat the turn result as
+unresolved along with everything else.
+
+**Noise floor.** Run length is extremely variable. The mean coefficient of
+variation of turn count *within* a (task, arm) cell — same task, same
+documentation, four trials — is **0.22**, and individual cells range from 27
+to 58 turns (pr-14461/original) and 106 to 175 (pr-14985/original). A
+12-turn arm difference across six tasks sits close to that resolution limit.
+
+**No mechanism identified.** We classified every tool-use round in all 96
+runs into fifteen activity categories (turn accounting is exact: `num_turns`
+= tool-use blocks + 1 on all 96 runs, zero parallel tool-use messages), and
+the gap does not localize: all 14 categories with a non-zero difference point
+the same way, with the ace arm doing more of each. The two mechanisms we
+would have predicted both fail. *Fragmentation* — 205 files instead of 103,
+indexes routing to splits — predicts the gap in documentation navigation, but
+doc-reads contribute only +0.29 of the +12.25, because agents barely read
+documentation at all (§6.1) and there is little to fragment. *Ambient
+instruction load* — the migrated `CLAUDE.md` is 422 characters against the
+original's 11 — fails because that file is only a pointer: the instructions
+it imports (`AGENTS.md`) are equivalent across arms (2,572 / 2,763 / 2,952
+characters, same rules).
+
+Nor is it clear the ace arm is the anomaly. Three conditions cluster tightly
+in mean turns — original 66.5, ace 69.9, nodocs 70.3 — while **naive alone
+sits at 57.6**. Read that way, the finding is less "the standard's
+architecture is expensive" than "the naive rewrite was unusually efficient,"
+which would be a result about verbose self-contained prose in a familiar file
+layout rather than about ACE-100 at all. Amendment 3 already records that the
+naive arm came out an *expansion* of the original (312,116 against 253,161
+tokens) in the original file boundaries. We cannot distinguish these
+readings, and we flag the question rather than answer it (§9).
 
 *This subsection's turn analysis is **post-hoc and exploratory**. It was not
 registered, it is not an H1/H2 readout, and it was added after the registered
-analysis was complete. Tool and full output:
+analysis was complete; its hypotheses were generated after seeing the data.
+It is reported because the question it raises is worth posing, not because
+this experiment answers it. Tool, multiplicity accounting, and full output:
 `tools/classify_turns.py`, `analysis/turn-decomposition.json`.*
 
 †The gate artifact `audit/arm-gates/measure.json`, generated ten minutes
@@ -577,13 +609,46 @@ asymmetry that, note, biases *toward* the standard. The registered Opus-5
 side-measurement was not conducted. The corpus-size reframe (Amendment 3)
 means naive-vs-original tests matched-size rewriting, not shortening.
 
-## 9. Experiment 2 (Pending)
+## 9. Open Questions and Experiment 2
 
 Experiment 1's sharpest limitation is its substrate: docs-value near zero
 on most tasks (§6.3). Experiment 2 is registered separately
 (`meta/experiment2/PREREGISTRATION.md`) and targets tasks where
 documentation is load-bearing by construction, sharing the value-retention
 readout of §6.4. Its candidate set is committed; no further work has begun.
+
+Three questions this experiment raised but could not answer are worth
+stating as an agenda, because each is answerable by a study designed for it
+and none is answerable by adding tasks to this one.
+
+**Does documentation architecture change how long an agent works?** §6.2
+found the ACE-100 arm running ~12 turns longer than the token-matched naive
+control on 6 of 6 tasks, and could neither confirm it against multiplicity
+nor explain it. The obstacle is power, not instrumentation: with a
+within-cell coefficient of variation of 0.22 on turn count, separating a
+~15% arm difference needs far more than six tasks. A study aimed at this
+would fix one task family, vary *only* file granularity — the same prose at
+one file, ten files, and an index-plus-splits tree — and run enough trials
+to resolve the noise. Cost follows turns almost exactly (§6.2), so turn count
+is the efficient thing to measure.
+
+**Is verbose, self-contained prose the actually efficient form?** The naive
+arm is the surprise of this experiment: the largest corpus (312,116 tokens),
+the fewest turns (57.6 against 66.5–70.3 for the other three), and quality
+statistically indistinguishable from ace on every judge dimension. It was
+built as a control for length, not as a candidate. If that pattern holds
+under a powered replication, the practical advice it implies — write
+thorough, self-contained documents where readers expect to find them, rather
+than compressing or splitting them — runs against the premise this standard
+was built on, and deserves a direct test.
+
+**How much do agents read documentation at all, and when?** Every arm here
+consumed ~1.6–1.7K explicit documentation tokens per run against corpora of
+250–312K (§6.1), overwhelmingly through ad-hoc shell commands rather than
+any intended navigation surface. If that generalizes, documentation
+standards aimed at agent efficiency are optimizing a channel that carries
+almost no traffic, and the prior question is what would make agents read
+more — not what to do with the tokens once they do.
 
 <!-- EXP2-SLOT: design summary, results, cross-experiment synthesis. -->
 

@@ -1,5 +1,85 @@
 {
   "bootstrap_replicates": 10000,
+  "multiplicity": {
+    "adjusted_primary": {
+      "ace_vs_naive": {
+        "bootstrap_mass_at_or_below_zero": 0.00195,
+        "ci95": [
+          3.375,
+          22.833333333333332
+        ],
+        "ci_bonferroni_all_tests": [
+          -1.375,
+          31.916666666666668
+        ],
+        "ci_bonferroni_primary": [
+          1.4166666666666667,
+          26.0
+        ]
+      },
+      "ace_vs_original": {
+        "bootstrap_mass_at_or_below_zero": 0.2895,
+        "ci95": [
+          -10.75,
+          15.375
+        ],
+        "ci_bonferroni_all_tests": [
+          -22.916666666666668,
+          22.083333333333332
+        ],
+        "ci_bonferroni_primary": [
+          -15.25,
+          18.125
+        ]
+      },
+      "naive_vs_original": {
+        "bootstrap_mass_at_or_below_zero": 0.849125,
+        "ci95": [
+          -27.583333333333332,
+          4.375
+        ],
+        "ci_bonferroni_all_tests": [
+          -44.333333333333336,
+          8.875
+        ],
+        "ci_bonferroni_primary": [
+          -33.416666666666664,
+          6.208333333333333
+        ]
+      },
+      "nodocs_vs_original": {
+        "bootstrap_mass_at_or_below_zero": 0.29495,
+        "ci95": [
+          -11.583333333333334,
+          18.541666666666668
+        ],
+        "ci_bonferroni_all_tests": [
+          -23.833333333333332,
+          30.958333333333332
+        ],
+        "ci_bonferroni_primary": [
+          -16.333333333333332,
+          23.041666666666668
+        ]
+      }
+    },
+    "caveat": "The observed hit count is the same order as the expected false-positive count. Category-level exclusions should be read as noise. Only the primary total-turn family is interpreted, and only with Bonferroni adjustment.",
+    "expected_false_positives_at_0.05": 3.2,
+    "hits": [
+      "ace_vs_naive:total_turns",
+      "ace_vs_naive:test",
+      "naive_vs_original:orient",
+      "nodocs_vs_original:doc-read"
+    ],
+    "n_interval_tests": 64,
+    "n_primary_comparisons": 4,
+    "observed_exclusions_of_zero": 4
+  },
+  "noise_floor": {
+    "definition": "coefficient of variation of num_turns across the 4 trials within each (task, arm) cell",
+    "max_within_cell_cv": 0.6296774224045545,
+    "mean_within_cell_cv": 0.21585157182677084
+  },
   "pairwise": {
     "ace_vs_naive": {
       "categories": {

@@ -331,6 +331,83 @@ def main() -> None:
                 "excludes_zero": bool(clo is not None and (clo > 0 or chi < 0))}
         out["pairwise"][f"{a}_vs_{b}"] = block
 
+    # ---- multiplicity accounting -----------------------------------------
+    # This decomposition runs many interval tests. Reporting the count and the
+    # expected false-positive rate alongside the hits is mandatory here: with
+    # 64 tests at alpha=0.05 the expected number of spurious exclusions of
+    # zero is ~3, which is the same order as the number actually observed.
+    n_tests = 0
+    hits = []
+    for pair, b in out["pairwise"].items():
+        n_tests += 1
+        if b["total_turns"]["excludes_zero"]:
+            hits.append(f"{pair}:total_turns")
+        for c, v in b["categories"].items():
+            n_tests += 1
+            if v["excludes_zero"]:
+                hits.append(f"{pair}:{c}")
+    n_primary = len(out["pairwise"])  # the total-turn comparisons
+
+    # Bonferroni-adjusted intervals for the primary family, at the same seed.
+    adjusted = {}
+    for a, b in (("ace", "original"), ("ace", "naive"),
+                 ("naive", "original"), ("nodocs", "original")):
+        rng = random.Random(f"{SEED}:adj:{a}:{b}")
+        reps_adj = max(reps_n, 40000)  # deep tails need replicates
+        draws = []
+        for _ in range(reps_adj):
+            sam = rng.choices(tasks, k=len(tasks))
+            acc = []
+            for t in sam:
+                A = [x["num_turns_harness"] or 0 for x in cell[(t, a)]]
+                B = [x["num_turns_harness"] or 0 for x in cell[(t, b)]]
+                A = rng.choices(A, k=len(A))
+                B = rng.choices(B, k=len(B))
+                acc.append(sum(A) / len(A) - sum(B) / len(B))
+            draws.append(sum(acc) / len(acc))
+        draws.sort()
+
+        def q(level):
+            lo = draws[int((1 - level) / 2 * len(draws))]
+            hi = draws[min(int((1 + level) / 2 * len(draws)), len(draws) - 1)]
+            return [lo, hi]
+
+        adjusted[f"{a}_vs_{b}"] = {
+            "ci95": q(0.95),
+            "ci_bonferroni_primary": q(1 - 0.05 / n_primary),
+            "ci_bonferroni_all_tests": q(1 - 0.05 / n_tests),
+            "bootstrap_mass_at_or_below_zero":
+                sum(1 for v in draws if v <= 0) / len(draws),
+        }
+
+    # Within-cell trial noise: the resolution floor for any turn comparison.
+    cvs = []
+    for (t, a), rs in cell.items():
+        vals = [r["num_turns_harness"] or 0 for r in rs]
+        if len(vals) > 1:
+            m = sum(vals) / len(vals)
+            sd = (sum((v - m) ** 2 for v in vals) / (len(vals) - 1)) ** 0.5
+            if m:
+                cvs.append(sd / m)
+    out["noise_floor"] = {
+        "definition": "coefficient of variation of num_turns across the 4 "
+                      "trials within each (task, arm) cell",
+        "mean_within_cell_cv": sum(cvs) / len(cvs) if cvs else None,
+        "max_within_cell_cv": max(cvs) if cvs else None,
+    }
+    out["multiplicity"] = {
+        "n_interval_tests": n_tests,
+        "n_primary_comparisons": n_primary,
+        "expected_false_positives_at_0.05": round(n_tests * 0.05, 2),
+        "observed_exclusions_of_zero": len(hits),
+        "hits": hits,
+        "caveat": "The observed hit count is the same order as the expected "
+                  "false-positive count. Category-level exclusions should be "
+                  "read as noise. Only the primary total-turn family is "
+                  "interpreted, and only with Bonferroni adjustment.",
+        "adjusted_primary": adjusted,
+    }
+
     ana = Path(args.data_dir).parent / "analysis"
     ana.mkdir(parents=True, exist_ok=True)
     (ana / "turn-decomposition.json").write_text(
@@ -349,6 +426,18 @@ def main() -> None:
                       f"[{v['ci95'][0]:+.2f},{v['ci95'][1]:+.2f}]  excludes 0")
         else:
             print("    no individual category CI excludes zero")
+    m = out["multiplicity"]
+    print()
+    print(f"multiplicity: {m['n_interval_tests']} interval tests, "
+          f"{m['observed_exclusions_of_zero']} excluded zero, "
+          f"{m['expected_false_positives_at_0.05']} expected by chance")
+    for pair, adj in m["adjusted_primary"].items():
+        if adj["ci_bonferroni_primary"][0] > 0 or adj["ci_bonferroni_primary"][1] < 0:
+            print(f"  {pair} survives Bonferroni over the primary family: "
+                  f"[{adj['ci_bonferroni_primary'][0]:+.2f},"
+                  f"{adj['ci_bonferroni_primary'][1]:+.2f}]")
+    nf = out["noise_floor"]
+    print(f"noise floor: mean within-cell CV of turns = {nf['mean_within_cell_cv']:.2f}")
     print(f"\nwrote {ana / 'turn-decomposition.json'}")
 
 
