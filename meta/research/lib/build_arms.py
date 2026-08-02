@@ -2,7 +2,7 @@
 """Build and gate the three arm docs snapshots of the ACE-100 documentation experiment.
 
 Implements the arm-construction procedure registered in
-meta/experiment/PREREGISTRATION.md. Arms are built ONCE from a pinned commit C
+the experiment's PREREGISTRATION.md. Arms are built ONCE from a pinned commit C
 of the target repository; run_cell.py later replays each task at its own base
 commit with the docs corpus replaced by an arm snapshot built here.
 
@@ -34,7 +34,7 @@ Usage:
     build_arms.py --workdir /path/to/scratch --step all
 
 Temporal firewall: the 'ace' and 'naive' steps REFUSE to run until
-meta/experiment/manifest.json exists (select_tasks.py runs first), so the task
+<experiment>/manifest.json exists (select_tasks.py runs first), so the task
 set is frozen before any treated docs exist and treatment construction cannot
 chase the tasks.
 
@@ -84,10 +84,10 @@ except Exception:  # older SDK: plain dicts are accepted by the batches endpoint
 # ---------------------------------------------------------------------------
 
 # CONFIG: experiment directory holding arms/, data/, and the task manifest.
-# Defaults to the parent of tools/ (i.e. meta/experiment when this file lives
-# at meta/experiment/tools/build_arms.py). Override with ACE_EXPERIMENT_DIR.
+# Resolved explicitly from --experiment-dir or ACE_EXPERIMENT_DIR; there is
+# no default, so one experiment's run can never write into another's tree.
 EXPERIMENT_DIR = Path(
-    os.environ.get("ACE_EXPERIMENT_DIR", str(Path(__file__).resolve().parent.parent))
+    _xp.resolve_experiment_dir(os.environ.get("ACE_EXPERIMENT_DIR"))
 )
 ARMS_DIR = EXPERIMENT_DIR / "arms"
 GATES_DIR = ARMS_DIR / "gates"
@@ -97,7 +97,7 @@ TASK_MANIFEST = EXPERIMENT_DIR / "manifest.json"
 REPO_URL = "https://github.com/open-telemetry/opentelemetry-collector"
 
 # CONFIG: ACE-100 kit repository root. Default: three levels above this file
-# (repo-root/meta/experiment/tools/build_arms.py -> repo-root). Override with
+# (repo-root/meta/research/lib/build_arms.py -> repo-root). Override with
 # the --kit flag. The kit must have release tarballs under meta/dist/
 # (run meta/publish.sh to build them) unless --kit-tarball/--skill-tarball
 # point elsewhere.
@@ -108,7 +108,7 @@ CLAUDE_BIN = os.environ.get("ACE_CLAUDE_BIN", "claude")
 
 # ---------------------------------------------------------------------------
 # Registered constants. Do not change without an amendment to the
-# pre-registration (meta/experiment/PREREGISTRATION.md).
+# pre-registration (the experiment's PREREGISTRATION.md).
 # ---------------------------------------------------------------------------
 
 # Seed for all local randomness. This tool currently draws no random numbers,

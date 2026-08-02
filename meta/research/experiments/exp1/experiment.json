@@ -1,0 +1,60 @@
+{
+  "id": "exp1",
+  "title": "An empirical evaluation of ACE-100 against its stated goals",
+  "status": "complete (collection, evaluation, judging, analysis)",
+  "registration": "PREREGISTRATION.md",
+  "note": "Values here mirror what was registered and what the tools used during the Experiment 1 collection. They are recorded so a replication can read the settings instead of reading them out of tool source, and so a later experiment can differ without editing shared code. Changing a value here does NOT re-license a registered decision: the pre-registration governs.",
+
+  "target_repository": {
+    "slug": "open-telemetry/opentelemetry-collector",
+    "pinned_commit_note": "per-task base commits live in manifest.json; the arm snapshot commit C is in audit/arm-gates/pinned.json",
+    "clone_env_var": "ACE_REPO_CLONE",
+    "eval_env_var": "ACE_EXPERIMENT_REPO"
+  },
+
+  "seed": 20260801,
+
+  "arms": {
+    "registered": ["original", "ace", "naive"],
+    "all": ["original", "ace", "naive", "nodocs"],
+    "descriptive_only": ["nodocs"],
+    "nodocs_amendment": 4
+  },
+
+  "docs_corpus_rule": {
+    "include_globs": ["**/*.md", "**/*.mdx"],
+    "exclude_name_prefixes": ["CHANGELOG", "LICENSE"],
+    "exclude_path_components": ["testdata", ".github", "node_modules"],
+    "manifest": "arms/corpus-manifest.json"
+  },
+
+  "execution_caps": {
+    "max_turns": 200,
+    "wall_clock_seconds": 2700,
+    "cost_usd": 15
+  },
+
+  "subject_model": "claude-sonnet-5",
+  "judge_model": "claude-opus-5",
+  "judge": {
+    "double_score_fraction": 0.2,
+    "rubric_dimensions": ["correctness", "completeness", "convention"],
+    "rubric_scale": [1, 5]
+  },
+
+  "decision_thresholds": {
+    "h1_cost_ratio_max": 0.80,
+    "h2_testpass_margin_pp": 5,
+    "h2_rubric_margin_points": 0.5
+  },
+
+  "analysis": {
+    "bootstrap_replicates": 10000,
+    "registered_statistic": "within-task paired ratio (cost) / within-task paired delta (quality); see PREREGISTRATION.md section 7 and paper section 3.4 'Statistic discipline'"
+  },
+
+  "isolation": {
+    "experiment_1_actual": "workspace was a git worktree sharing the full clone's object store, and only the harness WebFetch/WebSearch tools were disabled; both channels leaked (see audit/network-sweep.json and paper section 7)",
+    "hardened_mode_available": "run_cell.py --workspace-mode isolated (not used for Experiment 1; intended for the 1R replication)"
+  }
+}

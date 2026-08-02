@@ -27,6 +27,8 @@ import datetime as dt
 import json
 from pathlib import Path
 
+import experiment_paths as xp
+
 import docs_recount as dr
 
 
@@ -34,12 +36,18 @@ def main() -> None:
     ap = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    base = Path(__file__).resolve().parent.parent
-    ap.add_argument("--data-dir", default=str(base / "data"))
-    ap.add_argument("--arms-dir", default=str(base / "arms"))
-    ap.add_argument("--audit-file",
-                    default=str(base / "audit" / "doc-read-audit.json"))
+    xp.add_experiment_arg(ap)
+    ap.add_argument("--data-dir", default=None)
+    ap.add_argument("--arms-dir", default=None)
+    ap.add_argument("--audit-file", default=None)
     args = ap.parse_args()
+    base = xp.resolve_experiment_dir(args.experiment_dir)
+    if args.data_dir is None:
+        args.data_dir = str(base / "data")
+    if args.arms_dir is None:
+        args.arms_dir = str(base / "arms")
+    if getattr(args, "audit_file", None) is None and hasattr(args, "audit_file"):
+        args.audit_file = str(base / "audit" / "doc-read-audit.json")
     data = Path(args.data_dir)
 
     matchers = dr.build_matchers(Path(args.arms_dir))
@@ -78,6 +86,7 @@ def main() -> None:
     if cm_path.is_file():
         corpus_definition = json.load(open(cm_path)).get("definition")
     out = {
+        "provenance": xp.stamp("extract_doc_reads.py"),
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(
             timespec="seconds"),
         "instrument": "revision-2 (Amendment 5): arm-relative matching over "

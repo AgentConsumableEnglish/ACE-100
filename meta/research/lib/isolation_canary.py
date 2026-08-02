@@ -41,6 +41,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import experiment_paths as xp
+
 
 def sh(cmd: list, cwd=None, timeout=60) -> tuple:
     """Run a command; return (rc, stdout+stderr). Never raises."""
@@ -183,9 +185,11 @@ def main() -> int:
                     help="also run egress checks (use inside the container)")
     ap.add_argument("--self-test", action="store_true")
     ap.add_argument("--manifest",
-                    default=str(Path(__file__).resolve().parent.parent / "manifest.json"))
+                    default=None)
     ap.add_argument("--json-out")
     args = ap.parse_args()
+    if args.manifest is None:
+        args.manifest = str(xp.resolve_experiment_dir(None) / "manifest.json")
 
     if args.self_test:
         return self_test(Path(args.manifest))

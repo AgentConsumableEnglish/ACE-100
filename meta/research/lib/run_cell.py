@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """Execute one (task, arm, trial) cell of the ACE-100 documentation experiment.
 
-Implements the run procedure registered in meta/experiment/PREREGISTRATION.md:
+Implements the run procedure registered in the experiment's PREREGISTRATION.md:
 materialize a workspace at the task's base commit with the arm's docs snapshot
 installed, run the subject model headlessly under the registered caps, and
 collect every per-run artifact into the data layout.
 
 Two subcommands:
 
-    run_cell.py one --manifest meta/experiment/manifest.json \
+    run_cell.py one --manifest <experiment>/manifest.json \
                     --task pr-15296 --arm ace --trial 1 [--model claude-sonnet-5]
 
-    run_cell.py schedule --manifest meta/experiment/manifest.json \
+    run_cell.py schedule --manifest <experiment>/manifest.json \
                          [--trials 4] [--arms original,ace,naive] [--dry-run]
 
 'one' executes a single cell and is idempotent: if the cell's result.json
@@ -48,16 +48,18 @@ import sys
 import tempfile
 from pathlib import Path
 
+import experiment_paths as _xp
+
 # ---------------------------------------------------------------------------
 # CONFIG: per-repo configuration. Everything below marked CONFIG must be
 # checked when adopting this tool for a different target repository.
 # ---------------------------------------------------------------------------
 
 # CONFIG: experiment directory holding arms/, data/, and the manifest.
-# Defaults to the parent of tools/ (i.e. meta/experiment when this file lives
-# at meta/experiment/tools/run_cell.py). Override with ACE_EXPERIMENT_DIR.
+# Resolved explicitly from ACE_EXPERIMENT_DIR; no default, so a run can
+# never write into the wrong experiment's tree.
 EXPERIMENT_DIR = Path(
-    os.environ.get("ACE_EXPERIMENT_DIR", str(Path(__file__).resolve().parent.parent))
+    _xp.resolve_experiment_dir(os.environ.get("ACE_EXPERIMENT_DIR"))
 )
 
 # CONFIG: full local clone of the target repository. Must contain every
@@ -75,7 +77,7 @@ WORKSPACE_BASE = Path(os.environ.get("ACE_WORKSPACE_BASE", tempfile.gettempdir()
 
 # ---------------------------------------------------------------------------
 # Registered constants. Do not change without an amendment to the
-# pre-registration (meta/experiment/PREREGISTRATION.md).
+# pre-registration (the experiment's PREREGISTRATION.md).
 # ---------------------------------------------------------------------------
 
 SEED = 20260801                 # seed for all local randomness (schedule shuffle)

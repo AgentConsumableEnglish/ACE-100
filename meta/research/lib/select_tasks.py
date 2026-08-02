@@ -2,7 +2,7 @@
 """Select experimental tasks from a repository's merged-PR history.
 
 Implements the mechanical task-selection procedure registered in
-meta/experiment/PREREGISTRATION.md (section 4). The procedure is deterministic
+the experiment's PREREGISTRATION.md (section 4). The procedure is deterministic
 given the same repository state, filters, and seed; every filter decision is
 recorded in the audit log so the paper's appendix can be generated from it.
 
@@ -46,7 +46,7 @@ BOT_AUTHOR_RE = re.compile(r"\[bot\]$|^(renovate|dependabot|github-actions|opent
 
 # Experiment 2: doc-referencing selection — the PR body or linked-issue body
 # must invoke in-repo documentation (registered in
-# meta/experiment2/PREREGISTRATION.md §3).
+# <experiment>/PREREGISTRATION.md §3).
 DOC_REF_RE = re.compile(
     r"docs/[\w/.-]+\.md|CONTRIBUTING\.md|AGENTS\.md|coding-guidelines", re.IGNORECASE
 )

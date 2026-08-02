@@ -41,9 +41,9 @@ Output: data/docs-consumption.jsonl (one record per run) and a per-arm summary
 plus a reconciliation report (audit event -> captured/supplemented) on stdout.
 Token estimates are chars/4. Idempotent; safe to re-run.
 
-Usage: docs_recount.py [--data-dir meta/experiment/data]
-                       [--arms-dir meta/experiment/arms]
-                       [--audit-file meta/experiment/audit/doc-read-audit.json]
+Usage: docs_recount.py [--data-dir <experiment>/data]
+                       [--arms-dir <experiment>/arms]
+                       [--audit-file <experiment>/audit/doc-read-audit.json]
 """
 
 from __future__ import annotations
@@ -55,6 +55,8 @@ import shlex
 import sys
 from collections import defaultdict
 from pathlib import Path
+
+import experiment_paths as xp
 
 DOC_EXTS = {".md", ".mdx"}
 READER_WORDS = {"cat", "grep", "rg", "head", "tail", "less", "more", "sed",
@@ -673,12 +675,18 @@ def main() -> None:
     ap = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    base = Path(__file__).resolve().parent.parent
-    ap.add_argument("--data-dir", default=str(base / "data"))
-    ap.add_argument("--arms-dir", default=str(base / "arms"))
-    ap.add_argument("--audit-file",
-                    default=str(base / "audit" / "doc-read-audit.json"))
+    xp.add_experiment_arg(ap)
+    ap.add_argument("--data-dir", default=None)
+    ap.add_argument("--arms-dir", default=None)
+    ap.add_argument("--audit-file", default=None)
     args = ap.parse_args()
+    base = xp.resolve_experiment_dir(args.experiment_dir)
+    if args.data_dir is None:
+        args.data_dir = str(base / "data")
+    if args.arms_dir is None:
+        args.arms_dir = str(base / "arms")
+    if getattr(args, "audit_file", None) is None and hasattr(args, "audit_file"):
+        args.audit_file = str(base / "audit" / "doc-read-audit.json")
     data = Path(args.data_dir)
     arms_dir = Path(args.arms_dir)
 

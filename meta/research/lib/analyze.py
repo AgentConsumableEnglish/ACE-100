@@ -2,7 +2,7 @@
 """tools/analyze.py -- final aggregation, estimation, and paper tables/figures
 for the ACE-100 documentation experiment on open-telemetry/opentelemetry-collector.
 
-Reads (all paths relative to EXPERIMENT_DIR, default meta/experiment/):
+Reads (all paths relative to the resolved experiment dir):
     data/runs.jsonl                                  -- one record per run (harness index)
     data/eval/<task_id>/<arm>/trial-<n>/tests.json   -- test outcomes per trial
     data/judge/scores.jsonl                          -- LLM-judge rubric scores
@@ -53,6 +53,8 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+import experiment_paths as xp
+
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
@@ -61,7 +63,8 @@ SEED = 20260801  # registered seed for all local randomness
 
 # CONFIG: root of the experiment data layout (relative to the repo root /
 # wherever the tool is invoked from). Override with --experiment-dir.
-DEFAULT_EXPERIMENT_DIR = Path("meta/experiment")
+# No default experiment: a tool that guessed could write one
+# experiment's numbers into another's tree. See experiment_paths.
 
 # CONFIG: the three registered arms, in canonical display order. H1/H2 and
 # every pairwise comparison are defined over these three only.
@@ -972,6 +975,8 @@ def write_tables(out_dir, tasks, per_task_arm, arm_summary, pairwise,
     parts = []
     parts.append("# ACE-100 experiment: analysis tables")
     parts.append("")
+    parts.append(xp.stamp_line("analyze.py"))
+    parts.append("")
     parts.append(f"Seed {SEED}; hierarchical bootstrap with {args_reps} replicates "
                  f"(percentile 95% CIs). Infra-failed runs excluded throughout; "
                  f"cost statistics are intention-to-treat over non-infra runs. "
@@ -1325,11 +1330,10 @@ def main(argv=None):
                         help="Output directory (default: <experiment-dir>/analysis)")
     parser.add_argument("--bootstrap", type=int, default=10000,
                         help="Bootstrap replicates (default 10000; 0 disables CIs)")
-    parser.add_argument("--experiment-dir", type=Path, default=DEFAULT_EXPERIMENT_DIR,
-                        help=f"Experiment data root (default {DEFAULT_EXPERIMENT_DIR})")
+    xp.add_experiment_arg(parser)
     args = parser.parse_args(argv)
 
-    exp = args.experiment_dir
+    exp = xp.resolve_experiment_dir(args.experiment_dir)
     out_dir = args.out if args.out is not None else exp / "analysis"
     runs_path = exp / "data" / "runs.jsonl"
     eval_dir = exp / "data" / "eval"
@@ -1415,6 +1419,7 @@ def main(argv=None):
 
     # --- summary.json (all numbers; deterministic: sorted keys, no timestamps)
     summary = {
+        "provenance": xp.stamp("analyze.py", {"experiment_dir": str(exp)}),
         "config": {
             "seed": SEED,
             "bootstrap_replicates": args.bootstrap,

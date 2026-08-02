@@ -47,6 +47,8 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+import experiment_paths as xp
+
 import docs_recount as dr
 
 SEED = 20260801  # same seed as the registered analysis
@@ -201,12 +203,19 @@ def classify_run(transcript: Path, matcher) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    base = Path(__file__).resolve().parent.parent
-    ap.add_argument("--data-dir", default=str(base / "data"))
-    ap.add_argument("--arms-dir", default=str(base / "arms"))
+    xp.add_experiment_arg(ap)
+    ap.add_argument("--data-dir", default=None)
+    ap.add_argument("--arms-dir", default=None)
     ap.add_argument("--bootstrap", type=int, default=10000,
                     help="bootstrap replicates for paired CIs")
     args = ap.parse_args()
+    base = xp.resolve_experiment_dir(args.experiment_dir)
+    if args.data_dir is None:
+        args.data_dir = str(base / "data")
+    if args.arms_dir is None:
+        args.arms_dir = str(base / "arms")
+    if getattr(args, "audit_file", None) is None and hasattr(args, "audit_file"):
+        args.audit_file = str(base / "audit" / "doc-read-audit.json")
     data = Path(args.data_dir)
 
     reps_n = args.bootstrap
@@ -303,6 +312,7 @@ def main() -> None:
         return point, lo, hi, per_task
 
     out: dict = {
+        "provenance": xp.stamp("classify_turns.py", {"experiment_dir": str(base)}),
         "status": "POST-HOC EXPLORATORY - not registered; not an H1/H2 readout",
         "seed": SEED, "bootstrap_replicates": reps_n,
         "turn_accounting": {

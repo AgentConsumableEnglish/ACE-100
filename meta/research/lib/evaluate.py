@@ -2,7 +2,7 @@
 """Score completed experiment runs: test outcomes + blinded LLM judge.
 
 Implements the quality-evaluation hierarchy registered in
-meta/experiment/PREREGISTRATION.md (section 6):
+the experiment's PREREGISTRATION.md (section 6):
 
   1. Primary  - test outcomes:
        (a) the repo's existing suite (regressions), and
@@ -13,19 +13,19 @@ meta/experiment/PREREGISTRATION.md (section 6):
 
 Subcommands
 -----------
-  evaluate.py tests --manifest meta/experiment/manifest.json [--task pr-NNNN]...
+  evaluate.py tests --manifest <experiment>/manifest.json [--task pr-NNNN]...
       Re-materialize each completed run's workspace (base commit + arm docs,
       exactly as run_cell built it), apply the run's diff.patch, then run
       (a) the task's test_command suite and (b) the reference PR's changed
       *_test.go files copied in from the reference merge commit. Results go
-      to meta/experiment/data/eval/<task>/<arm>/trial-<n>/tests.json.
+      to <experiment>/data/eval/<task>/<arm>/trial-<n>/tests.json.
 
-  evaluate.py judge --manifest meta/experiment/manifest.json [--double-fraction 0.2]
+  evaluate.py judge --manifest <experiment>/manifest.json [--double-fraction 0.2]
       Build a blinded judging request set, submit it to the Anthropic
       Batches API (model claude-opus-5), poll to completion, and write
-      meta/experiment/data/judge/scores.jsonl. Blinded ids are salted hashes
+      <experiment>/data/judge/scores.jsonl. Blinded ids are salted hashes
       of (task, arm, trial); the mapping lives only in
-      meta/experiment/data/judge/blinding.json. Request order is shuffled and
+      <experiment>/data/judge/blinding.json. Request order is shuffled and
       a seeded subset is scored twice (pass_n=2). Use --dry-run to write the
       request set without submitting, --resume BATCH_ID to collect results
       from an already-submitted batch.
@@ -33,7 +33,7 @@ Subcommands
   evaluate.py judge-report
       Agreement statistics (exact and within-1, per dimension) on the
       double-scored subset. Written to
-      meta/experiment/analysis/judge-agreement.json and printed.
+      <experiment>/analysis/judge-agreement.json and printed.
 
 Requirements: python 3.11+, git, go toolchain, `anthropic` SDK (judge only).
 The target-repo clone must be a FULL clone (all commits reachable): base and
@@ -59,12 +59,14 @@ import tempfile
 import time
 from pathlib import Path
 
+import experiment_paths as _xp
+
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
 
-# Directory anchors. This file lives at meta/experiment/tools/evaluate.py.
-EXP_DIR = Path(__file__).resolve().parents[1]          # meta/experiment/
+# Directory anchors. This file lives at <experiment>/tools/evaluate.py.
+EXP_DIR = _xp.resolve_experiment_dir(os.environ.get("ACE_EXPERIMENT_DIR"))
 ARMS_DIR = EXP_DIR / "arms"
 DATA_DIR = EXP_DIR / "data"
 RUNS_DIR = DATA_DIR / "runs"
