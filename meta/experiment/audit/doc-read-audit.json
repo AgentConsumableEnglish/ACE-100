@@ -1,0 +1,990 @@
+{
+ "source": "agent audit merged at commit 5161f7d; archived from data/doc-reads.json (gitignored) as the committed evidence base for Amendment 5",
+ "audited_at": "2026-08-02T00:00:00+00:00",
+ "per_task": [
+  {
+   "misattributions": [
+    {
+     "arm": "nodocs",
+     "trial": "trial-3",
+     "issue": "Event attributes 573 chars of doc consumption to CONTRIBUTING.md, but the content is entirely Makefile recipe text; CONTRIBUTING.md does not exist in the nodocs worktree (2>/dev/null swallowed the open error). This is the only doc-read event credited to the nodocs arm for pr-14461 and it contains zero doc content.",
+     "evidence": "Command: grep -n \"chlog\\|chloggen\" Makefile CONTRIBUTING.md 2>/dev/null | head -20 (transcript line 59). Raw 573-char tool_result is lines '368:.PHONY: chlog-new ... 415:$(GITHUBGEN) chloggen-components' with NO filename prefixes. Verified on macOS: grep with two file operands prints 'file:line:' prefixes only when both files open; unprefixed output proves only Makefile was read. Corroborated by nodocs worktree listings showing all *.md removed."
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-1",
+     "issue": "output_chars=3318 counts the whole compound-command output, but only the first 1656 chars are .chloggen/README.md; the remaining 1662 chars ('---config---' separator plus .chloggen/config.yaml) are non-doc content, so doc chars are overstated ~2x. (Event has attributed:false, so it may already be excluded from totals, but the recorded chars are still wrong.)",
+     "evidence": "Command: cat /private/var/folders/zl/.../ace100-run-08g4vz70/ws/.chloggen/README.md 2>/dev/null; echo \"---config---\"; cat .../ws/.chloggen/config.yaml 2>/dev/null (transcript line 136). Raw tool_result: '---config---' marker begins at char offset 1656 of 3318; text after it is config.yaml YAML ('change_logs:\\n    api: CHANGELOG-API.md ...')."
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-3",
+     "issue": "Event lists paths [\"CONTRIBUTING.md\", \".chloggen/README.md\"] with output_chars=1673, but CONTRIBUTING.md content was never read: the command only ran find -iname on it, which echoed the 18-char pathname './CONTRIBUTING.md'. All actual doc content (1655 chars) is .chloggen/README.md. Path misattribution inflates CONTRIBUTING.md consumption.",
+     "evidence": "Command: find . -iname \"CONTRIBUTING.md\" -maxdepth 2; cat .chloggen/README.md (transcript line 143). Raw tool_result starts './CONTRIBUTING.md\\n---\\n\"@type\": TechArticle\\nname: Changelog folder...' \u2014 everything after the first line is README.md content."
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-3",
+     "issue": "output_chars=31 counts the harness placeholder string '(Bash completed with no output)' as doc consumption; actual doc chars are 0. Same pattern in ace/trial-4's event for grep -n -i \"chloggen\" CONTRIBUTING.md (also output_chars=31). Small but systematically inflates doc-char counts for empty greps.",
+     "evidence": "Command: grep -n -A15 \"chloggen\\|CHANGELOG\" CONTRIBUTING.md | head -60 (transcript line 141). Raw tool_result is exactly the 31-char string '(Bash completed with no output)'. Spot-checks that verified clean: naive/trial-2 grep -A15 CONTRIBUTING.md event = exactly 2803 chars of genuine CONTRIBUTING.md Changelog text; ace/trial-2 Read of docs/coding-guidelines.md = 3204 chars, matches raw result."
+    }
+   ],
+   "missed_events": [
+    {
+     "arm": "ace",
+     "trial": "trial-2",
+     "channel": "read-tool-noncorpus-arm-doc",
+     "paths": [
+      "docs/contributing-changelog.md"
+     ],
+     "evidence": "Read tool call: {\"file_path\": \"/private/var/folders/zl/jlpwrw392js_g_s5xbhfz31w0000gn/T/ace100-run-1famf3vm/ws/docs/contributing-changelog.md\"} (transcript line 127). Result is real doc prose: 'name: Changelog entries / description: This document tells when a changelog entry is mandatory, and how to add one to a pull request. / isPartOf: CONTRIBUTING...'. The agent was routed here by the extractor-captured grep of CONTRIBUTING.md, whose output linked to docs/contributing-changelog.md.",
+     "approx_chars": 1942
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-4",
+     "channel": "read-tool-noncorpus-arm-doc",
+     "paths": [
+      "docs/contributing-changelog.md"
+     ],
+     "evidence": "Read tool call: {\"file_path\": \"/private/var/folders/zl/jlpwrw392js_g_s5xbhfz31w0000gn/T/ace100-run-oxhjfjym/ws/docs/contributing-changelog.md\"} (transcript line 190). Same ace-arm doc content as the trial-2 read (changelog-entry rules).",
+     "approx_chars": 1942
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-3",
+     "channel": "bash-grep-noncorpus-arm-doc",
+     "paths": [
+      "docs/coding-robustness.md"
+     ],
+     "evidence": "Bash command: grep -n -A5 -i \"log\\.\" docs/coding-robustness.md | head -80 (transcript line 164). Output is doc guidance text ('Do not crash or exit outside the main() function... Return a detailed error to the caller instead...'). The agent located the file one step earlier via find docs -iname \"coding-robustness.md\" -o -iname \"coding-observability.md\" (line 156), which returned both filenames.",
+     "approx_chars": 398
+    }
+   ],
+   "notes": "Audit of all 16 pr-14461 transcripts (4 arms x 4 trials), parsing every tool_use/tool_result pair. MISSED-EVENT ROOT CAUSE: all 3 missed events are in the ace arm and share one systematic cause \u2014 meta/experiment/arms/ace-docs contains ~100 derived *.md files (docs/contributing-changelog.md, docs/coding-robustness.md, docs/coding-*.md, docs/standard/**, etc.) that are absent from corpus-manifest.json (manifest=103 files; ace-docs = those 103 paths plus ~100 extra), so manifest-based path matching structurally undercounts ace-arm doc consumption (~4,282 chars across 3 events here). HIDDEN CHANNELS ON STRICT CORPUS PATHS: none found. Verified specifically: (a) nodocs/trial-3's git show 85daf49c6 full diff (18,080 chars, also cat'ed from scratchpad) touches only .chloggen/add-scraperID-to-error-logs.yaml and 5 .go files \u2014 no corpus .md; (b) ace/trial-1's 'git show HEAD~1:.chloggen' returned a bare tree listing (filenames only, no content); (c) all git log -p / --diff-filter invocations (ace/trial-4 lines 168-183, naive/trial-2 line 54, naive/trial-3 line 115) targeted .chloggen/*.yaml pathspecs only; (d) all xargs / sh -c / for-loop readers (ace/trial-3 line 132, ace/trial-4 line 175, nodocs/trial-4 line 89, original/trial-2 line 129, original/trial-4 line 66) cat/grep only .chloggen/*.yaml; (e) 'go doc go.opentelemetry.io/build-tools/chloggen' (ace/trial-2) documents an external Go module, not corpus docs; (f) no strings/dd/od/paste/python-open readers on .md anywhere; (g) the nodocs arm never recovered deleted docs via git \u2014 its doc-seeking greps returned empty. WEBFETCH/WEBSEARCH: zero tool calls in any transcript (correctly disabled). However, agents reached the network through Bash: ace/trial-4 lines 214/219 ran curl against https://api.github.com/search/issues, and original/trial-1 lines 157/160 ran 'gh api search/issues' \u2014 GitHub issue metadata, not repo documentation, so not doc-consumption events, but worth knowing the sandbox allows outbound HTTP. CHANGELOG.md/CHANGELOG-API.md reads (several trials) were correctly ignored per the corpus definition's CHANGELOG* exclusion. Doc content echoed back through chloggen validate/test output was observed and excluded per instructions. Extractor totals for this task otherwise reconciled: naive/trial-2 (2803) and ace/trial-2 read (3204) matched raw results exactly.",
+   "task_id": "pr-14461",
+   "transcripts_examined": 16
+  },
+  {
+   "task_id": "pr-14690",
+   "transcripts_examined": 16,
+   "missed_events": [
+    {
+     "arm": "ace",
+     "trial": "trial-2",
+     "channel": "bash-sed on governed arm doc absent from corpus manifest",
+     "paths": [
+      "docs/contributing-changelog.md"
+     ],
+     "evidence": "sed -n '1,80p' docs/contributing-changelog.md 2>/dev/null",
+     "approx_chars": 1794
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-3",
+     "channel": "bash-sed on governed arm doc absent from corpus manifest",
+     "paths": [
+      "docs/contributing-changelog.md"
+     ],
+     "evidence": "sed -n '1,120p' /private/var/folders/zl/jlpwrw392js_g_s5xbhfz31w0000gn/T/ace100-run-3ioq1xr5/ws/docs/contributing-changelog.md",
+     "approx_chars": 1794
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-4",
+     "channel": "bash-sed on governed arm doc absent from corpus manifest",
+     "paths": [
+      "docs/contributing-changelog.md"
+     ],
+     "evidence": "sed -n '1,120p' /private/var/folders/zl/jlpwrw392js_g_s5xbhfz31w0000gn/T/ace100-run-46qeoif9/ws/docs/contributing-changelog.md 2>/dev/null",
+     "approx_chars": 1794
+    },
+    {
+     "arm": "original",
+     "trial": "trial-3",
+     "channel": "web-curl (WebFetch-equivalent; fetched the actual upstream fix diff \u2014 solution leakage)",
+     "paths": [
+      "https://github.com/open-telemetry/opentelemetry-collector/commit/41f564ce376cb837123b17b9145cd14537ba74c2.diff"
+     ],
+     "evidence": "curl -s \"https://github.com/open-telemetry/opentelemetry-collector/commit/41f564ce376cb837123b17b9145cd14537ba74c2.diff\"",
+     "approx_chars": 8027
+    },
+    {
+     "arm": "original",
+     "trial": "trial-3",
+     "channel": "web-curl (WebFetch-equivalent)",
+     "paths": [
+      "https://api.github.com/search/issues?q=repo:open-telemetry/opentelemetry-collector+%22components+command+hides+components%22"
+     ],
+     "evidence": "curl -s \"https://api.github.com/search/issues?q=repo:open-telemetry/opentelemetry-collector+%22components+command+hides+components%22\" | head -c 3000",
+     "approx_chars": 3000
+    },
+    {
+     "arm": "original",
+     "trial": "trial-3",
+     "channel": "web-curl (WebFetch-equivalent)",
+     "paths": [
+      "https://api.github.com/repos/open-telemetry/opentelemetry-collector/issues/14682/timeline"
+     ],
+     "evidence": "curl -s \"https://api.github.com/repos/open-telemetry/opentelemetry-collector/issues/14682/timeline\" -H \"Accept: application/vnd.github.mockingbird-preview+json\" | python3 -c \"...\"",
+     "approx_chars": 644
+    },
+    {
+     "arm": "original",
+     "trial": "trial-3",
+     "channel": "web-curl (WebFetch-equivalent; PR title+merged_at+body)",
+     "paths": [
+      "https://api.github.com/repos/open-telemetry/opentelemetry-collector/pulls/14755"
+     ],
+     "evidence": "curl -s \"https://api.github.com/repos/open-telemetry/opentelemetry-collector/pulls/14755\" | python3 -c \"...print(d.get('title'))...print(d.get('body')[:2000]...)\"",
+     "approx_chars": 1902
+    },
+    {
+     "arm": "original",
+     "trial": "trial-3",
+     "channel": "web-curl (WebFetch-equivalent)",
+     "paths": [
+      "https://api.github.com/repos/open-telemetry/opentelemetry-collector/pulls/14690",
+      "https://api.github.com/repos/open-telemetry/opentelemetry-collector/pulls/14745",
+      "https://api.github.com/repos/open-telemetry/opentelemetry-collector/pulls/14755"
+     ],
+     "evidence": "for pr in 14690 14745 14755; do\\ncurl -s \"https://api.github.com/repos/open-telemetry/opentelemetry-collector/pulls/$pr\" | python3 -c \"...\"\\ndone",
+     "approx_chars": 263
+    },
+    {
+     "arm": "original",
+     "trial": "trial-3",
+     "channel": "web-curl (WebFetch-equivalent; fetched the task PR's own title/body/merge_commit_sha)",
+     "paths": [
+      "https://api.github.com/repos/open-telemetry/opentelemetry-collector/pulls/14690"
+     ],
+     "evidence": "curl -s \"https://api.github.com/repos/open-telemetry/opentelemetry-collector/pulls/14690\" | python3 -c \"...print(d.get('merge_commit_sha'))...print(d.get('body'))\"",
+     "approx_chars": 1333
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-2",
+     "channel": "web-curl (WebFetch-equivalent)",
+     "paths": [
+      "https://api.github.com/search/issues?q=repo:open-telemetry/opentelemetry-collector+components+command+hides+deprecated+alias+in:title"
+     ],
+     "evidence": "curl -s \"https://api.github.com/search/issues?q=repo:open-telemetry/opentelemetry-collector+components+command+hides+deprecated+alias+in:title\" | head -100",
+     "approx_chars": 4923
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-2",
+     "channel": "web-curl (WebFetch-equivalent)",
+     "paths": [
+      "https://api.github.com/repos/open-telemetry/opentelemetry-collector/issues/14682/timeline"
+     ],
+     "evidence": "curl -s \"https://api.github.com/repos/open-telemetry/opentelemetry-collector/issues/14682/timeline\" | python3 -c \"...\"",
+     "approx_chars": 666
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-2",
+     "channel": "web-curl (WebFetch-equivalent; PR body of the upstream fix)",
+     "paths": [
+      "https://api.github.com/repos/open-telemetry/opentelemetry-collector/pulls/14755"
+     ],
+     "evidence": "curl -s \"https://api.github.com/repos/open-telemetry/opentelemetry-collector/pulls/14755\" | python3 -c \"...print(d.get('body'))...print('merge_commit_sha:', d.get('merge_commit_sha'))\"",
+     "approx_chars": 1901
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-2",
+     "channel": "web-curl (WebFetch-equivalent)",
+     "paths": [
+      "https://api.github.com/repos/open-telemetry/opentelemetry-collector/pulls/14755"
+     ],
+     "evidence": "curl -s \"https://api.github.com/repos/open-telemetry/opentelemetry-collector/pulls/14755\" | python3 -c \"...print('state:', d.get('state'))...\"",
+     "approx_chars": 75
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-2",
+     "channel": "web-curl (WebFetch-equivalent; upstream fix commit message)",
+     "paths": [
+      "https://api.github.com/repos/open-telemetry/opentelemetry-collector/commits/e28f07ba2756484413d86a4a8294699e1e47eb89"
+     ],
+     "evidence": "curl -s \"https://api.github.com/repos/open-telemetry/opentelemetry-collector/commits/e28f07ba2756484413d86a4a8294699e1e47eb89\" | python3 -c \"...print(d.get('commit',{}).get('message'))...\"",
+     "approx_chars": 1267
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-2",
+     "channel": "web-curl (WebFetch-equivalent)",
+     "paths": [
+      "https://api.github.com/search/issues?q=repo:open-telemetry/opentelemetry-collector+e28f07ba2756484413d86a4a8294699e1e47eb89",
+      "https://api.github.com/repos/open-telemetry/opentelemetry-collector/commits/e28f07ba2756484413d86a4a8294699e1e47eb89/pulls"
+     ],
+     "evidence": "curl -s \"https://api.github.com/search/issues?q=repo:open-telemetry/opentelemetry-collector+e28f07ba2756484413d86a4a8294699e1e47eb89\" \\necho \"---\"\\ncurl -s \"https://api.github.com/repos/open-telemetry/opentelemetry-collector/commits/e28f07ba2756484413d86a4a8294699e1e47eb89/pulls\" -H \"Accept: application/vnd.github.groot-preview+json\" | python3 -m json.tool | head -50",
+     "approx_chars": 5396
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-1",
+     "channel": "web-curl (WebFetch-equivalent)",
+     "paths": [
+      "https://api.github.com/search/issues?q=repo:open-telemetry/opentelemetry-collector+components+command+hides+deprecated+alias+in:title"
+     ],
+     "evidence": "curl -s \"https://api.github.com/search/issues?q=repo:open-telemetry/opentelemetry-collector+components+command+hides+deprecated+alias+in:title\" | head -c 2000",
+     "approx_chars": 1992
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-3",
+     "channel": "web-curl (WebFetch-equivalent)",
+     "paths": [
+      "https://api.github.com/search/issues?q=repo:open-telemetry/opentelemetry-collector+%22hides+components%22+in:title"
+     ],
+     "evidence": "curl -s \"https://api.github.com/search/issues?q=repo:open-telemetry/opentelemetry-collector+%22hides+components%22+in:title\" | head -c 2000",
+     "approx_chars": 1992
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-4",
+     "channel": "web-curl (WebFetch-equivalent)",
+     "paths": [
+      "https://api.github.com/search/issues?q=repo:open-telemetry/opentelemetry-collector+in:title+%22components+command+hides+components%22"
+     ],
+     "evidence": "curl -s \"https://api.github.com/search/issues?q=repo:open-telemetry/opentelemetry-collector+in:title+%22components+command+hides+components%22\" 2>&1 | head -c 2000",
+     "approx_chars": 1992
+    },
+    {
+     "arm": "naive",
+     "trial": "trial-2",
+     "channel": "web-curl (WebFetch-equivalent)",
+     "paths": [
+      "https://api.github.com/search/issues?q=repo:open-telemetry/opentelemetry-collector+components+command+hides+deprecated+alias+in:title,body"
+     ],
+     "evidence": "curl -s \"https://api.github.com/search/issues?q=repo:open-telemetry/opentelemetry-collector+components+command+hides+deprecated+alias+in:title,body\" | head -c 3000",
+     "approx_chars": 3000
+    }
+   ],
+   "misattributions": [
+    {
+     "arm": "nodocs",
+     "trial": "trial-3",
+     "issue": "Event attributed:true with output_chars=58, but the file does not exist in the nodocs workspace; the entire output is a grep error message, zero doc content consumed. Should be attributed:false or excluded (its sibling event in the same trial was correctly marked attributed:false).",
+     "evidence": "Command: grep -n -A 15 \"chloggen\\|changelog\" CONTRIBUTING.md | head -80 -> full tool_result: 'ugrep: warning: CONTRIBUTING.md: No such file or directory' (58 chars, verified against raw transcript)"
+    },
+    {
+     "arm": "original",
+     "trial": "trial-1",
+     "issue": "Event on .chloggen/README.md attributed:true with output_chars=45, but the grep on the README matched nothing; all 45 output chars are a zsh glob error from the unrelated second command (cmd/chloggen/*.go). Zero doc content consumed.",
+     "evidence": "Command: grep -n \"issues\" .chloggen/README.md | head -20\\ngrep -rn \"issues\" cmd/chloggen/*.go 2>/dev/null | head -20 -> full tool_result: '(eval):2: no matches found: cmd/chloggen/*.go' (45 chars, verified)"
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-2",
+     "issue": "Compound-command event records output_chars=1581 (the whole tool_result), but roughly 160 chars of that are non-doc output: the empty nopFactories grep, two '---' separator lines, and the 5-line ls .chloggen listing. Doc-derived content from CONTRIBUTING.md is approximately 1420 chars \u2014 about a 10 percent overcount from whole-output attribution.",
+     "evidence": "Command: grep -rn \"nopFactories\" otelcol/*.go | grep -v _test.go; echo \"---\"; ls .chloggen 2>/dev/null | head -5; echo \"---\"; cat CONTRIBUTING.md | grep -n -A 20 \"chloggen\\|changelog\" | head -60 -> tool_result verified at exactly 1581 chars, beginning '---\\nREADME.md\\nTEMPLATE.yaml\\n...' before the CONTRIBUTING.md grep content starts at line '91:The [changelog document]...'"
+    },
+    {
+     "arm": "naive",
+     "trial": "trial-1",
+     "issue": "Verified correct (no misattribution): tool_result is exactly 2637 chars of pure .chloggen/README.md content, matching the recorded output_chars.",
+     "evidence": "Command: cd .../ws && cat .chloggen/README.md -> output starts '### Changelog folder' and ends '...MUST be specified in every entry file.' (2637 chars, verified)"
+    },
+    {
+     "arm": "original",
+     "trial": "trial-3",
+     "issue": "Essentially correct, minor note: Read-channel event records 1548 chars which matches the tool_result, but that includes cat -n style line-number/tab prefixes, so raw doc content is slightly fewer chars than recorded. Likely by design; flagging for consistency with Bash-channel events which have no such overhead.",
+     "evidence": "Read tool on .../ws/.chloggen/README.md -> tool_result 1548 chars beginning '1\\t### Changelog folder\\n2\\t\\n3\\tThis repo uses `chloggen`...'"
+    }
+   ],
+   "notes": "Method: parsed all 16 transcripts (tool_use paired with tool_result by id) with python over the JSONL; flagged every Bash command mentioning .md, git show/log/grep, xargs, -exec, sh -c, for-loops, python, strings, dd, paste, curl/wget; additionally scanned outputs of every Bash command NOT mentioning .md for markdown-signature content to catch glob/indirect reads; checked Read/Grep/WebFetch/WebSearch/Task tool usage, isSidechain entries, and attachment payloads. Genuinely missed corpus-adjacent doc consumption: 3 sed reads of docs/contributing-changelog.md in the ace arm (1794 chars each). sed is in the extractor's reader list; these were missed only because the path is absent from corpus-manifest.json, which lists original-repo doc paths \u2014 but the file IS a governed doc in the ace arm (exists at meta/experiment/arms/ace-docs/docs/contributing-changelog.md, and the ace-arm CONTRIBUTING.md links to it). The exact-corpus-membership rule structurally undercounts ace-arm doc consumption wherever the ace restructure renamed/split docs; recommend an ace-arm path manifest. Web access: WebFetch/WebSearch tools were never invoked, but two trials explicitly searched for them via ToolSearch (ace/trial-3 query 'web search fetch github', nodocs/trial-1 'web search fetch url'; both returned no tools) and 6 of 16 trials then reached the internet via curl (16 curl invocations, all listed as missed events per the flag-if-present directive). Most serious: original/trial-3 fetched the actual upstream fix diff (8027 chars) and the task PR 14690's own body/merge SHA \u2014 direct solution leakage; nodocs/trial-2 similarly recovered the upstream fix PR body and commit message via the GitHub API, partially defeating the nodocs ablation through the network rather than git. Negative results (verified): no git-based recovery of deleted docs in the nodocs arm (all git show/log/grep outputs contain zero .md content \u2014 commits touched only .go and .chloggen/*.yaml); every xargs/sh -c/for-loop cat targets .chloggen/*.yaml changelog templates, not corpus .md files; python heredocs read only .go files; no strings/dd/paste/sort/uniq touched .md files; no subagent (isSidechain) activity in any transcript; attachments carry no doc content (only tool/skill listings, task reminders, edited-file echoes). Spot-checked 5 extractor events (listed under misattributions, including 2 verified-correct entries): 2 events count pure error-message output as attributed doc consumption (58 and 45 chars \u2014 small in chars but they inflate event counts, notably giving nodocs/trial-3 a spurious attributed doc-read), and compound-command whole-output attribution overcounts by roughly 10 percent in ace/trial-2."
+  },
+  {
+   "task_id": "pr-15108",
+   "transcripts_examined": 16,
+   "missed_events": [
+    {
+     "arm": "ace",
+     "trial": "trial-4",
+     "channel": "bash-cat (doc outside corpus manifest)",
+     "paths": [
+      "docs/contributing-changelog.md"
+     ],
+     "evidence": "cat docs/contributing-changelog.md 2>/dev/null | head -100",
+     "approx_chars": 1794
+    }
+   ],
+   "misattributions": [
+    {
+     "arm": "ace",
+     "trial": "trial-4",
+     "issue": "paths over-attribution: event lists docs/coding-guidelines.md but all 170 output chars come from CONTRIBUTING.md (grep matched nothing in coding-guidelines.md)",
+     "evidence": "grep -n -i \"chloggen\\|changelog\" CONTRIBUTING.md docs/coding-guidelines.md 2>/dev/null | head -30 -> output: \"CONTRIBUTING.md:89:## Changelog\\nCONTRIBUTING.md:91:The [changelog document](docs/contributing-changelog.md) tells when a changelog entry is mandatory, and how to add one.\""
+    },
+    {
+     "arm": "original",
+     "trial": "trial-3",
+     "issue": "output_chars=4003 counts mostly non-doc content: roughly 2500+ chars are .chloggen/config.yaml, only the 'head -40' tail of .chloggen/README.md (<=1451 chars) is doc content; the extractor's attributed:false flag already hedges this, so it is a char-count caveat rather than an error",
+     "evidence": "cat .chloggen/config.yaml 2>/dev/null; echo \"---\"; cat .chloggen/README.md 2>/dev/null | head -40 -> output begins with config.yaml content: \"change_logs:\\n    api: CHANGELOG-API.md\\n    user: CHANGELOG.md...\""
+    }
+   ],
+   "notes": "Method: enumerated every tool_use/tool_result pair in all 16 transcripts via python over the JSONL (no whole-transcript reads). Full reconciliation: every Bash command containing '.md' was listed and matched 1:1 against the extractor's 7 events; the only unmatched doc read is the single missed event reported (cause is exact corpus-manifest membership - the ace arm ships 205 governed .md files in arms/ace-docs, including docs/contributing-changelog.md and docs/coding-breaking-changes.md, but corpus-manifest.json lists 103; any ace-arm read of a restructured doc is invisible to the extractor by construction). Channels hunted with no findings: xargs/find -exec/sh -c/loops (xargs uses touched only .chloggen/*.yaml); git show/log/grep (only original/trial-3 ran git log --oneline variants returning 89 chars of commit subjects/filenames, no doc content; the nodocs arm never used git history to recover deleted docs - zero doc consumption in all 4 nodocs trials is genuine); no strings/dd/paste/sort/uniq/python-open readers of docs; no Grep/Glob tool calls at all in any trial; no Read tool call on any .md. WebFetch/WebSearch: never present as tools (4 ToolSearch probes for web tools returned 'No matching deferred tools found'), BUT agents routinely bypassed this with Bash curl to api.github.com and patch-diff.githubusercontent.com (10+ trials, fetching issue #14662, PR #15108 metadata and its diff) - none of these URLs or responses contain corpus doc content, so none are doc-consumption events, but the 'web disabled' intent only held at the tool layer. One Agent subagent (naive/trial-2, toolu_01LEGmQiEn96bXEqHTaQ6hUF, 3 tool_uses, 23442 tokens) performed web retrieval of the GitHub issue body; its sidechain messages are entirely absent from transcript.jsonl, making its channel unauditable - an instrumentation gap worth closing. CHANGELOG.md greps (ace/trial-3 488c, nodocs/trial-3 546c, original/trial-3 835c) are correctly excluded per the corpus definition ('excluding CHANGELOG*'). files_read.json is empty of .md in all 16 trials. Session-start attachments contain no workspace doc injection. Spot-checks confirming extractor accuracy: ace/trial-2 grep docs/coding-guidelines.md (150 chars exact), naive/trial-2 grep CONTRIBUTING.md (1631 exact) and sed docs/coding-guidelines.md (172 exact), original/trial-2 cat .chloggen/README.md (1451 exact), original/trial-4 compound (738 exact, attributed:false appropriate). Aside: my scratchpad script audit.py was modified externally mid-session to target task pr-14690; I did not use the modified version - all results here come from fresh scripts scoped to pr-15108."
+  },
+  {
+   "misattributions": [
+    {
+     "arm": "nodocs",
+     "trial": "trial-4",
+     "issue": "Event counted as a doc read of CONTRIBUTING.md (58 chars), but the file does not exist in the nodocs workspace; the entire tool output is a file-not-found warning, so zero doc content was consumed. This is the only extractor event in the nodocs arm for pr-15495, meaning true nodocs doc consumption for this task is zero events.",
+     "evidence": "Command: grep -n \"chloggen\\|issues:\" CONTRIBUTING.md | head -20 \u2014 full 58-char output: 'ugrep: warning: CONTRIBUTING.md: No such file or directory'. Corroborated by a later command in the same trial, 'find . -maxdepth 1 -iname \"CONTRIBUTING*\"', which exited 1 with no matches."
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-4",
+     "issue": "output_chars=4312 attributed to .chloggen/README.md, but the command concatenates .chloggen/config.yaml (not in corpus) before the README; 2652 of the 4312 chars are config.yaml content. Actual doc content is ~1655 chars (matches the full README cat in ace/trial-3). Overcount ~2.6x.",
+     "evidence": "Command: cat .../ws/.chloggen/config.yaml\\necho ---\\ncat .../ws/.chloggen/README.md | head -60 \u2014 measured split on the '---' separator: config.yaml part 2652 chars, README part 1655 chars."
+    },
+    {
+     "arm": "original",
+     "trial": "trial-1",
+     "issue": "output_chars=2616 attributed to .chloggen/README.md, but the first 1167 chars of the paired tool_result are grep matches from Makefile/Makefile.Common (not corpus docs); actual README content is ~1449 chars.",
+     "evidence": "Command: grep -n \"chloggen\" .../ws/Makefile* 2>/dev/null | head -20; cat .../ws/.chloggen/README.md \u2014 output begins with Makefile.Common:22:CHLOGGEN_CONFIG... lines before the README front matter starts at char 1167."
+    },
+    {
+     "arm": "original",
+     "trial": "trial-2",
+     "issue": "output_chars=4108 attributed to .chloggen/README.md, but 2652 chars are .chloggen/config.yaml content (not in corpus); actual doc content is ~1451 chars. Overcount ~2.8x.",
+     "evidence": "Command: cat .../ws/.chloggen/config.yaml 2>/dev/null; echo \"---\"; cat .../ws/.chloggen/README.md 2>/dev/null | head -60 \u2014 measured split on the '---' separator: config.yaml part 2652 chars, README part 1451 chars."
+    }
+   ],
+   "missed_events": [
+    {
+     "arm": "ace",
+     "trial": "trial-1",
+     "channel": "bash-sed-nonmanifest-path",
+     "paths": [
+      "docs/contributing-changelog.md"
+     ],
+     "evidence": "sed -n '1,120p' docs/contributing-changelog.md",
+     "approx_chars": 1794
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-2",
+     "channel": "bash-cat-nonmanifest-path",
+     "paths": [
+      "docs/contributing-changelog.md"
+     ],
+     "evidence": "cat /private/var/folders/zl/jlpwrw392js_g_s5xbhfz31w0000gn/T/ace100-run-5j40pkqw/ws/docs/contributing-changelog.md 2>/dev/null | head -100",
+     "approx_chars": 1794
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-3",
+     "channel": "bash-cat-nonmanifest-path",
+     "paths": [
+      "docs/contributing-changelog.md"
+     ],
+     "evidence": "cat /private/var/folders/zl/jlpwrw392js_g_s5xbhfz31w0000gn/T/ace100-run-_l2uh5it/ws/docs/contributing-changelog.md",
+     "approx_chars": 1794
+    }
+   ],
+   "notes": "All 16 transcripts examined via id-paired tool_use/tool_result scans (no whole-transcript reads). HEADLINE: the 3 missed events are reads of docs/contributing-changelog.md, a governed ace-arm doc (present in meta/experiment/arms/ace-docs/docs/, carries the kit's TechArticle front matter, linked from the ace CONTRIBUTING.md line 91) that is NOT among the corpus manifest's 103 paths \u2014 the ace arm restructures docs under new filenames, so the manifest-keyed extractor is structurally blind to ace-only doc paths and undercounts ace doc consumption (found via a front-matter marker sweep of every tool_result, then a full sweep of every Bash command naming any .md path). Combined with the misattributions, corrected per-arm totals for pr-15495 shift materially: ace gains 3 events / +5382 chars, nodocs trial-4 loses its only event, and three mixed-command events overcount by ~6.5k chars total. Channels verified clean: no WebFetch/WebSearch tool_use anywhere (the strings occur only inside harness deferred-tools/skill-listing attachment entries); no isSidechain lines in any transcript; no Grep/Glob tool calls; 211 Read tool calls, none targeting .md; find|xargs grep -l commands (nodocs/trial-4) returned only 'Exit code 1'/empty \u2014 filename discovery, no content; go doc calls hit gonum (third-party), not repo docs; no python -c/strings/dd/paste readers on docs; no cp/mv/tee relocation of .md files. Git audit: all git usage across 16 trials is status/diff/stash/log-oneline on code; nodocs/trial-3 did use git show/cherry-pick on upstream commit 3e8f5a9f6 (the apparent real fix \u2014 possible solution leakage worth a separate look) but the shown paths are graph.go, graph_test.go and .chloggen/start-receivers-last.yaml \u2014 no corpus *.md content retrieved from history. grep hits on CHANGELOG.md (original/trial-1, original/trial-2) are not corpus (CHANGELOG.md absent from manifest). Spot-check of a fourth extractor event (ace/trial-1 sed docs/coding-guidelines.md, 3050 chars) verified correct: output is genuine doc content, path and chars accurate.",
+   "task_id": "pr-15495",
+   "transcripts_examined": 16
+  },
+  {
+   "task_id": "pr-14985",
+   "transcripts_examined": 16,
+   "missed_events": [
+    {
+     "arm": "ace",
+     "trial": "trial-1",
+     "channel": "bash-cat, doc outside manifest",
+     "paths": [
+      "docs/coding-modules.md"
+     ],
+     "evidence": "cat docs/coding-modules.md 2>/dev/null | head -100",
+     "approx_chars": 4151
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-3",
+     "channel": "bash-cat, doc outside manifest",
+     "paths": [
+      "docs/coding-modules.md"
+     ],
+     "evidence": "cat docs/coding-modules.md 2>/dev/null | head -100",
+     "approx_chars": 4151
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-4",
+     "channel": "bash-cat, doc outside manifest",
+     "paths": [
+      "docs/coding-modules.md"
+     ],
+     "evidence": "cat docs/coding-modules.md 2>/dev/null",
+     "approx_chars": 4151
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-4",
+     "channel": "bash-cat, doc outside manifest",
+     "paths": [
+      "docs/contributing-changelog.md"
+     ],
+     "evidence": "cat /private/var/folders/zl/jlpwrw392js_g_s5xbhfz31w0000gn/T/ace100-run-tnxtrpag/ws/docs/contributing-changelog.md 2>/dev/null",
+     "approx_chars": 1794
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-4",
+     "channel": "bash-xargs (sh -c cat via pipeline)",
+     "paths": [
+      ".chloggen/README.md"
+     ],
+     "evidence": "ls .chloggen | head -5; echo \"---\"; cat .chloggen/TEMPLATE.yaml 2>/dev/null; echo \"---example---\"; ls .chloggen | grep -v TEMPLATE | head -3 | xargs -I{} sh -c 'echo \"=== {} ===\"; cat .chloggen/{}' \u2014 README.md is the 2nd of the 3 entries piped to xargs; its full content (\"=== README.md ===\" section, 1674 chars of the 5711-char output) entered context",
+     "approx_chars": 1674
+    },
+    {
+     "arm": "naive",
+     "trial": "trial-2",
+     "channel": "git-show",
+     "paths": [
+      "config/confignet/README.md"
+     ],
+     "evidence": "git show e3317e898 -- config/confignet/README.md \u2014 full diff of the naive docs-snapshot install commit; output (3101 chars total, ~2850 doc diff) reproduces essentially the whole naive README including the '\"npipe\", which refers to Windows named pipes' line",
+     "approx_chars": 2850
+    },
+    {
+     "arm": "naive",
+     "trial": "trial-4",
+     "channel": "git-show",
+     "paths": [
+      "config/confignet/README.md"
+     ],
+     "evidence": "git show 9d269efcc -- config/confignet/README.md \u2014 same naive snapshot diff, 3101 chars total, ~2850 of README diff content",
+     "approx_chars": 2850
+    },
+    {
+     "arm": "naive",
+     "trial": "trial-4",
+     "channel": "read-of-persisted-curl-output (upstream PR patch)",
+     "paths": [
+      "config/confignet/README.md"
+     ],
+     "evidence": "Read tool on /Users/owen/.claude/projects/-private-var-folders-zl-jlpwrw392js-g-s5xbhfz31w0000gn-T-ace100-run-nvnvxd99-ws/d37afb38-b3fb-4fd9-8588-94ac8e653349/tool-results/bhi1tq2p8.txt (the persisted 30.9KB output of 'cat /private/tmp/npipe.patch', patch fetched via curl from github.com/...efde8a253....patch); 34584 chars into context, README.md hunk = 882 chars",
+     "approx_chars": 882
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-1",
+     "channel": "bash-sed on curl-downloaded PR diff",
+     "paths": [
+      "config/confignet/README.md"
+     ],
+     "evidence": "sed -n '1,332p' /tmp/pr14985.diff (file from: curl -sL \"https://github.com/open-telemetry/opentelemetry-collector/pull/14985.diff\" -o /tmp/pr14985.diff) \u2014 14578-char output includes the full README.md diff hunk (826 chars) with doc text",
+     "approx_chars": 826
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-3",
+     "channel": "git-show of upstream PR commit in history",
+     "paths": [
+      "config/confignet/README.md"
+     ],
+     "evidence": "git show efde8a253 -- config/confignet/confignet.go ... config/confignet/README.md config/confignet/config.schema.yaml ... \u2014 the real PR #14985 commit exists in local history; 16266-char output includes the README.md diff (820 chars) restoring doc content deleted from the nodocs worktree",
+     "approx_chars": 820
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-4",
+     "channel": "bash-curl raw.githubusercontent.com loop",
+     "paths": [
+      "config/confignet/README.md"
+     ],
+     "evidence": "BASE=52e6bf4aaabab74fbe7fae0b3984e983ec847f93; for f in npipe_windows.go npipe_others.go npipe_windows_test.go npipe_others_test.go README.md config.schema.yaml go.mod go.sum confignet_test.go; do echo \"===== $f =====\"; curl -s \"https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector/$BASE/config/confignet/$f\"; echo; done \u2014 README.md fetched in full from upstream (1243 chars of the 14919-char output)",
+     "approx_chars": 1243
+    },
+    {
+     "arm": "original",
+     "trial": "trial-2",
+     "channel": "git-show",
+     "paths": [
+      "config/confignet/README.md"
+     ],
+     "evidence": "git show 33d4efaba -- config/confignet/README.md \u2014 diff of the original docs-snapshot install commit (999 chars, ~750 doc diff) including the '\"npipe\" (Windows named pipes, Windows-only)' README line",
+     "approx_chars": 750
+    },
+    {
+     "arm": "original",
+     "trial": "trial-2",
+     "channel": "read-of-curl-downloaded PR diff in scratchpad",
+     "paths": [
+      "config/confignet/README.md"
+     ],
+     "evidence": "Read tool on /private/tmp/claude-501/-private-var-folders-zl-jlpwrw392js-g-s5xbhfz31w0000gn-T-ace100-run-5nb04i0g-ws/60a5080f-7edd-46a7-9c73-f2edf05c0983/scratchpad/pr14985.diff (fetched via curl -sL \"https://github.com/open-telemetry/opentelemetry-collector/pull/14985.diff\"); 31346 chars into context, README.md hunk = 882 chars",
+     "approx_chars": 882
+    },
+    {
+     "arm": "original",
+     "trial": "trial-3",
+     "channel": "bash-sed on curl-downloaded PR diff",
+     "paths": [
+      "config/confignet/README.md"
+     ],
+     "evidence": "sed -n '133,560p' /private/tmp/pr14985.diff \u2014 output (15811 chars) begins exactly at 'diff --git a/config/confignet/README.md' and includes the full README hunk (826 chars)",
+     "approx_chars": 826
+    },
+    {
+     "arm": "original",
+     "trial": "trial-4",
+     "channel": "git-show of upstream PR commit in history",
+     "paths": [
+      "config/confignet/README.md"
+     ],
+     "evidence": "git show efde8a253d80453156e4de80308576bd3876c7d3 -- config/confignet/npipe_windows.go config/confignet/npipe_others.go config/confignet/README.md config/confignet/config.schema.yaml config/confignet/package_test.go .chloggen/confignet-npipe.yaml .github/workflows/utils/cspell.json config/confignet/go.mod \u2014 6495-char output includes the README.md diff (820 chars)",
+     "approx_chars": 820
+    }
+   ],
+   "misattributions": [
+    {
+     "arm": "ace",
+     "trial": "trial-1",
+     "issue": "Event [3] (bash, CONTRIBUTING.md, attributed=true, output_chars=31): the 31 chars are the harness placeholder, not doc content \u2014 zero documentation reached the agent. Same pattern at ace/trial-2 event [5] and ace/trial-3 event [4] (both 31 chars, attributed=true).",
+     "evidence": "Command 'grep -n -i \"scop\" CONTRIBUTING.md | head -40' produced exactly '(Bash completed with no output)' in the raw transcript."
+    },
+    {
+     "arm": "naive",
+     "trial": "trial-3",
+     "issue": "Event [6] (read, config/confignet/README.md, output_chars=93): counted as a doc read but the tool_result is a harness notice, not file content \u2014 no doc chars were delivered on this call.",
+     "evidence": "Raw tool_result is 'Wasted call \u2014 file unchanged since your last Read. Refer to that earlier tool_result instead.' (93 chars)."
+    },
+    {
+     "arm": "naive",
+     "trial": "trial-2",
+     "issue": "Event [0] (bash, config/confignet/README.md, attributed=false, output_chars=6738): marked unattributed by the conservative Bash rule, but the output genuinely contains the complete naive-arm README (~1700 doc chars) \u2014 a real full read that attribution zeroes out.",
+     "evidence": "Command 'cat ./config/confignet/go.mod; echo \"---go.sum---\"; cat ./config/confignet/go.sum; echo \"---README---\"; cat ./config/confignet/README.md' \u2014 output from offset 2637 ('---README---') onward is the full '# Network Configuration Settings' doc text."
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-4",
+     "issue": "Event [1] (bash, attributed=true, chars=4183) records paths=['README.md'] (root README) but the command runs after 'cd ./config/confignet', so the doc actually shown is config/confignet/README.md \u2014 wrong path attribution.",
+     "evidence": "Command 'cd ./config/confignet && git log --oneline -- README.md confignet.go | head -20 && echo \"---blame---\" && git log -p -1 -- README.md | head -60'; output contains the ace snapshot diff of config/confignet/README.md ('Network Configuration Settings' at offset 1635)."
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-1",
+     "issue": "Event [1] (bash, attributed=true, output_chars=302, paths=['README.md','config/confignet/README.md']): the 302 chars are 'git log --all --oneline' commit subject lines; the find portion printed nothing. No doc content \u2014 should not be attributed consumption.",
+     "evidence": "Command 'cd /private/var/folders/.../ws\\nfind config -maxdepth 2 -iname \"README.md\" | head -20\\necho \"---git log for confignet README---\"\\ngit log --all --oneline -- config/confignet/README.md 2>/dev/null | head -5'; output is 5 one-line commit subjects only."
+    }
+   ],
+   "notes": "Audit method: parsed all 16 transcript.jsonl files programmatically (tool_use/tool_result pairing incl. isSidechain), three passes: (1) command-side scan for corpus paths plus indirect patterns (xargs, sh -c, loops, git, alternate readers), (2) result-side scan of every non-captured tool_result for corpus-doc content markers (.md diff headers, corpus paths, front matter, README title strings), (3) targeted verification dumps of every candidate. Exhaustiveness check: every tool_result containing the confignet README title across all 16 trials is accounted for by extractor events plus the missed list. Key systemic findings: (a) ACE MANIFEST GAP - the ace-docs snapshot contains 205 .md files of which 102 (e.g. docs/coding-modules.md, docs/contributing-changelog.md, docs/standard/**) are absent from corpus-manifest.json, so the extractor is structurally blind to ace-arm reads of those docs; 3 of 4 ace trials consumed them. (b) ANSWER LEAKAGE via git - the actual upstream PR commit efde8a253 ('Support npipe transport in confignet (#14985)') is reachable in workspace git history in every arm; nodocs/trial-3 ran 'git show efde8a253' AND 'git cherry-pick efde8a253'; original/trial-4 git-showed it. (c) ANSWER LEAKAGE via network - WebFetch/WebSearch appear in zero transcripts (correctly disabled), but curl to github.com / api.github.com / raw.githubusercontent.com fetched the real PR #14985 diff/patch in naive/trial-4, nodocs/trial-1, nodocs/trial-4, original/trial-2, original/trial-3; the README doc hunk entered context each time (reported above); network egress is evidently not blocked. (d) The naive and original docs snapshots installed by the harness already document the npipe feature the task asks to implement (proven by git show of the snapshot commits) - the worktree README itself leaks the expected doc change. (e) No subagents: zero Task tool calls in all 16 trials, so no sidechain doc access exists. Deliberately NOT reported as consumption: git show/log --stat filename listings, grep -l/-c filename-only output, GitHub API file lists (names and counts, no patch text printed), ls listings naming README.md, the empty-diff for-loop in original/trial-4, and make misspell/checkdoc output echoing doc paths (test/tool output, per instructions). nodocs/trial-2 is genuinely clean: no doc consumption through any channel. approx_chars figures are the measured doc-content portion of the paired tool_result; total output sizes are given in the evidence strings."
+  },
+  {
+   "task_id": "pr-15307",
+   "transcripts_examined": 16,
+   "missed_events": [
+    {
+     "arm": "ace",
+     "trial": "trial-1",
+     "channel": "subagent-webfetch",
+     "paths": [
+      "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/scraper/zookeeperscraper/README.md"
+     ],
+     "evidence": "Agent tool call: \"Fetch this URL: https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/scraper/zookeeperscraper/README.md\\n\\nReport back the FULL raw text content verbatim...\" \u2014 subagent result relays the full README verbatim (\"Fetched successfully from the raw URL (33 lines total)\")",
+     "approx_chars": 3957
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-3",
+     "channel": "bash-relative-path-cat",
+     "paths": [
+      "cmd/mdatagen/internal/samplereceiver/README.md"
+     ],
+     "evidence": "cd cmd/mdatagen && cat internal/samplereceiver/README.md 2>/dev/null | head -30 || echo \"no README\"; ls internal/samplereceiver | grep -i readme \u2014 relative path after cd defeats literal corpus-path matching; output is the doc incl. ACE front-matter",
+     "approx_chars": 2185
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-3",
+     "channel": "git-diff",
+     "paths": [
+      "cmd/mdatagen/internal/samplereceiver/README.md"
+     ],
+     "evidence": "git diff internal/samplereceiver/README.md \u2014 full unified diff; minus-lines are the HEAD (original) doc content",
+     "approx_chars": 5298
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-3",
+     "channel": "bash-relative-path-sed",
+     "paths": [
+      "cmd/mdatagen/internal/samplereceiver/README.md"
+     ],
+     "evidence": "go run . internal/samplereceiver/metadata.yaml > /dev/null 2>&1; sed -n '1,8p' internal/samplereceiver/README.md | sed -n 'l'; git checkout -- internal/samplereceiver/ (regenerated content)",
+     "approx_chars": 404
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-3",
+     "channel": "bash-relative-path-grep-sed",
+     "paths": [
+      "cmd/mdatagen/internal/samplereceiver/README.md"
+     ],
+     "evidence": "go run . internal/samplereceiver/metadata.yaml > /dev/null 2>&1 | grep -n \"status autogenerated\\|^# Sample\\|^| Status\\|^$\" internal/samplereceiver/README.md | head -10 | echo \"---\" | sed -n '10,22p' internal/samplereceiver/README.md | sed -n 'l' | git checkout -- internal/samplereceiver/ (regenerated content)",
+     "approx_chars": 624
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-3",
+     "channel": "bash-relative-path-sed",
+     "paths": [
+      "cmd/mdatagen/internal/samplescraper/README.md"
+     ],
+     "evidence": "go run . internal/samplescraper/metadata.yaml > /tmp/gen_out.log 2>&1 | sed -n '1,15p' internal/samplescraper/README.md | sed -n 'l' | git status --porcelain internal/samplescraper/ (regenerated content)",
+     "approx_chars": 1306
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-3",
+     "channel": "bash-relative-path-sed",
+     "paths": [
+      "cmd/mdatagen/internal/samplescraper/README.md"
+     ],
+     "evidence": "cd /private/var/folders/.../ace100-run-re6gjnuv/ws/cmd/mdatagen && go run . internal/samplescraper/metadata.yaml > /tmp/gen2.log 2>&1; tail -5 /tmp/gen2.log | sed -n '13,20p' internal/samplescraper/README.md | sed -n 'l' (regenerated content)",
+     "approx_chars": 246
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-3",
+     "channel": "bash-relative-path-sed",
+     "paths": [
+      "cmd/mdatagen/internal/samplescraper/README.md"
+     ],
+     "evidence": "sed -n '9,20p' internal/samplescraper/README.md \u2014 cwd was ws/cmd/mdatagen; output shows doc body (\"# Sample Scraper ... Second line here.\")",
+     "approx_chars": 369
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-4",
+     "channel": "git-diff",
+     "paths": [
+      "cmd/mdatagen/internal/samplereceiver/README.md"
+     ],
+     "evidence": "go run . internal/samplereceiver/metadata.yaml 2>&1 | tail -20; echo \"---diff---\"; git diff -- internal/samplereceiver/README.md | cat",
+     "approx_chars": 5309
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-4",
+     "channel": "bash-relative-path-sed",
+     "paths": [
+      "cmd/mdatagen/internal/samplescraper/README.md"
+     ],
+     "evidence": "sed -n '1,20p' internal/samplescraper/metadata.yaml; echo ---README---; sed -n '1,15p' internal/samplescraper/README.md | cat -e",
+     "approx_chars": 1160
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-4",
+     "channel": "bash-curl-webfetch",
+     "paths": [
+      "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/scraper/zookeeperscraper/README.md"
+     ],
+     "evidence": "curl -s --max-time 10 \"https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/scraper/zookeeperscraper/README.md\" | sed -n '1,15p' | cat -e \u2014 full README head rendered into context",
+     "approx_chars": 1721
+    },
+    {
+     "arm": "naive",
+     "trial": "trial-1",
+     "channel": "bash-curl-tmpfile",
+     "paths": [
+      "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/scraper/zookeeperscraper/README.md",
+      "/tmp/zk_readme.md"
+     ],
+     "evidence": "curl -s -L \"https://raw.githubusercontent.com/.../zookeeperscraper/README.md\" -o /tmp/zk_readme.md; wc -l /tmp/zk_readme.md; sed -n '1,15p' /tmp/zk_readme.md | cat -n \u2014 doc laundered through a /tmp copy, then read with sed",
+     "approx_chars": 1837
+    },
+    {
+     "arm": "naive",
+     "trial": "trial-2",
+     "channel": "git-show",
+     "paths": [
+      "receiver/otlpreceiver/README.md"
+     ],
+     "evidence": "git show 4fb2e27b0 -- receiver/otlpreceiver/README.md \u2014 shows the docs-snapshot commit's full diff for this corpus doc (substantial doc text; extractor caught the samplereceiver variant of this command but not this one)",
+     "approx_chars": 9584
+    },
+    {
+     "arm": "naive",
+     "trial": "trial-2",
+     "channel": "git-diff",
+     "paths": [
+      "connector/forwardconnector/README.md",
+      "receiver/otlpreceiver/README.md"
+     ],
+     "evidence": "git diff -- connector/forwardconnector/README.md receiver/otlpreceiver/README.md \u2014 diff lines contain corpus doc content",
+     "approx_chars": 760
+    },
+    {
+     "arm": "naive",
+     "trial": "trial-3",
+     "channel": "bash-diff",
+     "paths": [
+      "cmd/mdatagen/internal/samplereceiver/README.md",
+      "/tmp/README.md.orig"
+     ],
+     "evidence": "diff /tmp/README.md.orig internal/samplereceiver/README.md; echo \"diff exit: $?\" \u2014 diff is not in the extractor's reader regex and the corpus path is cwd-relative; 11.4KB of doc content (pre-gen vs regenerated)",
+     "approx_chars": 11441
+    },
+    {
+     "arm": "naive",
+     "trial": "trial-4",
+     "channel": "bash-relative-path-head",
+     "paths": [
+      "scraper/scraperhelper/README.md",
+      "cmd/mdatagen/internal/samplescraper/README.md"
+     ],
+     "evidence": "head -20 ../../scraper/scraperhelper/metadata.yaml; echo \"===README===\"; head -15 ../../scraper/scraperhelper/README.md; echo \"=== samplescraper metadata ===\"; cat internal/samplescraper/metadata.yaml | head -20; echo \"=== samplescraper README ===\"; head -15 internal/samplescraper/README.md \u2014 ../../ and cwd-relative paths defeat corpus-path matching",
+     "approx_chars": 4144
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-1",
+     "channel": "bash-curl-webfetch",
+     "paths": [
+      "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/scraper/zookeeperscraper/README.md"
+     ],
+     "evidence": "curl -s https://raw.githubusercontent.com/.../zookeeperscraper/README.md | head -20 \u2014 nodocs arm recovered README documentation from the web after finding none in the worktree",
+     "approx_chars": 1988
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-1",
+     "channel": "bash-curl-webfetch",
+     "paths": [
+      "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/13c7375168e827159da4ad8357e8d249528411fc/scraper/zookeeperscraper/README.md"
+     ],
+     "evidence": "echo \"=== at 13c7375 (June 5) ===\" | curl -s \"https://raw.githubusercontent.com/.../13c7375.../scraper/zookeeperscraper/README.md\" | sed -n '1,15p' | cat -e \u2014 pinned-commit fetch of the same README",
+     "approx_chars": 1749
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-2",
+     "channel": "bash-curl-tmpfile",
+     "paths": [
+      "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/scraper/zookeeperscraper/README.md",
+      "/tmp/reprocomp/real_readme.md"
+     ],
+     "evidence": "curl -s \"https://raw.githubusercontent.com/.../zookeeperscraper/README.md\" -o /tmp/reprocomp/real_readme.md -w \"HTTP:%{http_code}\\n\" 2>&1; cat -n /tmp/reprocomp/real_readme.md 2>/dev/null | head -30",
+     "approx_chars": 2749
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-3",
+     "channel": "python-heredoc",
+     "paths": [
+      "cmd/mdatagen/internal/samplereceiver/README.md"
+     ],
+     "evidence": "cd internal && cp samplereceiver/metadata.yaml /tmp/mdatagen_orig_metadata.yaml + python3 - <<'EOF' (rewrites metadata description via open()/write) + cat > samplereceiver/README.md <<'EOF' scaffold + cd .. && go run . internal/samplereceiver/metadata.yaml, ending with a cat -n of the regenerated README at the corpus path (output shows lines 1-13 of the doc)",
+     "approx_chars": 2510
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-3",
+     "channel": "bash-curl-webfetch",
+     "paths": [
+      "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/scraper/zookeeperscraper/README.md"
+     ],
+     "evidence": "curl -s --max-time 10 \"https://raw.githubusercontent.com/.../zookeeperscraper/README.md\" | head -20 | cat -n",
+     "approx_chars": 2128
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-4",
+     "channel": "bash-relative-path-cat",
+     "paths": [
+      "cmd/mdatagen/internal/samplescraper/README.md"
+     ],
+     "evidence": "cat -n internal/samplescraper/README.md \u2014 cwd ws/cmd/mdatagen; full regenerated doc rendered (nodocs arm: file regenerated by mdatagen)",
+     "approx_chars": 1703
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-4",
+     "channel": "bash-relative-path-cat",
+     "paths": [
+      "cmd/mdatagen/internal/samplescraper/README.md"
+     ],
+     "evidence": "cp internal/samplescraper/metadata.yaml /tmp/mdatagen_test/metadata_nodisplay.yaml\\nsed -i '' '/^display_name:/d' ...\\nprintf '<!-- status autogenerated section -->...' > internal/samplescraper/README.md\\ngo run . internal/samplescraper/metadata.yaml 2>&1 | tail -30\\necho \"---README---\"\\ncat -n internal/samplescraper/README.md (regenerated content)",
+     "approx_chars": 1692
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-4",
+     "channel": "bash-od",
+     "paths": [
+      "cmd/mdatagen/internal/samplescraper/README.md"
+     ],
+     "evidence": "printf ... > internal/samplescraper/README.md\\ngo run . internal/samplescraper/metadata.yaml 2>&1 | tail -10\\necho \"---bytes---\"\\nsed -n '1,8p' internal/samplescraper/README.md | od -c | head -40 \u2014 od byte-dump reader, not in extractor regex",
+     "approx_chars": 1187
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-4",
+     "channel": "bash-relative-path-cat",
+     "paths": [
+      "cmd/mdatagen/internal/samplescraper/README.md"
+     ],
+     "evidence": "printf '<!-- status autogenerated section -->\\n<!-- end autogenerated section -->\\n' > internal/samplescraper/README.md\\ngo run . internal/samplescraper/metadata.yaml 2>&1 | tail -20\\necho \"---README---\"\\ncat -n internal/samplescraper/README.md | sed -n '1,10p' (regenerated content)",
+     "approx_chars": 394
+    },
+    {
+     "arm": "nodocs",
+     "trial": "trial-4",
+     "channel": "bash-curl-webfetch",
+     "paths": [
+      "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/scraper/zookeeperscraper/README.md"
+     ],
+     "evidence": "curl -s \"https://raw.githubusercontent.com/.../zookeeperscraper/README.md\" | head -20 | cat -n",
+     "approx_chars": 2128
+    },
+    {
+     "arm": "original",
+     "trial": "trial-1",
+     "channel": "git-diff",
+     "paths": [
+      "cmd/mdatagen/internal/samplereceiver/README.md"
+     ],
+     "evidence": "git -C /private/var/folders/.../ace100-run-ae7vhk0d/ws diff cmd/mdatagen/internal/samplereceiver/README.md \u2014 names the literal corpus path but git is not in the reader regex; 5.3KB of doc diff content",
+     "approx_chars": 5302
+    },
+    {
+     "arm": "original",
+     "trial": "trial-2",
+     "channel": "bash-diff",
+     "paths": [
+      "cmd/mdatagen/internal/samplescraper/README.md",
+      "/tmp/README.md.bak"
+     ],
+     "evidence": "cp internal/samplescraper/README.md /tmp/README.md.bak | /tmp/mdatagen internal/samplescraper/metadata.yaml 2>&1 | tail -30 | echo \"---DIFF---\" | diff /tmp/README.md.bak internal/samplescraper/README.md",
+     "approx_chars": 1180
+    },
+    {
+     "arm": "original",
+     "trial": "trial-2",
+     "channel": "bash-relative-path-sed",
+     "paths": [
+      "cmd/mdatagen/internal/samplescraper/README.md"
+     ],
+     "evidence": "sed -n '1,10p' internal/samplescraper/README.md | cat -n \u2014 cwd ws/cmd/mdatagen",
+     "approx_chars": 398
+    },
+    {
+     "arm": "original",
+     "trial": "trial-2",
+     "channel": "bash-relative-path-sed",
+     "paths": [
+      "cmd/mdatagen/internal/samplescraper/README.md"
+     ],
+     "evidence": "pwd | go build -o /tmp/mdatagen . && /tmp/mdatagen internal/samplescraper/metadata.yaml | sed -n '1,10p' internal/samplescraper/README.md | cat -n (regenerated content)",
+     "approx_chars": 433
+    },
+    {
+     "arm": "original",
+     "trial": "trial-2",
+     "channel": "bash-relative-path-sed",
+     "paths": [
+      "cmd/mdatagen/internal/samplescraper/README.md"
+     ],
+     "evidence": "go build -o /tmp/mdatagen . && /tmp/mdatagen internal/samplescraper/metadata.yaml | sed -n '1,10p' internal/samplescraper/README.md | cat -n (regenerated content)",
+     "approx_chars": 379
+    },
+    {
+     "arm": "original",
+     "trial": "trial-2",
+     "channel": "bash-curl-webfetch",
+     "paths": [
+      "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/scraper/zookeeperscraper/README.md"
+     ],
+     "evidence": "curl -s \"https://raw.githubusercontent.com/.../zookeeperscraper/README.md\" | sed -n '1,10p' | cat -n",
+     "approx_chars": 450
+    },
+    {
+     "arm": "original",
+     "trial": "trial-3",
+     "channel": "git-diff",
+     "paths": [
+      "cmd/mdatagen/internal/samplereceiver/README.md"
+     ],
+     "evidence": "git diff internal/samplereceiver/README.md \u2014 first occurrence; full doc diff",
+     "approx_chars": 5302
+    },
+    {
+     "arm": "original",
+     "trial": "trial-3",
+     "channel": "git-diff",
+     "paths": [
+      "cmd/mdatagen/internal/samplereceiver/README.md"
+     ],
+     "evidence": "git diff internal/samplereceiver/README.md \u2014 second, separate tool call later in the trial, identical command",
+     "approx_chars": 5302
+    },
+    {
+     "arm": "original",
+     "trial": "trial-3",
+     "channel": "bash-curl-webfetch",
+     "paths": [
+      "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/scraper/zookeeperscraper/README.md"
+     ],
+     "evidence": "curl -s \"https://raw.githubusercontent.com/.../zookeeperscraper/README.md\" | head -20 | cat -A 2>/dev/null || curl -s ... | head -20 \u2014 README rendered via the fallback branch",
+     "approx_chars": 1988
+    },
+    {
+     "arm": "original",
+     "trial": "trial-4",
+     "channel": "bash-xargs",
+     "paths": [
+      "cmd/mdatagen/README.md",
+      "cmd/mdatagen/internal/sampleprocessor/README.md",
+      "cmd/mdatagen/internal/sampleprocessor/documentation.md"
+     ],
+     "evidence": "find cmd/mdatagen -iname \"*.md\" | xargs grep -l \"^# \" 2>/dev/null | head -20 \u2014 grep consumed all cmd/mdatagen corpus .md files via xargs; output is matching filenames only (no doc body), listed paths are the corpus files named in the output",
+     "approx_chars": 1160
+    }
+   ],
+   "misattributions": [
+    {
+     "arm": "ace",
+     "trial": "trial-1",
+     "issue": "Path over-attribution: event (bash, 24707 chars, attributed=true) lists paths ['README.md', 'cmd/mdatagen/internal/samplereceiver/README.md'], but the root README.md was never read \u2014 'README.md' appears only as the find -iname pattern. Verified output = one find-result line plus samplereceiver README content only; char count 24707 matches the transcript.",
+     "evidence": "find cmd/mdatagen/internal/samplereceiver -iname \"README.md\"; cat cmd/mdatagen/internal/samplereceiver/README.md 2>/dev/null"
+    },
+    {
+     "arm": "ace",
+     "trial": "trial-2",
+     "issue": "Content is not docs: event (bash, 2471 chars, paths=['README.md'], attributed=false) is a heredoc that writes a Go test then runs it; the 2471-char output is `go test` stdout quoting a freshly generated readme string, i.e. test output, not a read of any corpus doc. 'README.md' matched only string literals inside the Go source. A twin event (2443 chars) has the same problem.",
+     "evidence": "cat > /private/var/folders/.../ws/cmd/mdatagen/internal/zzz_debug_test.go << 'EOF' ... TestZZZDebugReadme ... EOF (output begins '=== RUN   TestZZZDebugReadme / =====OUTPUT===== / \"# X\\n\\n<!-- status autogenerated section -->...')"
+    },
+    {
+     "arm": "naive",
+     "trial": "trial-1",
+     "issue": "Wrong path and no doc content: event (bash, 567 chars, paths=['README.md'], attributed=true) credits the root README.md, but the output is only 5 absolute file paths from grep -rl (scraper/README.md, scraper/scraperhelper/README.md, cmd/mdatagen/README.md, sampleprocessor and samplereceiver READMEs) \u2014 no document text and none of them is the root README.md.",
+     "evidence": "grep -rl \"status autogenerated section\" /private/var/folders/.../ace100-run-m6rx9twp/ws --include=\"README.md\" | head -5"
+    },
+    {
+     "arm": "naive",
+     "trial": "trial-2",
+     "issue": "Under/mis-attribution: two python-heredoc events (681 and 848 chars, paths=['README.md'], attributed=false) actually consumed 27 marker READMEs \u2014 the script runs git grep -l '<!-- status autogenerated section -->' -- '*README.md' then open()/read()s each file; output states 'total marker readmes: 27' and classifies corpus docs like connector/forwardconnector/README.md. Recording paths=['README.md'] (root) misidentifies what was consumed.",
+     "evidence": "python3 - <<'PY' ... readmes = subprocess.check_output([\"git\", \"grep\", \"-l\", \"<!-- status autogenerated section -->\", \"--\", \"*README.md\"]).decode().splitlines() ... PY"
+    }
+   ],
+   "notes": "Audit method: parsed all 16 transcripts into tool_use/tool_result maps (924 Bash, 181 Read, 0 Grep, 1 Agent, 10 ToolSearch calls), matched every extractor event for pr-15307 (110 events) to its transcript command, then swept the residue for corpus paths, .md mentions, git readers, indirect channels, tmp-file copies, and network access. Corpus = the 103 files in corpus-manifest.json. KEY SYSTEMIC GAPS: (1) cwd-relative paths \u2014 the extractor matches corpus paths literally, so any reader run after `cd cmd/mdatagen` using `internal/.../README.md` or `../../scraper/...` is invisible (the largest class of misses); (2) git show/diff emitting doc content is never captured, even when the literal corpus path appears in the command (original/trial-1); (3) `diff` and `od` are not in the reader regex; (4) tmp-copy laundering (cp doc /tmp/x.md; read /tmp/x.md). NETWORK WAS NOT DISABLED: no WebFetch/WebSearch tool calls exist, and 9 of 16 trials tried to load WebFetch via ToolSearch (all returned 'No matching deferred tools'), but Bash curl egress succeeded across 11+ trials and one Agent subagent (ace/trial-1) relayed a fetched README verbatim. GROUND-TRUTH CONTAMINATION via that egress: the full PR-15307 diff (the task's reference solution, ~3.9-4.0KB) was fetched from patch-diff.githubusercontent.com/github.com in naive/trial-1, ace/trial-4, nodocs/trial-3, and original/trial-3; issue 15306's body ('Remove extra line in README.md') was fetched in ace/trial-3, ace/trial-4, and original/trial-3. Separately, the upstream fix commit dbd5c55bf ('[cmd/mdatagen] Fix the extra blank line in the readme template file') exists in the repos' git history and was git-show'n in ace/trial-3 and naive/trial-3 (readme.md.tmpl is not in the corpus, so these are not listed as missed doc events, but they leak the solution; git show 4db915721 on the same template appeared in 7 trials). Events labeled '(regenerated content)' read a corpus path whose content mdatagen had just rewritten \u2014 included for consistency with the extractor, which counts equivalent literal-path reads; discount them if the recount wants pristine-doc consumption only. Doc text echoed in go-test stdout was excluded per instructions. Spot-checks: 4 extractor events verified problematic (see misattributions); 1 verified clean \u2014 naive/trial-2 Read of cmd/mdatagen/internal/samplereceiver/README.md, recorded 33686 chars, matches the transcript result exactly. No sidechain Reads exist in any transcript."
+  }
+ ],
+ "summary": {
+  "missed_events": 77,
+  "misattributions": 24,
+  "transcripts_examined": 96
+ }
+}
