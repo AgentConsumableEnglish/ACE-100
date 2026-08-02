@@ -5,13 +5,14 @@ progress and **before any cross-arm analysis existed**: at commit time, 41 of 72
 Experiment 1 cells were complete and neither `evaluate` (tests, judge) nor `analyze`
 had run on any of them. Amendments follow Experiment 1's rules.
 
-**Relationship to Experiment 1** (`meta/experiment/PREREGISTRATION.md`): same
-repository, same pinned commit, same three documentation treatments — the arms are
-**reused artifacts**, byte-identical to Experiment 1's (hashes in
-`../experiment/audit/arm-gates/`). Experiment 1 asks what ACE-100 does on
-mechanically-sampled realistic tasks; Experiment 2 asks what it does **where
-documentation verifiably matters**, and adds mechanism instruments. One paper
-reports both; confirmatory families are never pooled.
+**Relationship to Experiment 1**
+(`../exp1/PREREGISTRATION.md`): same repository, same pinned commit, same three
+documentation treatments — the arms are **reused artifacts**, byte-identical to
+Experiment 1's (hashes in `../exp1/audit/arm-gates/`). Experiment 1 asks what
+ACE-100 does on mechanically-sampled realistic tasks; Experiment 2 asks what it
+does **where documentation verifiably matters**, and adds mechanism
+instruments. Each experiment reports in its own paper; confirmatory families
+are never pooled.
 
 ## 1. Research questions
 
@@ -59,7 +60,7 @@ Pilots are retained as trial 1 of their condition.
 
 Target 6 tasks × 4 conditions × **4 trials** = 96 cells (pilots folded in).
 Protocol identical to Experiment 1 §5: Claude Sonnet 5 pinned, harness defaults
-(documented in `../experiment/audit/harness-environment.json`), 200 turns / 45 min /
+(documented in `../exp1/audit/harness-environment.json`), 200 turns / 45 min /
 $15 caps, network off, fresh workspace per run, cells randomized and interleaved
 (order seed 20260802), failures recorded not rerun, infra failures retried.
 Collection begins only after Experiment 1's schedule has fully completed.
@@ -127,10 +128,34 @@ training-data contamination measured directly via the no-docs QA baseline.
 ~96 subject cells plus 16 pilot-covered runs (~$150–280 at standard-price
 accounting, subscription-billed); QA probe ~200 short runs (~$20–40 API); judging
 and checklist scoring (~$40–60 API). Additional API credits to be added before the
-evaluation phase. Layout mirrors Experiment 1 under `meta/experiment2/` (data
-gitignored, published as release assets); arms referenced from
-`../experiment/arms`, hash-pinned via Experiment 1's audit.
+evaluation phase. Layout mirrors Experiment 1 under
+`meta/research/experiments/exp2/` (data gitignored, published as release
+assets); arms referenced from `../exp1/arms`, hash-pinned via Experiment 1's
+audit. This experiment reports in `meta/research/papers/exp2/`, created when
+there are results to report.
 
 ## Amendments
 
-None.
+### Amendment 1 — path corrections; one paper per experiment (2026-08-02)
+
+Made before any data collection for this experiment, so the body text is
+corrected in place rather than only annotated; this amendment records what
+changed. **No hypothesis, condition, instrument, or threshold changes.**
+
+**Paths.** References in §Relationship, §4, and §10 pointed at
+`meta/experiment/`, `../experiment/`, and `meta/experiment2/`, paths that
+stopped existing when the
+research tree was split into shared tooling and per-experiment directories
+(Experiment 1's Amendment 6). They now read `../exp1/` and
+`meta/research/experiments/exp2/`.
+
+**Reporting.** §Relationship stated that one paper reports both experiments.
+Each experiment now reports in its own paper (Experiment 1's Amendment 7).
+Experiment 1's paper is complete and tagged `paper-exp1-v1`; it cites this
+registration as future work and does not depend on this experiment's outcome.
+
+This experiment's paper cites `paper-exp1-v1` for Experiment 1's arguments and
+`../exp1/analysis/summary.json` for any Experiment 1 number it restates, so a
+correction to that data propagates. Reusing Experiment 1's arms as
+hash-pinned artifacts is unaffected: shared artifacts are not shared reporting,
+and confirmatory families remain unpooled.

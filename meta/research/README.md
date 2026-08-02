@@ -1,27 +1,37 @@
-# ACE-100 evaluation experiment
+# ACE-100 evaluation research
 
-Empirical evaluation of the ACE-100 kit against its stated goals: does adopting the
-kit reduce LLM-agent cost without degrading work quality? Governed by
-[PREREGISTRATION.md](PREREGISTRATION.md) — read that first; it fixes the hypotheses,
-thresholds, and procedures, and any deviation requires a logged amendment there.
+Empirical evaluation of the ACE-100 kit against its stated goals: does adopting
+the kit reduce LLM-agent cost without degrading work quality? Each experiment is
+pre-registered and owns its plan; each reports in its own paper.
 
-This tree is development material: excluded from kit governance (`.ace-ignore`) and
-from the release (`meta/publish.sh`).
+This tree is development material: excluded from kit governance (`.ace-ignore`)
+and from the release (`meta/publish.sh`).
 
 ## Layout
 
 | Path | Purpose |
 |---|---|
-| `PREREGISTRATION.md` | The registered plan. Committed before repo selection or any run. |
-| `tools/select_tasks.py` | Mechanical task selection from merged-PR history (§4 of the plan). Needs an authenticated `gh`. |
-| `tools/` (planned) | `build_arms`, `run_cell` + scheduler, `evaluate`, `analyze` — see §9 of the plan. |
-| `manifest.json` (generated) | Task manifest with per-task base commits, prompts, and audit log. |
-| `data/` (gitignored) | Raw run artifacts: transcripts, diffs, judge outputs. Published as a release asset; the repo keeps hashes only. |
+| `lib/` | The shared pipeline, used by every experiment. Tools take `--experiment-dir` (or `$ACE_EXPERIMENT_DIR`) and have no default. |
+| `experiments/<id>/` | One directory per experiment: `PREREGISTRATION.md`, `experiment.json`, `manifest.json`, committed `audit/` and `analysis/`, gitignored `data/`, `arms/`, `repo/`. |
+| `papers/<id>/` | One paper per experiment. Front matter names the experiments it draws on, its status, and its citation tag. |
+| `REPLICATION.md` | Step-by-step reproduction, and how artifact provenance works. |
 
-## Order of operations
+Experiments and papers are separate trees on purpose. An experiment's artifacts
+are provenance-stamped outputs a replicator re-derives; a paper is argued prose
+that gets revised, tagged, and cited after the numbers are frozen.
 
-1. Choose the target repository against §3 criteria; record the choice as a
-   pre-registration amendment.
-2. `tools/select_tasks.py` — before any arm is built (temporal firewall, §4).
-3. Build arms, run gates (§2), stamp commit hashes.
-4. Runs (§5), evaluation (§6), analysis (§7).
+## Current state
+
+| Experiment | State | Paper |
+|---|---|---|
+| `exp1` | Complete. Realistic tasks sampled from merged-PR history. | `papers/exp1/`, tagged `paper-exp1-v1` |
+| `exp2` | Registered; not yet run. Tasks where documentation is load-bearing. | none yet |
+
+## Order of operations for a new experiment
+
+1. Write `experiments/<id>/PREREGISTRATION.md` and commit it before any run.
+   Record the target repository as an amendment there.
+2. `lib/select_tasks.py` — before any arm is built (temporal firewall).
+3. Build arms, run gates, stamp commit hashes.
+4. Runs, evaluation, analysis.
+5. Write `papers/<id>/paper.md`; tag it when it is final.

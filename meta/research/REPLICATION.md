@@ -13,7 +13,8 @@ meta/research/
     manifest.json          the sampled tasks
     audit/  analysis/      committed artifacts
     data/  arms/  repo/    gitignored; published as release assets
-  paper/                   one paper covering all experiments
+  papers/<id>/             one paper per experiment; front matter names the
+                           experiments it draws on
 ```
 
 ## Every artifact names the tooling that made it

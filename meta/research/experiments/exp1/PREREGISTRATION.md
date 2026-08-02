@@ -381,3 +381,45 @@ The paper cites this hash so a replicator can check out the exact tools. This
 adds an obligation the registration did not previously carry: an artifact
 produced from uncommitted tool changes is marked `tooling_dirty` and is not
 citable as reproducible.
+
+### Amendment 7 — one paper per experiment (2026-08-02)
+
+Made after collection, evaluation, judging, and analysis were complete. **No
+result, threshold, procedure, or readout changes.** Like Amendment 6, this
+records a reporting-and-layout change so the registration matches the
+repository.
+
+**Supersedes Amendment 6's paper row.** Amendment 6 recorded
+`meta/experiment/paper/` becoming `meta/research/paper/`, "one paper, both
+experiments". That row is now superseded: this experiment reports in its own
+paper, and Experiment 2 will report in its own. Amendment 6's text is left as
+written, because an amendment log is a record of what was decided when.
+
+| Amendment 6 | now |
+|---|---|
+| `meta/research/paper/` (one paper, both experiments) | `meta/research/papers/exp1/` (this experiment only) |
+
+**Rationale.** A single paper made this experiment's completeness depend on a
+study that has not run: the source carried an "Experiment 1 of 2 … sections
+marked pending" status line and a reserved empty section. Both are removed. The
+paper is complete as it stands and is tagged `paper-exp1-v1`.
+
+Papers live in `meta/research/papers/`, a sibling of `experiments/`, not inside
+the experiment tree. An experiment directory holds provenance-stamped artifacts
+a replicator re-derives; a paper is prose that is revised after the numbers are
+frozen, and revising it should not dirty the tree whose provenance is being
+hashed. Each paper's YAML front matter names the experiments it draws on, so
+the binding is declared rather than inferred from its directory name.
+
+**Effect on this paper's content.** The status line, the reserved Experiment 2
+section, and three forward references to Experiment 2 are removed; §9 is
+retitled "Open Questions" and cites Experiment 2's registration as future work,
+which is a citation and not a dependency. §10 no longer restates the research
+tree, which is documented once in `meta/research/REPLICATION.md`. No number,
+claim, or interpretation changes.
+
+**Citation rule for later papers.** A paper citing this one cites the tag
+`paper-exp1-v1` for arguments and `experiments/exp1/analysis/summary.json` for
+any number it restates, so a later correction to the data propagates rather
+than being laundered through prose. This paper does not cite Experiment 2's
+paper; a completed study does not depend on a later one.

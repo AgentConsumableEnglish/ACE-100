@@ -1,8 +1,13 @@
+---
+experiments: [exp1]
+status: final
+tag: paper-exp1-v1
+---
+
 # Does a Documentation Standard for LLM Agents Pay for Itself? A Pre-Registered Evaluation of ACE-100
 
 **Owen Delahoy** · **Claude Fable 5 (Anthropic)**†
-*Self-published preprint. Experiment 1 of 2; Experiment 2 sections are marked
-as pending.*
+*Self-published preprint.*
 
 †AI system, credited as a co-author at the human author's invitation; see
 the Contributions statement for what it did and where accountability rests.
@@ -582,8 +587,7 @@ documentation quality at all. Documentation value here is small,
 task-idiosyncratic, sign-unstable, and — once leakage is removed —
 indistinguishable from zero. That is a hostile substrate for any
 documentation standard to show gains on, and the central external-validity
-caveat of this experiment (Experiment 2 targets a docs-load-bearing setting
-for exactly this reason).
+caveat of this experiment.
 
 ### 6.4 Value retention (Amendment 4 readout)
 
@@ -599,9 +603,8 @@ draw nothing from it.
 is the same docs-value quantity shown above to be leakage-composed: with
 flagged runs removed, pr-14985 leaves the comparison entirely and every
 remaining task except pr-15495 has a zero denominator, leaving retention
-undefined. Experiment 2 shares this readout and its slots are reserved in §9
-— but the readout needs a substrate where docs value is non-zero *and*
-clean, which is precisely what Experiment 1 failed to supply.
+undefined. The readout needs a substrate where docs value is non-zero *and*
+clean, which is precisely what this experiment failed to supply.
 
 ## 7. Protocol Deviation: Network Isolation and Solution Leakage
 
@@ -692,13 +695,13 @@ asymmetry that, note, biases *toward* the standard. The registered Opus-5
 side-measurement was not conducted. The corpus-size reframe (Amendment 3)
 means naive-vs-original tests matched-size rewriting, not shortening.
 
-## 9. Open Questions and Experiment 2
+## 9. Open Questions
 
-Experiment 1's sharpest limitation is its substrate: docs-value near zero
-on most tasks (§6.3). Experiment 2 is registered separately
-(`meta/research/experiments/exp2/PREREGISTRATION.md`) and targets tasks where
-documentation is load-bearing by construction, sharing the value-retention
-readout of §6.4. Its candidate set is committed; no further work has begun.
+This study's sharpest limitation is its substrate: docs-value near zero on
+most tasks (§6.3). A separate study targeting tasks where documentation is
+load-bearing by construction is registered at
+`meta/research/experiments/exp2/PREREGISTRATION.md`; it is registered only,
+and reports its own results.
 
 Three questions this experiment raised but could not answer are worth
 stating as an agenda, because each is answerable by a study designed for it
@@ -737,21 +740,14 @@ standards aimed at agent efficiency are optimizing a channel that carries
 almost no traffic, and the prior question is what would make agents read
 more — not what to do with the tokens once they do.
 
-<!-- EXP2-SLOT: design summary, results, cross-experiment synthesis. -->
-
 ## 10. Reproducibility and Artifacts
 
-The research tree ships in the kit repository under `meta/research/`:
-
-```
-meta/research/
-  lib/                      shared pipeline, used by every experiment
-  experiments/exp1/         this experiment: registration, config, manifest,
-                            audit trail, analysis outputs
-  experiments/exp2/         Experiment 2 (registered; not yet run)
-  paper/                    this paper
-  REPLICATION.md            step-by-step reproduction instructions
-```
+The research tree ships in the kit repository under `meta/research/`, whose
+layout and step-by-step reproduction instructions are in
+`meta/research/REPLICATION.md`. This experiment's registration, config,
+manifest, audit trail, and analysis outputs are under
+`meta/research/experiments/exp1/`; this paper is
+`meta/research/papers/exp1/paper.md`.
 
 The pipeline is `select_tasks`, `build_arms`, `run_cell`, `evaluate`,
 `docs_recount`, `extract_doc_reads`, `analyze`, `classify_turns`, and
