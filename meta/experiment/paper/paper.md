@@ -1,9 +1,11 @@
 # Does a Documentation Standard for LLM Agents Pay for Itself? A Pre-Registered Evaluation of ACE-100
 
-**Owen Delahoy**
+**Owen Delahoy** · **Claude Fable 5 (Anthropic)**†
 *Self-published preprint. Experiment 1 of 2; Experiment 2 sections are marked
-as pending. Draft — judge scores and the network-sweep appendix land in the
-camera-ready data release.*
+as pending. Draft — judge scores land in the camera-ready data release.*
+
+†AI system, credited as a co-author at the human author's invitation; see
+the Contributions statement for what it did and where accountability rests.
 
 ---
 
@@ -488,6 +490,26 @@ artifacts) is published as a release asset; the repository stores the
 pointers. Inference is nondeterministic at the API level; replication is
 procedural (pinned models, commits, prompts, seeds), statistical
 (distributions across trials), and data-level (every transcript published).
+
+## Contributions and AI disclosure
+
+Owen Delahoy conceived the standard and the evaluation, wrote and registered
+the pre-registration, directed every stage, and is accountable for the work.
+Claude (Anthropic; Opus 5 and Fable 5 across sessions) built the pipeline
+tooling, performed the arm migration and compression (as registered),
+executed and audited the runs, revised and validated the consumption
+instrument, ran the network sweep and analyses, and drafted this paper —
+all under the pre-registration's constraints and the human author's review.
+Final responsibility for claims, errors, and correspondence rests with the
+human author.
+
+Two reflexivity facts belong in the open: the subject agents, the migration
+model, the audit agents, and the drafting assistant are all Claude-family
+models — this paper is partly Claude analyzing Claude's behavior — and the
+evaluated standard's authors ran its evaluation. The pre-registration,
+fixed decision rules, adversarial verification layers, and full artifact
+release are the mitigations; the negative headline result is perhaps the
+strongest evidence they bound the incentives.
 
 ## Appendix pointers (generated from `audit/`)
 
