@@ -405,7 +405,8 @@ def load_leakage_flags(path, missing_notes):
             trial = normalize_trial(trial_rec.get("trial"))
             if task is None or arm not in ALL_ARMS or trial is None:
                 continue
-            for ev in trial_rec.get("events", []):
+            for ev in (trial_rec.get("events", [])
+                       + trial_rec.get("missed_by_prepass", [])):
                 if ev.get("classification") == "c":
                     flags.add((task, arm, trial))
                     break
