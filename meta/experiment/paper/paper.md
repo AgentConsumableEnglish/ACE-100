@@ -2,7 +2,7 @@
 
 **Owen Delahoy** · **Claude Fable 5 (Anthropic)**†
 *Self-published preprint. Experiment 1 of 2; Experiment 2 sections are marked
-as pending. Draft — judge scores land in the camera-ready data release.*
+as pending.*
 
 †AI system, credited as a co-author at the human author's invitation; see
 the Contributions statement for what it did and where accountability rests.
@@ -25,9 +25,12 @@ cell: 96 agent runs under Claude Sonnet 5.
 
 **H1 failed in the opposite direction**: the ACE-100 arm cost 1.172× the
 original arm (task-median ratio; 95% CI [0.881, 1.487]), against a registered
-success threshold of ≤0.80. H2's evaluable components lean negative
-(suite-pass Δ −4.2pp, CI [−16.7, 0.0]; reference-tests Δ −12.5pp, CI [−41.7,
-+8.3]; blinded judge pending). The mechanism data explain the cost result:
+success threshold of ≤0.80. **H2 is not established, but its failure is narrow
+and one-sided**: the blinded Opus-5 judge scored ace within the 0.5-point
+margin of original on all three rubric dimensions (correctness +0.12,
+completeness −0.17, convention +0.08), and suite-pass met its margin at point;
+only reference-tests (Δ −12.5pp) missed — and §7 shows that component is
+confounded by differential access to the reference solution. The mechanism data explain the cost result:
 migration *grew* the corpus 14% (253K → 290K tokens) and roughly doubled the
 file count, agents in every arm read only ~1.6–1.7K explicit documentation
 tokens per run through ad-hoc shell commands rather than the kit's intended
@@ -76,9 +79,11 @@ measurement instrument (Amendment 5).
 
 **Findings.** The headline result is negative and the mechanism is
 instructive. ACE-100 migration made agent runs ~17% *more* expensive at the
-task median, not ≥20% cheaper (H1). Quality moved in the wrong direction on
-the evaluable components (H2; judge scores pending). Three observations
-explain it: (i) migration grew the corpus rather than shrinking it — governed
+task median, not ≥20% cheaper (H1). Quality was not non-inferior under the
+strict registered rule (H2), but the blinded judge found ace within margin of
+original on all three rubric dimensions and the single functional miss is
+leakage-confounded — the negative verdict is real but narrow. Three
+observations explain the cost result: (i) migration grew the corpus rather than shrinking it — governed
 front matter, indexes, and file splits added 14% in tokens and doubled the
 file count; (ii) agents consumed documentation in the ~1.6–1.7K-token range
 per run regardless of arm, mostly through `grep`/`cat`/`sed` over files they
@@ -195,8 +200,13 @@ Quality reads out in a fixed hierarchy: (1) test outcomes — the repository's
 existing suite (regressions), and the reference PR's tests run against the
 agent's implementation (delivered behavior); (2) a blinded LLM judge (Claude
 Opus 5 via the Batches API; correctness / completeness / convention, 1–5;
-20% double-scored for reliability) — **pending at this draft**; (3)
-descriptive completion/turns/wall-clock.
+20% double-scored for reliability; arm labels and documentation-path tells
+stripped from both diffs, request order shuffled); (3) descriptive
+completion/turns/wall-clock. Judge reliability: exact agreement on the
+double-scored subset was 0.95 (correctness), 0.90 (completeness), and 0.63
+(convention); within-one-point agreement was 1.00, 1.00, and 0.95 — convention
+is the noisiest dimension, as expected, but the arms are separated by less
+than the double-scoring spread on it, so we lean on the test outcomes.
 
 All comparisons are within-task; we report per-task medians, cost ratios and
 quality deltas with hierarchical-bootstrap 95% CIs (tasks, then trials;
@@ -285,21 +295,25 @@ into savings over one another.
 |---|---|---|---|---|---|
 | suite pass | 5pp | −4.2pp | [−16.7, 0.0] | met | not met |
 | reference tests | 5pp | −12.5pp | [−41.7, +8.3] | not met | not met |
-| judge (3 dims) | 0.5 | *pending* | — | — | — |
+| judge correctness | 0.5 | +0.12 | [−0.29, +0.54] | met | met |
+| judge completeness | 0.5 | −0.17 | [−0.79, +0.46] | met | met |
+| judge convention | 0.5 | +0.08 | [−0.35, +0.54] | met | met |
 
-Suite regressions were rare everywhere (ace 95.8% vs original 100%).
-Delivered behavior — the reference PR's tests against the agent's
-implementation — is where the arms separate: ace 62.5% vs original 75.0%
-mean per-task pass rate. The damage concentrates in two tasks: pr-14985
-(ace 25% vs original 100%) and pr-15495 (both 0%, naive 75%). With six
-tasks the CIs are wide; the registered verdict is simply **not
-established**, with both evaluable point estimates on the wrong side.
-Completion was 100% in every condition; wall-clock tracks turns.
-
-One caution attaches to the point deficits: §7's sweep found that every
-original-arm pr-14985 trial had downloaded the reference solution, and with
-flagged runs removed the ace-vs-original deltas are 0.0pp (§7.2). The
-deficit against *naive* is unaffected by that correction.
+Four of the five components meet their margin at the point estimate; the
+lone failure is reference-tests. Suite regressions were rare everywhere
+(ace 95.8% vs original 100%). The **blinded judge separates the arms by
+almost nothing** on subjective quality: ace and original sit within 0.17
+rubric points on every dimension, and the CIs straddle zero. Delivered
+behavior — the reference PR's tests against the agent's implementation — is
+the one axis where the arms diverge: ace 62.5% vs original 75.0% mean
+per-task pass rate, concentrated in two tasks (pr-14985: ace 25% vs
+original 100%; pr-15495: both 0%, naive 75%). The registered rule requires
+*every* component within margin, so the verdict is **not established** — but
+the shape matters: the standard did not degrade judged code quality, and its
+one measured functional deficit is exactly the component §7 shows is
+confounded. With flagged runs removed, the ace-vs-original reference-tests
+delta is 0.0pp (§7.2); the deficit against *naive* is unaffected by that
+correction. Completion was 100% in every condition; wall-clock tracks turns.
 
 ### 5.3 Migration economics: no break-even
 
@@ -367,7 +381,20 @@ six tasks (mean docs-value +8.3pp on reference tests, +4.2pp on the suite).
 For four tasks the knowledge the agent needed lived in source, tests, and
 model priors — the last being the registered training-data-contamination
 threat: this repository's documentation is plausibly in the subject model's
-pretraining corpus, diluting any in-repo docs manipulation. Where docs
+pretraining corpus, diluting any in-repo docs manipulation.
+
+The blinded judge tells the complementary half of this story. Where
+functional tests barely separated the documented arms from nodocs, the
+*judge* did: nodocs is the worst-scored arm on all three dimensions
+(correctness 3.88, completeness 3.58, convention 3.62) versus 4.0–4.4 for the
+three documented arms, with the largest gap on convention adherence — exactly
+the MUST-level prose conventions (§3.2) that source code cannot convey.
+Documentation on this repository buys *judged* quality, especially
+convention-following, more reliably than it buys test-pass. That is a point
+in the standard's favor at the margin — but it accrues to *having*
+documentation, not to ACE-100 over the original or naive text: the three
+documented arms are statistically indistinguishable from one another on every
+judge dimension (ace-vs-naive deltas ≤ 0.06 points). Where docs
 carried real value (pr-14985), *both* rewritten arms destroyed most of it
 (100% → 25%) — a preservation failure that three repair rounds and
 disclosure (Amendment 3) flagged but did not fully prevent — and on
@@ -457,8 +484,10 @@ over a small task sample). The evaluators are the standard's authors —
 mitigated by pre-registration, mechanical selection, the temporal firewall,
 fixed decision rules, and this paper's disclosure of its own negative
 result and instrument failures. LLM-judge blinding is imperfect (doc-style
-tells survive scrubbing); judge results are pending and secondary by
-registered hierarchy. Training-data contamination dilutes the docs
+tells survive scrubbing) and the judge is a Claude-family model scoring a
+Claude subject's work; it is secondary to test outcomes by registered
+hierarchy, and convention scoring in particular is noisy (0.63 exact
+agreement). Training-data contamination dilutes the docs
 manipulation (§6.3) and is irreducible for repositories with real PR
 history. The network deviation (§7) weakens "in-repo docs were the only
 documentation channel"; the sweep bounds it. Migration was performed by a
